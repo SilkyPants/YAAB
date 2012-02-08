@@ -78,14 +78,14 @@ To break the units into printable values get the decimal with x % 10 and the mil
 // Some macros that make the code more readable
 #define output_low(port,pin) port &= ~(1<<pin)
 #define output_high(port,pin) port |= (1<<pin)
-#define set_input(portdir,pin) portdir &= ~(1<<pin)
-#define set_output(portdir,pin) portdir |= (1<<pin)
+#define output_toggle(port,pin) port ^= (1<<pin)
+#define input_value(port,pin) (port & (1<<pin))
 
 // Variables to track
 unsigned long shotsSinceLastReset = 0;
 
 volatile bool canFire = true;
-volatile bool firing = false;
+volatile bool triggerPressed = false;
 volatile uint8_t cycleCount = 0; // Keeps track of the cycle time in 0.1ms increments
 
 struct FireValues
@@ -94,6 +94,7 @@ struct FireValues
     uint8_t pneuDel;
     uint8_t pneuOn;
     uint8_t pneuOff;
+    uint8_t debounce;
 
     FireValues()
     {
@@ -101,6 +102,7 @@ struct FireValues
         pneuDel = 60;
         pneuOn = 55 + pneuDel;
         pneuOff = 24 + pneuOn;
+        debounce = 10;
     }
 
 } g_DefaultValues;
@@ -109,7 +111,7 @@ struct FireValues
 ///
 /// Interrupts
 ///
-
+/*
 ///
 /// Init ADC
 ///
@@ -138,7 +140,7 @@ ISR(ADC_vect)
     // ADC Complete
     // Read the value from ADC for a value between 0-1023
 }
-
+*/
 ///
 /// Init Timer
 ///
@@ -149,6 +151,7 @@ inline void timer_init()
 
     TCNT1 = TIMER_OVF_VAL;    // preload timer
     TCCR1B |= (1 << CS11)|(1 << CS10);    // 64 prescaler
+    TIMSK1 |= (1 << TOIE1);    // enable timer
 }
 
 ///
@@ -158,6 +161,32 @@ ISR(TIMER1_OVF_vect)
 {
     TCNT1 = TIMER_OVF_VAL;    // reload timer
     
+    if(canFire)
+    {
+      if(input_value(PIND, TRIGGER_PIN) != LOW)
+      {
+        // increment cycle time
+        cycleCount++;
+        
+        if(!triggerPressed && cycleCount >= g_DefaultValues.debounce)
+        {
+          triggerPressed = true;
+          canFire = false;
+          
+          cycleCount = 0;
+          
+          // Set Sear High (Release hammer)
+          output_high(CYCLE_PORT, SEAR_PIN);
+        }
+      }
+      else
+      {
+        cycleCount = 0;
+        triggerPressed = false;
+      }
+    }
+    else
+    {
       // increment cycle time
       cycleCount++;
   
@@ -173,9 +202,9 @@ ISR(TIMER1_OVF_vect)
           // Turn on pneumatics
           output_high(CYCLE_PORT, PNEU_PIN);
       }
-      /*
-      INSERT EYE LOGIC HERE
-      */
+      //
+      // INSERT EYE LOGIC HERE
+      //
       else if(cycleCount == g_DefaultValues.pneuOn && bit_is_set(CYCLE_PORT, PNEU_PIN))
       {
           // Turn off pneumatics
@@ -185,13 +214,11 @@ ISR(TIMER1_OVF_vect)
       {
           // Toggle canFire
           canFire = true;
-  
-          // Stop Timer
-          TIMSK1 &= ~(1 << TOIE1);
           
           // Clear cycle counter
           cycleCount = 0;
       }
+    }
 }
 
 
@@ -201,38 +228,25 @@ void setup()
     pinMode(SEAR_PIN, OUTPUT);
     pinMode(PNEU_PIN, OUTPUT);
 
+/*
     pinMode(EYE_PIN, OUTPUT);
     pinMode(IRED_PIN, INPUT);
     
     pinMode(UP_BUTTON_PIN, INPUT);
     pinMode(OK_BUTTON_PIN, INPUT);
     pinMode(DN_BUTTON_PIN, INPUT);
-
+*/
     cli();
     timer_init();
     //adc_init();
     sei();
 }
 
-void cycle()
-{
-  cli();
-    // Toggle canFire
-    canFire = false;
-        // Set Sear High (Release hammer)
-        output_high(CYCLE_PORT, SEAR_PIN);
-
-        
-    TIMSK1 |= (1 << TOIE1);
-    sei();
-}
-
 void loop()
 {
-  if(digitalRead(TRIGGER_PIN) && canFire)
-    cycle();
 }
 
+/*
 // read adc value
 void adc_start_read(uint8_t ch)
 {
@@ -245,4 +259,4 @@ void adc_start_read(uint8_t ch)
     // start single conversion
     // write '1' to ADSC
     ADCSRA |= (1<<ADSC);
-}
+}*/

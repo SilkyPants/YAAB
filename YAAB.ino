@@ -66,7 +66,7 @@ To break the units into printable values get the decimal with x % 10 and the mil
 #endif
 
 #if defined SLOW_THINGS_DOWN
-#define TIMER_FREQ 10
+#define TIMER_FREQ 1000
 #else
 #define TIMER_FREQ 10000
 #endif
@@ -84,9 +84,11 @@ To break the units into printable values get the decimal with x % 10 and the mil
 // Variables to track
 unsigned long shotsSinceLastReset = 0;
 
-volatile bool canFire = true;
+volatile bool isFiring = false;
+volatile bool debounceCharge = false;
 volatile bool triggerPressed = false;
 volatile uint8_t cycleCount = 0; // Keeps track of the cycle time in 0.1ms increments
+volatile uint8_t shotsToGo = 0;
 
 struct FireValues
 {
@@ -95,6 +97,10 @@ struct FireValues
     uint8_t pneuOn;
     uint8_t pneuOff;
     uint8_t debounce;
+    uint8_t shotsToFire;
+    
+    bool releaseFire;
+    bool pressFire;
 
     FireValues()
     {
@@ -103,6 +109,9 @@ struct FireValues
         pneuOn = 55 + pneuDel;
         pneuOff = 24 + pneuOn;
         debounce = 10;
+        shotsToFire = -1;
+        releaseFire = false;
+        pressFire = true;
     }
 
 } g_DefaultValues;
@@ -161,28 +170,36 @@ ISR(TIMER1_OVF_vect)
 {
     TCNT1 = TIMER_OVF_VAL;    // reload timer
     
-    if(canFire)
+      bool triggerCurrent = input_value(PIND, TRIGGER_PIN) != LOW;
+      
+    if(!isFiring)
     {
-      if(input_value(PIND, TRIGGER_PIN) != LOW)
+      
+      if(triggerCurrent != triggerPressed)
+      {
+        triggerPressed = triggerCurrent;
+        
+        debounceCharge = triggerPressed ? g_DefaultValues.pressFire : g_DefaultValues.releaseFire;
+      }
+      
+      if(debounceCharge)
       {
         // increment cycle time
         cycleCount++;
-        
-        if(!triggerPressed && cycleCount >= g_DefaultValues.debounce)
-        {
-          triggerPressed = true;
-          canFire = false;
-          
-          cycleCount = 0;
-          
-          // Set Sear High (Release hammer)
-          output_high(CYCLE_PORT, SEAR_PIN);
-        }
       }
-      else
+        
+      if(cycleCount >= g_DefaultValues.debounce)
       {
+        isFiring = true;
+        debounceCharge = false;
+        
+        if(shotsToGo == 0)
+          shotsToGo = g_DefaultValues.shotsToFire;
+          
         cycleCount = 0;
-        triggerPressed = false;
+        
+        // Set Sear High (Release hammer)
+        output_high(CYCLE_PORT, SEAR_PIN);
       }
     }
     else
@@ -211,12 +228,19 @@ ISR(TIMER1_OVF_vect)
           output_low(CYCLE_PORT, PNEU_PIN);
       }
       else if(cycleCount == g_DefaultValues.pneuOff)
-      {
-          // Toggle canFire
-          canFire = true;
-          
-          // Clear cycle counter
-          cycleCount = 0;
+      {   
+            // Toggle isFiring
+            isFiring = false;
+            
+          if(--shotsToGo > 0 && triggerCurrent)
+          {
+            cycleCount = g_DefaultValues.debounce;
+          }
+          else
+          {
+            // Clear cycle counter
+            cycleCount = 0;
+          }
       }
     }
 }

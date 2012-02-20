@@ -139,34 +139,42 @@ volatile bool debounceCharge = false;
 volatile bool triggerPressed = false;
 volatile uint8_t cycleCount = 0; // Keeps track of the cycle time in 0.1ms increments
 volatile uint8_t shotsToGo = 0;
+volatile bool eyesOn = false;
 
-struct CycleValues
+struct TimingValues
 {
     unsigned char searOn;
     unsigned char pneuDel;
     unsigned char pneuOn;
     unsigned char pneuOff;
     unsigned char debounce;
-    char shotsToFire;
 
-    bool releaseFire;
-    bool pressFire;
-    bool    eyesOn;
-
-    CycleValues()
+    TimingValues()
     {
         searOn = 40;
         pneuDel = 60;
         pneuOn = 55 + pneuDel;
         pneuOff = 24 + pneuOn;
         debounce = 10;
-        shotsToFire = -1;
+    }
+} g_TimingValues;
+
+struct FiringValues
+{
+    char shotsToFirePress;
+    char shotsToFireRelease;
+    bool releaseFire;
+    bool pressFire;
+
+    FiringValues()
+    {
+        shotsToFirePress = -1;
+        shotsToFireRelease = -1;
         releaseFire = false;
-        pressFire = true;        
-        eyesOn = false;
+        pressFire = true; 
     }
 
-} g_DefaultValues;
+} g_FiringValues;
 
 inline void startCycle()
 {
@@ -175,10 +183,6 @@ inline void startCycle()
 
     // stop counting for debounce
     debounceCharge = false;
-
-    // Set how many shots we need to make
-    if(shotsToGo == 0)
-        shotsToGo = g_DefaultValues.shotsToFire;
 
     // reset cycle counter
     cycleCount = 0;
@@ -293,9 +297,9 @@ ISR(TIMER0_COMPA_vect)
             triggerPressed = triggerCurrent;
 
             if(triggerPressed)
-                debounceCharge = g_DefaultValues.pressFire;
+                debounceCharge = g_FiringValues.pressFire;
             else
-                debounceCharge = g_DefaultValues.releaseFire;
+                debounceCharge = g_FiringValues.releaseFire;
         }
 
         if(debounceCharge)
@@ -304,9 +308,14 @@ ISR(TIMER0_COMPA_vect)
             cycleCount++;
         }
 
-        if(cycleCount >= g_DefaultValues.debounce)
+        if(cycleCount >= g_TimingValues.debounce)
         {
             startCycle();
+
+            if(triggerPressed)
+                shotsToGo = g_FiringValues.shotsToFirePress;
+            else
+                shotsToGo = g_FiringValues.shotsToFireRelease;
         }
     }
     else
@@ -314,35 +323,35 @@ ISR(TIMER0_COMPA_vect)
         // increment cycle time
         cycleCount++;
 
-        if(cycleCount >= g_DefaultValues.searOn && bit_is_set(CYCLE_PORT, SEAR_PIN))
+        if(cycleCount >= g_TimingValues.searOn && bit_is_set(CYCLE_PORT, SEAR_PIN))
         {
             // Turn off sear
             output_low(CYCLE_PORT, SEAR_PIN);
 
         }
 
-        if(cycleCount == g_DefaultValues.pneuDel && !bit_is_set(CYCLE_PORT, PNEU_PIN))
+        if(cycleCount == g_TimingValues.pneuDel && !bit_is_set(CYCLE_PORT, PNEU_PIN))
         {
             // Turn on pneumatics
             output_high(CYCLE_PORT, PNEU_PIN);
         }
-        // TODO: INSERT EYE LOGIC HERE
-        else if(g_DefaultValues.eyesOn)
+        else if(eyesOn)
         {
+            // TODO: INSERT EYE LOGIC HERE
         }
-        else if(cycleCount == g_DefaultValues.pneuOn && bit_is_set(CYCLE_PORT, PNEU_PIN))
+        else if(cycleCount == g_TimingValues.pneuOn && bit_is_set(CYCLE_PORT, PNEU_PIN))
         {
             // Turn off pneumatics
             output_low(CYCLE_PORT, PNEU_PIN);
         }
-        else if(cycleCount == g_DefaultValues.pneuOff)
+        else if(cycleCount == g_TimingValues.pneuOff)
         {   
             // Toggle isFiring
             isFiring = false;
 
             if(shotsToGo < 0 || (--shotsToGo > 0 && triggerCurrent))
             {
-                cycleCount = g_DefaultValues.debounce;
+                cycleCount = g_TimingValues.debounce;
             }
             else
             {

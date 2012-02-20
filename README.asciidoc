@@ -1,0 +1,5 @@
+== YAAB - Yet Another Autococker Board
+
+Not much to say here really. Just an interesting project I've been wanting to do for a while, and thanks to the Arduino platform I now have a better understanding on how to do this. In short, this project will be utilising the Arduino platform as a kick start to a custom board with the idea of keeping it all open source so that others can do with it what they want and learn at the same time :)
+
+WARNING: This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. It is simply a log of my development and learning as I go and what works for me.

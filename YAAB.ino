@@ -1,23 +1,23 @@
 /*
 YAAB - Yet Another Autococker Board
-Arduino based autococker board developed around the platform and ATMEL AVR 
-chips
-
-Copyright (C) 2012  Dan Silk
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ Arduino based autococker board developed around the platform and ATMEL AVR 
+ chips
+ 
+ Copyright (C) 2012  Dan Silk
+ 
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
 #define CYCLE_PORT PORTA
@@ -76,16 +76,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 /*
 *****************
-NOTES!!!
-*****************
-
-Time values are in 0.1 milliseconds steps, this is to allow the use of integers for calculation
-and helps keep the size down
-
-With SLOW_THINGS_DOWN defined the units will be in 0.1 seconds instead of milliseconds
-
-To break the units into printable values get the decimal with x % 10 and the milliseconds with x / 10
-*/
+ NOTES!!!
+ *****************
+ 
+ Time values are in 0.1 milliseconds steps, this is to allow the use of integers for calculation
+ and helps keep the size down
+ 
+ With SLOW_THINGS_DOWN defined the units will be in 0.1 seconds instead of milliseconds
+ 
+ To break the units into printable values get the decimal with x % 10 and the milliseconds with x / 10
+ */
 
 //#define SLOW_THINGS_DOWN
 #define FASTER_ADC
@@ -127,6 +127,7 @@ To break the units into printable values get the decimal with x % 10 and the mil
 #define output_high(port,pin) port |= (1<<pin)
 #define output_toggle(port,pin) port ^= (1<<pin)
 #define input_value(port,pin) (port & (1<<pin))
+#define FireFlag_is_set(flag) (g_FiringValues.fireFlags & flag)
 
 #define set_input(portdir,pin) portdir &= ~(1<<pin)
 #define set_output(portdir,pin) portdir |= (1<<pin)
@@ -141,54 +142,75 @@ volatile uint8_t cycleCount = 0; // Keeps track of the cycle time in 0.1ms incre
 volatile uint8_t shotsToGo = 0;
 volatile bool eyesOn = false;
 
-struct TimingValues
+struct TimingValues // 5 bytes
 {
-    unsigned char searOn;
-    unsigned char pneuDel;
-    unsigned char pneuOn;
-    unsigned char pneuOff;
-    unsigned char debounce;
+  byte searOn;
+  byte pneuDel;
+  byte pneuOn;
+  byte pneuOff;
+  byte debounce;
 
-    TimingValues()
-    {
-        searOn = 40;
-        pneuDel = 60;
-        pneuOn = 55 + pneuDel;
-        pneuOff = 24 + pneuOn;
-        debounce = 10;
-    }
-} g_TimingValues;
+  TimingValues()
+  {
+    ResetFast();
+  }
 
-struct FiringValues
+  void ResetFast()
+  {
+    searOn = 40;
+    pneuDel = 60;
+    pneuOn = 55 + pneuDel;
+    pneuOff = 24 + pneuOn;
+    debounce = 10;
+  }
+} 
+g_TimingValues;
+
+enum FiringFlags
 {
-    char shotsToFirePress;
-    char shotsToFireRelease;
-    bool releaseFire;
-    bool pressFire;
+  FF_Pump = 0x0,
+  FF_Semi = 0x1,
+  FF_Burst = 0x2,
+  FF_Auto = 0x4,
+  FF_Reserved1 = 0x8,
+  FF_FirePress = 0x10,
+  FF_FireRelease = 0x20,
+  FF_Reserved2 = 0x40,
+  FF_Reserved3 = 0x80,
+  FF_ForceByte = 0xFF
+};
 
-    FiringValues()
-    {
-        shotsToFirePress = -1;
-        shotsToFireRelease = -1;
-        releaseFire = false;
-        pressFire = true; 
-    }
+struct FiringValues // 3 bytes - maybe two if we split a byte for burst mode
+{
+  byte fireFlags;
+  byte shotsToFirePress;
+  byte shotsToFireRelease;
 
-} g_FiringValues;
+  FiringValues()
+  {
+    shotsToFirePress = 0;
+    shotsToFireRelease = 0;
+    
+    fireFlags = FF_Semi | FF_FirePress;
+    
+  }
+
+} 
+g_FiringValues;
 
 inline void startCycle()
 {
-    // now we are firing
-    isFiring = true;
+  // now we are firing
+  isFiring = true;
 
-    // stop counting for debounce
-    debounceCharge = false;
+  // stop counting for debounce
+  debounceCharge = false;
 
-    // reset cycle counter
-    cycleCount = 0;
+  // reset cycle counter
+  cycleCount = 0;
 
-    // Set Sear High (Release hammer)
-    output_high(CYCLE_PORT, SEAR_PIN);
+  // Set Sear High (Release hammer)
+  output_high(CYCLE_PORT, SEAR_PIN);
 }
 
 ///
@@ -196,68 +218,68 @@ inline void startCycle()
 ///
 /*
 ///
-/// Init ADC
-///
-// initialize adc
-inline void adc_init()
-{
-// AREF = AVcc
-ADMUX = (1<<REFS0);
-
-#if defined FASTER_ADC
-// ADC Enable and prescaler of 16 and interrupt ((1 << ADIE))
-// 16000000/16 = 1000000
-ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1 << ADIE);
-#else
-// ADC Enable and prescaler of 128 and interrupt ((1 << ADIE))
-// 16000000/128 = 125000
-ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)|(1 << ADIE);
-#endif
-}
-
-///
-/// Analog to Digital Conversion Complete
-///
-ISR(ADC_vect) 
-{ 
-// ADC Complete
-// Read the value from ADC for a value between 0-1023
-}
-*/
+ /// Init ADC
+ ///
+ // initialize adc
+ inline void adc_init()
+ {
+ // AREF = AVcc
+ ADMUX = (1<<REFS0);
+ 
+ #if defined FASTER_ADC
+ // ADC Enable and prescaler of 16 and interrupt ((1 << ADIE))
+ // 16000000/16 = 1000000
+ ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1 << ADIE);
+ #else
+ // ADC Enable and prescaler of 128 and interrupt ((1 << ADIE))
+ // 16000000/128 = 125000
+ ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)|(1 << ADIE);
+ #endif
+ }
+ 
+ ///
+ /// Analog to Digital Conversion Complete
+ ///
+ ISR(ADC_vect) 
+ { 
+ // ADC Complete
+ // Read the value from ADC for a value between 0-1023
+ }
+ */
 ///
 /// Init Timer
 ///
 inline void timer_init()
 {
 #if defined TIMER_16_BIT
-    TCCR1A = 0;
-    TCCR1B = 0;
+  TCCR1A = 0;
+  TCCR1B = 0;
 
-    TCCR1B |= (1 << CS11)|(1 << CS10);    // 64 prescaler
+  TCCR1B |= (1 << CS11)|(1 << CS10);    // 64 prescaler
 
 #if defined OVERFLOW_TIMER
-    TCNT1 = TIMER_OVF_VAL;      // preload timer
-    TIMSK1 |= (1 << TOIE1);    // enable timer
+  TCNT1 = TIMER_OVF_VAL;      // preload timer
+  TIMSK1 |= (1 << TOIE1);    // enable timer
 #else
-    TCNT1 = 0;
-    OCR1A = TIMER_VAL;
-    TCCR1B |= (1 << WGM12);     // enable CTC mode
-    TIMSK1 |= (1 << OCIE1A);    // enable timer
+  TCNT1 = 0;
+  OCR1A = TIMER_VAL;
+  TCCR1B |= (1 << WGM12);     // enable CTC mode
+  TIMSK1 |= (1 << OCIE1A);    // enable timer
 #endif
 #else
-    TCCR0A = 0;
-    TCCR0B = 0;
+  TCCR0A = 0;
+  TCCR0B = 0;
 
-    TCCR0B |= (1 << CS01);    // 8 prescaler
+  TCCR0B |= (1 << CS01);    // 8 prescaler
 
 #if defined OVERFLOW_TIMER
-    TCNT0 = TIMER_OVF_VAL;      // preload timer
-    TIMSK0 |= (1 << TOIE0);     // enable timer
+  TCNT0 = TIMER_OVF_VAL;      // preload timer
+  TIMSK0 |= (1 << TOIE0);     // enable timer
 #else
-    TCNT0 = 0;
-    OCR0A = TIMER_VAL;
-    TCCR0B |= (1 << WGM01);     // enable CTC mode
-    TIMSK |= (1 << OCIE0A);    // enable timer
+  TCNT0 = 0;
+  OCR0A = TIMER_VAL;
+  TCCR0B |= (1 << WGM01);     // enable CTC mode
+  TIMSK |= (1 << OCIE0A);    // enable timer
 #endif
 #endif
 }
@@ -281,113 +303,113 @@ ISR(TIMER0_COMPA_vect)
 {
 #if defined OVERFLOW_TIMER
 #if defined TIMER_16_BIT
-    TCNT1 = TIMER_OVF_VAL;    // reload timer
+  TCNT1 = TIMER_OVF_VAL;    // reload timer
 #else
-    TCNT0 = TIMER_OVF_VAL;    // reload timer
+  TCNT0 = TIMER_OVF_VAL;    // reload timer
 #endif
 #endif
 
-    bool triggerCurrent = input_value(CYCLE_PORT, TRIGGER_PIN) != LOW;
+  bool triggerCurrent = input_value(CYCLE_PORT, TRIGGER_PIN) != LOW;
 
-    if(!isFiring)
+  if(!isFiring)
+  {
+
+    if(triggerCurrent != triggerPressed)
     {
+      triggerPressed = triggerCurrent;
 
-        if(triggerCurrent != triggerPressed)
-        {
-            triggerPressed = triggerCurrent;
-
-            if(triggerPressed)
-                debounceCharge = g_FiringValues.pressFire;
-            else
-                debounceCharge = g_FiringValues.releaseFire;
-        }
-
-        if(debounceCharge)
-        {
-            // increment cycle time
-            cycleCount++;
-        }
-
-        if(cycleCount >= g_TimingValues.debounce)
-        {
-            startCycle();
-
-            if(triggerPressed)
-                shotsToGo = g_FiringValues.shotsToFirePress;
-            else
-                shotsToGo = g_FiringValues.shotsToFireRelease;
-        }
+      if(triggerPressed)
+        debounceCharge = FireFlag_is_set(FF_FirePress);
+      else
+        debounceCharge = FireFlag_is_set(FF_FireRelease);
     }
-    else
+
+    if(debounceCharge)
     {
-        // increment cycle time
-        cycleCount++;
-
-        if(cycleCount >= g_TimingValues.searOn && bit_is_set(CYCLE_PORT, SEAR_PIN))
-        {
-            // Turn off sear
-            output_low(CYCLE_PORT, SEAR_PIN);
-
-        }
-
-        if(cycleCount == g_TimingValues.pneuDel && !bit_is_set(CYCLE_PORT, PNEU_PIN))
-        {
-            // Turn on pneumatics
-            output_high(CYCLE_PORT, PNEU_PIN);
-        }
-        else if(eyesOn)
-        {
-            // TODO: INSERT EYE LOGIC HERE
-        }
-        else if(cycleCount == g_TimingValues.pneuOn && bit_is_set(CYCLE_PORT, PNEU_PIN))
-        {
-            // Turn off pneumatics
-            output_low(CYCLE_PORT, PNEU_PIN);
-        }
-        else if(cycleCount == g_TimingValues.pneuOff)
-        {   
-            // Toggle isFiring
-            isFiring = false;
-
-            if(shotsToGo < 0 || (--shotsToGo > 0 && triggerCurrent))
-            {
-                cycleCount = g_TimingValues.debounce;
-            }
-            else
-            {
-                // Clear cycle counter
-                cycleCount = 0;
-
-                // Clear shot count
-                shotsToGo = 0;
-            }
-        }
+      // increment cycle time
+      cycleCount++;
     }
+
+    if(cycleCount >= g_TimingValues.debounce)
+    {
+      startCycle();
+
+      if(triggerPressed)
+        shotsToGo = g_FiringValues.shotsToFirePress;
+      else
+        shotsToGo = g_FiringValues.shotsToFireRelease;
+    }
+  }
+  else
+  {
+    // increment cycle time
+    cycleCount++;
+
+    if(cycleCount >= g_TimingValues.searOn && bit_is_set(CYCLE_PORT, SEAR_PIN))
+    {
+      // Turn off sear
+      output_low(CYCLE_PORT, SEAR_PIN);
+
+    }
+
+    if(cycleCount == g_TimingValues.pneuDel && !bit_is_set(CYCLE_PORT, PNEU_PIN))
+    {
+      // Turn on pneumatics
+      output_high(CYCLE_PORT, PNEU_PIN);
+    }
+    else if(eyesOn)
+    {
+      // TODO: INSERT EYE LOGIC HERE
+    }
+    else if(cycleCount == g_TimingValues.pneuOn && bit_is_set(CYCLE_PORT, PNEU_PIN))
+    {
+      // Turn off pneumatics
+      output_low(CYCLE_PORT, PNEU_PIN);
+    }
+    else if(cycleCount == g_TimingValues.pneuOff)
+    {   
+      // Toggle isFiring
+      isFiring = false;
+
+      if(shotsToGo < 0 || (FireFlag_is_set(FF_Auto) && triggerCurrent))
+      {
+        cycleCount = g_TimingValues.debounce;
+      }
+      else
+      {
+        // Clear cycle counter
+        cycleCount = 0;
+
+        // Clear shot count
+        shotsToGo = 0;
+      }
+    }
+  }
 }
 
 
 void setup() 
 {
 #if defined SERIAL_DEBUG
-    Serial.begin(9600);
+  Serial.begin(9600);
 #endif
 
-    set_input(CYCLE_PORT_REG, TRIGGER_PIN);
-    set_output(CYCLE_PORT_REG, SEAR_PIN);
-    set_output(CYCLE_PORT_REG, PNEU_PIN);
+  set_input(CYCLE_PORT_REG, TRIGGER_PIN);
+  set_output(CYCLE_PORT_REG, SEAR_PIN);
+  set_output(CYCLE_PORT_REG, PNEU_PIN);
 
-    /*
+  /*
     set_output(EYE_PORT_REG, EYE_PIN);
-    set_input(EYE_PORT_REG, IRED_PIN);
-
-    set_input(UP_BUTTON_PIN);
-    set_input(OK_BUTTON_PIN);
-    set_input(DN_BUTTON_PIN);
-    */
-    cli();
-    timer_init();
-    //adc_init();
-    sei();
+   set_input(EYE_PORT_REG, IRED_PIN);
+   
+   set_input(UP_BUTTON_PIN);
+   set_input(OK_BUTTON_PIN);
+   set_input(DN_BUTTON_PIN);
+   */
+  cli();
+  timer_init();
+  //adc_init();
+  sei();
 }
 
 void loop()
@@ -396,15 +418,16 @@ void loop()
 
 /*
 // read adc value
-void adc_start_read(uint8_t ch)
-{
-// select the corresponding channel 0~7
-// ANDing with '7' will always keep the value
-// of 'ch' between 0 and 7
-ch &= 0b00000111;  // AND operation with 7
-ADMUX = (ADMUX & 0xF8)|ch;     // clears the bottom 3 bits before ORing
+ void adc_start_read(uint8_t ch)
+ {
+ // select the corresponding channel 0~7
+ // ANDing with '7' will always keep the value
+ // of 'ch' between 0 and 7
+ ch &= 0b00000111;  // AND operation with 7
+ ADMUX = (ADMUX & 0xF8)|ch;     // clears the bottom 3 bits before ORing
+ 
+ // start single conversion
+ // write '1' to ADSC
+ ADCSRA |= (1<<ADSC);
+ }*/
 
-// start single conversion
-// write '1' to ADSC
-ADCSRA |= (1<<ADSC);
-}*/

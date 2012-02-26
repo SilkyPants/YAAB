@@ -127,7 +127,6 @@ YAAB - Yet Another Autococker Board
 #define output_high(port,pin) port |= (1<<pin)
 #define output_toggle(port,pin) port ^= (1<<pin)
 #define input_value(port,pin) (port & (1<<pin))
-#define FireFlag_is_set(flag) (g_FiringValues.fireFlags & flag)
 
 #define set_input(portdir,pin) portdir &= ~(1<<pin)
 #define set_output(portdir,pin) portdir |= (1<<pin)
@@ -140,7 +139,15 @@ volatile bool debounceCharge = false;
 volatile bool triggerPressed = false;
 volatile uint8_t cycleCount = 0; // Keeps track of the cycle time in 0.1ms increments
 volatile uint8_t shotsToGo = 0;
-volatile bool eyesOn = false;
+
+enum CycleStates
+{
+  CS_Ready_To_Fire,
+  CS_Sear_Firing,
+  CS_Breech_Opening,
+  CS_Breech_Closing
+} 
+g_CurrentState;
 
 struct TimingValues // 5 bytes
 {
@@ -159,8 +166,8 @@ struct TimingValues // 5 bytes
   {
     searOn = 40;
     pneuDel = 60;
-    pneuOn = 55 + pneuDel;
-    pneuOff = 24 + pneuOn;
+    pneuOn = 55;
+    pneuOff = 24;
     debounce = 10;
   }
 } 
@@ -172,11 +179,11 @@ enum FiringFlags
   FF_Semi = 0x1,
   FF_Burst = 0x2,
   FF_Auto = 0x4,
-  FF_Reserved1 = 0x8,
+  FF_Use_Eyes = 0x8,
   FF_FirePress = 0x10,
   FF_FireRelease = 0x20,
-  FF_Reserved2 = 0x40,
-  FF_Reserved3 = 0x80,
+  FF_Reserved1 = 0x40,
+  FF_Reserved2 = 0x80,
   FF_ForceByte = 0xFF
 };
 
@@ -188,17 +195,24 @@ struct FiringValues // 3 bytes - maybe two if we split a byte for burst mode
 
   FiringValues()
   {
-    shotsToFirePress = 0;
+    shotsToFirePress = 1;
     shotsToFireRelease = 0;
-    
+
     fireFlags = FF_Semi | FF_FirePress;
-    
+
   }
 
 } 
 g_FiringValues;
 
-inline void startCycle()
+void changeState(byte newState)
+{
+  g_CurrentState = (CycleStates)newState;
+
+  cycleCount = 0;
+}
+
+void startCycle()
 {
   // now we are firing
   isFiring = true;
@@ -206,11 +220,22 @@ inline void startCycle()
   // stop counting for debounce
   debounceCharge = false;
 
-  // reset cycle counter
-  cycleCount = 0;
+  changeState(CS_Sear_Firing);
 
   // Set Sear High (Release hammer)
   output_high(CYCLE_PORT, SEAR_PIN);
+
+  if(bit_is_set(g_FiringValues.fireFlags, FF_Burst))
+  {
+    if(triggerPressed)
+      shotsToGo = g_FiringValues.shotsToFirePress;
+    else
+      shotsToGo = g_FiringValues.shotsToFireRelease;
+  }
+  else
+  {
+    shotsToGo = 1;
+  }
 }
 
 ///
@@ -311,7 +336,7 @@ ISR(TIMER0_COMPA_vect)
 
   bool triggerCurrent = input_value(CYCLE_PORT, TRIGGER_PIN) != LOW;
 
-  if(!isFiring)
+  if(g_CurrentState == CS_Ready_To_Fire)
   {
 
     if(triggerCurrent != triggerPressed)
@@ -319,9 +344,9 @@ ISR(TIMER0_COMPA_vect)
       triggerPressed = triggerCurrent;
 
       if(triggerPressed)
-        debounceCharge = FireFlag_is_set(FF_FirePress);
+        debounceCharge = bit_is_set(g_FiringValues.fireFlags, FF_FirePress);
       else
-        debounceCharge = FireFlag_is_set(FF_FireRelease);
+        debounceCharge = bit_is_set(g_FiringValues.fireFlags, FF_FireRelease);
     }
 
     if(debounceCharge)
@@ -333,11 +358,6 @@ ISR(TIMER0_COMPA_vect)
     if(cycleCount >= g_TimingValues.debounce)
     {
       startCycle();
-
-      if(triggerPressed)
-        shotsToGo = g_FiringValues.shotsToFirePress;
-      else
-        shotsToGo = g_FiringValues.shotsToFireRelease;
     }
   }
   else
@@ -345,45 +365,58 @@ ISR(TIMER0_COMPA_vect)
     // increment cycle time
     cycleCount++;
 
-    if(cycleCount >= g_TimingValues.searOn && bit_is_set(CYCLE_PORT, SEAR_PIN))
+    switch(g_CurrentState)
     {
-      // Turn off sear
-      output_low(CYCLE_PORT, SEAR_PIN);
-
-    }
-
-    if(cycleCount == g_TimingValues.pneuDel && !bit_is_set(CYCLE_PORT, PNEU_PIN))
-    {
-      // Turn on pneumatics
-      output_high(CYCLE_PORT, PNEU_PIN);
-    }
-    else if(eyesOn)
-    {
-      // TODO: INSERT EYE LOGIC HERE
-    }
-    else if(cycleCount == g_TimingValues.pneuOn && bit_is_set(CYCLE_PORT, PNEU_PIN))
-    {
-      // Turn off pneumatics
-      output_low(CYCLE_PORT, PNEU_PIN);
-    }
-    else if(cycleCount == g_TimingValues.pneuOff)
-    {   
-      // Toggle isFiring
-      isFiring = false;
-
-      if(shotsToGo < 0 || (FireFlag_is_set(FF_Auto) && triggerCurrent))
+    case CS_Sear_Firing:
+      if(cycleCount >= g_TimingValues.searOn && bit_is_set(CYCLE_PORT, SEAR_PIN))
       {
-        cycleCount = g_TimingValues.debounce;
+        // Turn off sear
+        output_low(CYCLE_PORT, SEAR_PIN);
       }
-      else
-      {
-        // Clear cycle counter
-        cycleCount = 0;
 
-        // Clear shot count
-        shotsToGo = 0;
+      if(cycleCount >= g_TimingValues.pneuDel)
+      {
+        // Turn on pneumatics
+        output_high(CYCLE_PORT, PNEU_PIN);
+
+        changeState(CS_Breech_Opening);
       }
-    }
+      break;
+
+    case CS_Breech_Opening:
+      if(bit_is_set(g_FiringValues.fireFlags, FF_Use_Eyes))
+      {
+        // TODO: INSERT EYE LOGIC HERE
+      }
+      else if(cycleCount == g_TimingValues.pneuOn)
+      {
+        // Turn off pneumatics
+        output_low(CYCLE_PORT, PNEU_PIN);
+        changeState(CS_Breech_Closing);
+      }
+      break;
+
+    case CS_Breech_Closing:
+      if(cycleCount == g_TimingValues.pneuOff)
+      {   
+        // Ready for next shot
+        changeState(CS_Ready_To_Fire);
+
+        if(shotsToGo < 0 || (bit_is_set(g_FiringValues.fireFlags, FF_Auto) && triggerCurrent))
+        {
+          cycleCount = g_TimingValues.debounce;
+        }
+        else
+        {
+          // Clear cycle counter
+          cycleCount = 0;
+
+          // Clear shot count
+          shotsToGo = 0;
+        }
+      }
+      break;
+    };
   }
 }
 
@@ -430,4 +463,6 @@ void loop()
  // write '1' to ADSC
  ADCSRA |= (1<<ADSC);
  }*/
+
+
 

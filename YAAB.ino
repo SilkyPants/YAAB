@@ -196,7 +196,7 @@ enum FiringFlags
     FF_Use_Eyes,
     FF_TriggerPressed,
     FF_DebounceCharge,
-    FF_Reserved,
+    FF_BallSeen,
 };
 
 enum CycleStates
@@ -257,8 +257,13 @@ struct FiringProfile // 8 bytes
     byte shotsToFireRelease : 4;    // Burst fire on release (max 15)
 };
 
-FiringProfile g_Profiles[1] = {
-    { "Semi\0", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x1, 0x1 }
+FiringProfile g_Profiles[6] = 
+{
+    { "Semi", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x1, 0x0 },
+    { "Pump", _BV(PF_Pump)|_BV(PF_FireOnPress), 0x1, 0x0 },
+    { "Auto", _BV(PF_Auto)|_BV(PF_FireOnPress), 0x1, 0x0 },
+    { "Burst", _BV(PF_Burst)|_BV(PF_FireOnPress), 0x3, 0x0 },
+    { "React", _BV(PF_Burst)|_BV(PF_FireOnPress)|_BV(PF_FireOnRelease), 0x1, 0x3 },
 };
 
 FiringProfile* g_CurrentProfile = &g_Profiles[0];
@@ -288,16 +293,20 @@ void startCycle()
     // Set Sear High (Release hammer)
     output_high(CYCLE_PORT, SEAR_PIN);
 
-    if(bitIsSet(g_CurrentProfile->fireFlags, PF_Burst))
+    // Determine how many shots to fire this 'cycle'
+    if(g_FiringValues.shotsToGo == 0)
     {
-        if(bitIsSet(g_FiringValues.flags, FF_TriggerPressed))
-            g_FiringValues.shotsToGo = shots_on_press(g_CurrentProfile->shotsToFirePress);
+        if(bitIsSet(g_CurrentProfile->fireFlags, PF_Burst))
+        {
+            if(bitIsSet(g_FiringValues.flags, FF_TriggerPressed))
+                g_FiringValues.shotsToGo = shots_on_press(g_CurrentProfile->shotsToFirePress);
+            else
+                g_FiringValues.shotsToGo = shots_on_release(g_CurrentProfile->shotsToFireRelease);
+        }
         else
-            g_FiringValues.shotsToGo = shots_on_release(g_CurrentProfile->shotsToFireRelease);
-    }
-    else
-    {
-        g_FiringValues.shotsToGo = 1;
+        {
+            g_FiringValues.shotsToGo = 1;
+        }
     }
 }
 
@@ -486,6 +495,11 @@ ISR(TIMER0_COMPA_vect)
             if(bit_is_set(g_CurrentProfile->fireFlags, FF_Use_Eyes))
             {
                 // TODO: INSERT EYE LOGIC HERE
+                // Start read if needed
+                // else compare read for empty
+                // then compare read for ball seen
+                // Change state once ball seen long enough
+
             }
             else if(g_FiringValues.cycleCount == g_Settings.timings.pneuOn)
             {

@@ -6,7 +6,8 @@
 #define __asm__(x)
 #define ARDUINO 100
 extern "C" void __cxa_pure_virtual() {}
-inline void startCycle();
+void changeState(byte newState);
+void startCycle();
 inline void timer_init();
 void setup();
 void loop();

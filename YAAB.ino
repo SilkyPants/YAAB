@@ -139,6 +139,8 @@ To break the units into printable values get the decimal with x % 10 and the mil
 #define shots_on_press(val) (val & 0xF)
 #define shots_on_release(val) (val & 0xF0) >> 4
 
+#define bps_to_cycle_time(bps) 1000 / bps;
+
 struct EyeSettings
 {
     byte ballDetection;
@@ -204,7 +206,7 @@ enum CycleStates
     CS_Ready_To_Fire,
     CS_Sear_Firing,
     CS_Breech_Opening,
-    CS_Breech_Closing
+    CS_Breech_Closing,
 };
 
 struct MarkerSettings // 16 bytes?
@@ -219,31 +221,33 @@ struct MarkerSettings // 16 bytes?
 
 struct FiringValues // 3 bytes?
 {
-    byte flags : 4;             // Flags using in marker cycle
+    byte flags : 2;             // Flags using in marker cycle (FiringFlags)
     byte shotsToGo : 4;         // Shots to fire in 'cycle' (Burst)
     byte currentState : 2;      // Marker current state
     uint16_t cycleCount : 14;   // Cycle counter in 0.1ms increments (max 1.6383 seconds)
+    byte reserved : 2;          // Padding
 };
 
 // Marker Settings - things specific to the marker
-MarkerSettings g_Settings = 
+volatile MarkerSettings g_Settings = 
 {
-    { 40, 60, 55, 24 },     // Sear on, C Delay, C On, C Off
+    { 40, 20, 55, 24 },     // Sear on, C Delay, C On, C Off
     { 10, 10, 100, 70 },    // Eye Ball Detect, Eye Empty Detect, Eye Ball Reflect, Eye Bolt Reflect
     0,                      // Current Profile
     10,                     // Trigger Debounce
-    1000,                   // C Timout
+    1000,                   // C Timeout / Eye Timeout
     0                       // Shots since Service?
 };
 
 // Values specific to a marker cycle
-FiringValues g_FiringValues = 
+volatile FiringValues g_FiringValues = 
 {
-    _BV(FF_Use_Eyes),
-    0,
-    CS_Ready_To_Fire,
-    0
-};
+    _BV(FF_Use_Eyes),   // Flags using in marker cycle (FiringFlags)
+    0,                  // Shots to fire in 'cycle' (Burst)
+    CS_Ready_To_Fire,   // Marker current state
+    0,                  // Cycle counter in 0.1ms increments (max 1.6383 seconds)
+    0                   // Padding
+};                      
 
 ///
 /// Profiles
@@ -252,9 +256,10 @@ FiringValues g_FiringValues =
 struct FiringProfile // 8 bytes
 {
     char profileName[6];            // Name for the profile
-    byte fireFlags;                 // Flags used while cycling (FiringFlags)
+    byte profileFlags : 4;          // Flags used while cycling (ProfileFlags)
     byte shotsToFirePress : 4;      // Burst fire on press (max 15)
     byte shotsToFireRelease : 4;    // Burst fire on release (max 15)
+    byte reserved : 4;              // Padding
 };
 
 FiringProfile g_Profiles[6] = 
@@ -272,7 +277,7 @@ FiringProfile* g_CurrentProfile = &g_Profiles[0];
 ///
 ///
 
-void changeState(byte newState)
+inline void changeState(byte newState)
 {
     g_FiringValues.currentState = (CycleStates)newState;
 
@@ -281,11 +286,8 @@ void changeState(byte newState)
 
 void startCycle()
 {
-    // We are now firing
-    changeState(CS_Sear_Firing);
-
     // stop counting for debounce
-    bit_clear(g_CurrentProfile->fireFlags, FF_DebounceCharge);
+    bit_clear(g_CurrentProfile->profileFlags, FF_DebounceCharge);
 
     // Increment shots fired
     g_Settings.shotsSinceLastService++;
@@ -293,21 +295,29 @@ void startCycle()
     // Set Sear High (Release hammer)
     output_high(CYCLE_PORT, SEAR_PIN);
 
+    // We are now firing
+    changeState(CS_Sear_Firing);
+}
+
+void fireMarker()
+{
+    // Shot fired
+    g_FiringValues.shotsToGo--;
+
     // Determine how many shots to fire this 'cycle'
-    if(g_FiringValues.shotsToGo == 0)
+    if(bitIsSet(g_CurrentProfile->profileFlags, PF_Burst))
     {
-        if(bitIsSet(g_CurrentProfile->fireFlags, PF_Burst))
-        {
-            if(bitIsSet(g_FiringValues.flags, FF_TriggerPressed))
-                g_FiringValues.shotsToGo = shots_on_press(g_CurrentProfile->shotsToFirePress);
-            else
-                g_FiringValues.shotsToGo = shots_on_release(g_CurrentProfile->shotsToFireRelease);
-        }
+        if(bitIsSet(g_FiringValues.flags, FF_TriggerPressed))
+            g_FiringValues.shotsToGo = shots_on_press(g_CurrentProfile->shotsToFirePress);
         else
-        {
-            g_FiringValues.shotsToGo = 1;
-        }
+            g_FiringValues.shotsToGo = shots_on_release(g_CurrentProfile->shotsToFireRelease);
     }
+    else
+    {
+        g_FiringValues.shotsToGo = 1;
+    }
+
+    startCycle();
 }
 
 ///
@@ -366,6 +376,42 @@ ISR(ADC_vect)
 // Read the value from ADC for a value between 0-1023
 }
 */
+
+///
+/// Trigger Interrupt
+///
+
+///
+/// Init External Interrupt 0
+///
+void trigger_init()
+{
+    EIMSK |= _BV(INT0);  //Enable INT0
+    EICRA |= _BV(ISC10); //Trigger on change of INT0
+}
+
+///
+/// External Interrupt 0
+///
+ISR(SIG_INTERRUPT0)
+{
+    // Toggle the trigger pressed flag
+    bit_toggle(g_FiringValues.flags, FF_TriggerPressed);
+
+    // Clear counter
+    g_FiringValues.cycleCount = 0;
+
+    // Do we want to check for debounce?
+    if ((bitIsSet(g_FiringValues.flags, FF_TriggerPressed) && bitIsSet(g_CurrentProfile->profileFlags, PF_FireOnPress)) 
+    || (!bitIsSet(g_FiringValues.flags, FF_TriggerPressed) && bitIsSet(g_CurrentProfile->profileFlags, PF_FireOnRelease)))
+    {
+        bit_set(g_FiringValues.flags, FF_DebounceCharge);
+    }
+    else
+    {
+        bit_clear(g_FiringValues.flags, FF_DebounceCharge);
+    }
+}
 
 ///
 /// Timer (0.1 ms)
@@ -434,26 +480,8 @@ ISR(TIMER0_COMPA_vect)
 #endif
 #endif
 
-    bool triggerCurrent = input_value(CYCLE_PORT, TRIGGER_PIN) != LOW;
-
     if(g_FiringValues.currentState == CS_Ready_To_Fire)
     {
-
-        if(triggerCurrent != bitIsSet(g_FiringValues.flags, FF_TriggerPressed))
-        {
-            // Toggle the trigger pressed flag
-            bit_toggle(g_FiringValues.flags, FF_TriggerPressed);
-
-            // Clear counter
-            g_FiringValues.cycleCount = 0;
-
-            // Do we want to check for debounce?
-            if((triggerCurrent && bitIsSet(g_CurrentProfile->fireFlags, PF_FireOnPress)) || (!triggerCurrent && bitIsSet(g_CurrentProfile->fireFlags, PF_FireOnRelease)))
-                bit_set(g_FiringValues.flags, FF_DebounceCharge);
-            else
-                bit_clear(g_FiringValues.flags, FF_DebounceCharge);
-        }
-
         if(bitIsSet(g_FiringValues.flags, FF_DebounceCharge))
         {
             // increment cycle time
@@ -462,7 +490,7 @@ ISR(TIMER0_COMPA_vect)
 
         if(g_FiringValues.cycleCount >= g_Settings.debounce)
         {
-            startCycle();
+            fireMarker();
         }
     }
     else
@@ -473,13 +501,10 @@ ISR(TIMER0_COMPA_vect)
         switch(g_FiringValues.currentState)
         {
         case CS_Sear_Firing:
-            if(g_FiringValues.cycleCount >= g_Settings.timings.searOn && bit_is_set(CYCLE_PORT, SEAR_PIN))
+            if(bit_is_set(CYCLE_PORT, SEAR_PIN) && g_FiringValues.cycleCount >= g_Settings.timings.searOn)
             {
                 // Turn off sear
                 output_low(CYCLE_PORT, SEAR_PIN);
-
-                // Shot fired
-                g_FiringValues.shotsToGo--;
             }
 
             if(g_FiringValues.cycleCount >= g_Settings.timings.pneuDel)
@@ -492,7 +517,7 @@ ISR(TIMER0_COMPA_vect)
             break;
 
         case CS_Breech_Opening:
-            if(bit_is_set(g_CurrentProfile->fireFlags, FF_Use_Eyes))
+            if(bitIsSet(g_FiringValues.flags, FF_Use_Eyes))
             {
                 // TODO: INSERT EYE LOGIC HERE
                 // Start read if needed
@@ -513,7 +538,7 @@ ISR(TIMER0_COMPA_vect)
             if(g_FiringValues.cycleCount == g_Settings.timings.pneuOff)
             {   
 
-                if(g_FiringValues.shotsToGo < 0 || (bitIsSet(g_CurrentProfile->fireFlags, PF_Auto) && triggerCurrent))
+                if(g_FiringValues.shotsToGo < 0 || (bitIsSet(g_CurrentProfile->profileFlags, PF_Auto) && bitIsSet(g_FiringValues.flags, FF_TriggerPressed)))
                 {
                     // Fire another shot
                     startCycle();
@@ -554,6 +579,12 @@ void setup()
     cli();
     timer_init();
     //adc_init();
+    trigger_init();
+        
+    // read initial trigger state
+    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
+        bit_set(g_FiringValues.flags, FF_TriggerPressed);
+
     sei();
 }
 

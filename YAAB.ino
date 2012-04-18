@@ -262,7 +262,7 @@ struct FiringProfile // 8 bytes
     byte reserved : 4;              // Padding
 };
 
-FiringProfile g_Profiles[6] = 
+FiringProfile g_Profiles[5] = 
 {
     { "Semi", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x1, 0x0 },
     { "Pump", _BV(PF_Pump)|_BV(PF_FireOnPress), 0x1, 0x0 },
@@ -271,7 +271,7 @@ FiringProfile g_Profiles[6] =
     { "React", _BV(PF_Burst)|_BV(PF_FireOnPress)|_BV(PF_FireOnRelease), 0x1, 0x3 },
 };
 
-FiringProfile* g_CurrentProfile = &g_Profiles[0];
+FiringProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
 
 ///
 ///

@@ -9,6 +9,9 @@ extern "C" void __cxa_pure_virtual() {}
 inline void changeState(byte newState);
 void startCycle();
 void fireMarker();
+inline void adc_init();
+void adc_start_read(uint8_t ch);
+void adc_stop_all();
 void trigger_init();
 inline void timer_init();
 void setup();

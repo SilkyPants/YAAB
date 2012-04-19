@@ -57,17 +57,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SEAR_PIN 7
 
 // On Port C (0, 2)
-#define EYE_PIN A0
-#define IRED_PIN A2
+#define EYE_PIN 0
+#define IRED_PIN 2
 
 // Don't need to declare as they are hard wired lines
 //#define OLED_SCL_PIN A5
 //#define OLED_SDA_PIN A4
 
 // On Port B (0-2)
-#define UP_BUTTON_PIN 8
-#define OK_BUTTON_PIN 9
-#define DN_BUTTON_PIN 10
+#define UP_BUTTON_PIN 0
+#define OK_BUTTON_PIN 1
+#define DN_BUTTON_PIN 2
 
 #if !defined TIMER_16_BIT
 #define TIMSK TIMSK0
@@ -141,54 +141,14 @@ To break the units into printable values get the decimal with x % 10 and the mil
 
 #define bps_to_cycle_time(bps) 1000 / bps;
 
-struct EyeSettings
-{
-    byte ballDetection;
-    byte emptyDetection;
-    byte eyeBall;
-    byte eyeBolt;
-};
-
-struct MarkerTiming
-{
-    byte searOn;
-    byte pneuDel;
-    byte pneuOn;
-    byte pneuOff;
-
-    void ResetFast()
-    {
-    //    searOn = 40;
-    //    pneuDel = 60;
-    //    pneuOn = 550;
-    //    pneuOff = 240;
-    }
-
-    void ResetMedium()
-    {
-    //    searOn = 40;
-    //    pneuDel = 60;
-    //    pneuOn = 650;
-    //    pneuOff = 280;
-    }
-
-    void ResetSlow()
-    {
-    //    searOn = 40;
-    //    pneuDel = 60;
-    //    pneuOn = 750;
-    //    pneuOff = 320;
-    }
-};
-
 enum ProfileFlags
 {
     PF_Pump,
     PF_Semi,
-    PF_Burst,
     PF_Auto,
     PF_FireOnPress,
     PF_FireOnRelease,
+    PF_CappedROF,
     PF_Reserved1,
     PF_Reserved2
 };
@@ -209,6 +169,46 @@ enum CycleStates
     CS_Breech_Closing,
 };
 
+struct EyeSettings // 4 bytes
+{
+    byte ballDetection;     // Time before ball is detected
+    byte emptyDetection;    // Time before empty is detected
+    byte eyeBall;           // Value for ball seen
+    byte eyeBolt;           // Value for bolt seen
+};
+
+struct MarkerTiming // 4 bytes?
+{
+    byte searOn : 6;
+    byte pneuDel : 6;
+    uint16_t pneuOn : 10;
+    uint16_t pneuOff : 10;
+    
+    void ResetFast()
+    {
+        searOn = 40;
+        pneuDel = 60;
+        pneuOn = 550;
+        pneuOff = 240;
+    }
+
+    void ResetMedium()
+    {
+        searOn = 40;
+        pneuDel = 60;
+        pneuOn = 650;
+        pneuOff = 280;
+    }
+
+    void ResetSlow()
+    {
+        searOn = 40;
+        pneuDel = 60;
+        pneuOn = 750;
+        pneuOff = 320;
+    }
+};
+
 struct MarkerSettings // 16 bytes?
 {
     MarkerTiming timings;
@@ -216,38 +216,17 @@ struct MarkerSettings // 16 bytes?
     byte currentProfile; 
     byte debounce;
     uint16_t eyeTimeout;
-    unsigned long shotsSinceLastService;
+    uint32_t shotsSinceLastService;
 };
 
-struct FiringValues // 3 bytes?
+struct FiringValues // 4 bytes?
 {
     byte flags : 2;             // Flags using in marker cycle (FiringFlags)
     byte shotsToGo : 4;         // Shots to fire in 'cycle' (Burst)
     byte currentState : 2;      // Marker current state
     uint16_t cycleCount : 14;   // Cycle counter in 0.1ms increments (max 1.6383 seconds)
-    byte reserved : 2;          // Padding
+    uint16_t eyeRead : 10;      // Current value read from the eyes
 };
-
-// Marker Settings - things specific to the marker
-volatile MarkerSettings g_Settings = 
-{
-    { 40, 20, 55, 24 },     // Sear on, C Delay, C On, C Off
-    { 10, 10, 100, 70 },    // Eye Ball Detect, Eye Empty Detect, Eye Ball Reflect, Eye Bolt Reflect
-    0,                      // Current Profile
-    10,                     // Trigger Debounce
-    1000,                   // C Timeout / Eye Timeout
-    0                       // Shots since Service?
-};
-
-// Values specific to a marker cycle
-volatile FiringValues g_FiringValues = 
-{
-    _BV(FF_Use_Eyes),   // Flags using in marker cycle (FiringFlags)
-    0,                  // Shots to fire in 'cycle' (Burst)
-    CS_Ready_To_Fire,   // Marker current state
-    0,                  // Cycle counter in 0.1ms increments (max 1.6383 seconds)
-    0                   // Padding
-};                      
 
 ///
 /// Profiles
@@ -262,16 +241,40 @@ struct FiringProfile // 8 bytes
     byte reserved : 4;              // Padding
 };
 
-FiringProfile g_Profiles[5] = 
+// Store in EEMEM later
+// Marker Settings - things specific to the marker
+volatile MarkerSettings g_Settings = 
+{
+    { 40, 20, 550, 240 },   // Sear on, C Delay, C On, C Off
+    { 10, 10, 100, 70 },    // Eye Ball Detect, Eye Empty Detect, Eye Ball Reflect, Eye Bolt Reflect
+    0,                      // Current Profile
+    10,                     // Trigger Debounce
+    1000,                   // C Timeout / Eye Timeout
+    0                       // Shots since Service?
+};
+
+// Values specific to a marker cycle
+volatile FiringValues g_FiringValues = 
+{
+    _BV(FF_Use_Eyes),   // Flags using in marker cycle (FiringFlags)
+    0,                  // Shots to fire in 'cycle' (Burst)
+    CS_Ready_To_Fire,   // Marker current state
+    0,                  // Cycle counter in 0.1ms increments (max 1.6383 seconds)
+    0                   // Current value read from the eyes
+};
+
+// User Profiles
+FiringProfile g_Profiles[] = 
 {
     { "Semi", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x1, 0x0 },
     { "Pump", _BV(PF_Pump)|_BV(PF_FireOnPress), 0x1, 0x0 },
-    { "Auto", _BV(PF_Auto)|_BV(PF_FireOnPress), 0x1, 0x0 },
-    { "Burst", _BV(PF_Burst)|_BV(PF_FireOnPress), 0x3, 0x0 },
-    { "React", _BV(PF_Burst)|_BV(PF_FireOnPress)|_BV(PF_FireOnRelease), 0x1, 0x3 },
+    //{ "Auto", _BV(PF_Auto)|_BV(PF_FireOnPress), 0x1, 0x0 },
+    //{ "Burst", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x3, 0x0 },
+    //{ "React", _BV(PF_Semi)|_BV(PF_FireOnPress)|_BV(PF_FireOnRelease), 0x1, 0x3 },
 };
 
 FiringProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
+byte g_NumProfiles = sizeof g_Profiles/sizeof(FiringProfile);
 
 ///
 ///
@@ -289,6 +292,9 @@ void startCycle()
     // stop counting for debounce
     bit_clear(g_CurrentProfile->profileFlags, FF_DebounceCharge);
 
+    // Shot fired
+    g_FiringValues.shotsToGo--;
+
     // Increment shots fired
     g_Settings.shotsSinceLastService++;
 
@@ -301,21 +307,11 @@ void startCycle()
 
 void fireMarker()
 {
-    // Shot fired
-    g_FiringValues.shotsToGo--;
-
     // Determine how many shots to fire this 'cycle'
-    if(bitIsSet(g_CurrentProfile->profileFlags, PF_Burst))
-    {
-        if(bitIsSet(g_FiringValues.flags, FF_TriggerPressed))
-            g_FiringValues.shotsToGo = shots_on_press(g_CurrentProfile->shotsToFirePress);
-        else
-            g_FiringValues.shotsToGo = shots_on_release(g_CurrentProfile->shotsToFireRelease);
-    }
+    if(bitIsSet(g_FiringValues.flags, FF_TriggerPressed))
+        g_FiringValues.shotsToGo = shots_on_press(g_CurrentProfile->shotsToFirePress);
     else
-    {
-        g_FiringValues.shotsToGo = 1;
-    }
+        g_FiringValues.shotsToGo = shots_on_release(g_CurrentProfile->shotsToFireRelease);
 
     startCycle();
 }
@@ -327,27 +323,35 @@ void fireMarker()
 ///
 /// Analog to Digital
 ///
-/*
+
 ///
 /// Init ADC
 ///
 // initialize adc
 inline void adc_init()
 {
-// AREF = AVcc
-ADMUX = (1<<REFS0);
+    adc_stop_all();
 
-// 8-bit resolution
-//ADMUX |= (1 << ADLAR);
+    // AREF = AVcc
+    ADMUX = (1<<REFS0);
+
+    // 8-bit resolution
+    ADMUX |= (1 << ADLAR);
+
+    // ADC Auto Trigger Enable
+    ADCSRA |= (1 << ADATE);
+
+    // Clearing all of ADCSRB will enable free running mode
+    ADCSRB = 0x0;
 
 #if defined FASTER_ADC
-// ADC Enable and prescaler of 16 and interrupt ((1 << ADIE))
-// 16000000/16 = 1000000
-ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1 << ADIE);
+    // ADC Enable and prescaler of 16 and interrupt ((1 << ADIE))
+    // 16000000/16 = 1000000
+    ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1 << ADIE);
 #else
-// ADC Enable and prescaler of 128 and interrupt ((1 << ADIE))
-// 16000000/128 = 125000
-ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)|(1 << ADIE);
+    // ADC Enable and prescaler of 128 and interrupt ((1 << ADIE))
+    // 16000000/128 = 125000
+    ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)|(1 << ADIE);
 #endif
 }
 
@@ -360,22 +364,32 @@ void adc_start_read(uint8_t ch)
     // ANDing with '7' will always keep the value
     // of 'ch' between 0 and 7
     ch &= 0x7;                  // AND operation with 7
-    ADMUX = (ADMUX & 0xF8)|ch;  // clears the bottom 3 bits before ORing
-
+    ADMUX = (ADMUX & 0xF8) | ch;  // clears the bottom 3 bits before ORing
+    
     // start single conversion
     // write '1' to ADSC
     ADCSRA |= (1<<ADSC);
 }
+
+void adc_stop_all()
+{
+    // stop auto run
+    ADCSRA &= ~(1<<ADATE);
+
+    // stop conversion
+    ADCSRA &= ~(1<<ADSC);
+}
+
 
 ///
 /// Analog to Digital Conversion Complete
 ///
 ISR(ADC_vect) 
 { 
-// ADC Complete
-// Read the value from ADC for a value between 0-1023
+    // ADC Cycle Complete
+    // Read the value from ADC for a value between 0-1023
+    g_FiringValues.eyeRead = ADCH;
 }
-*/
 
 ///
 /// Trigger Interrupt
@@ -509,6 +523,8 @@ ISR(TIMER0_COMPA_vect)
 
             if(g_FiringValues.cycleCount >= g_Settings.timings.pneuDel)
             {
+                // TODO: Something about pump!
+
                 // Turn on pneumatics
                 output_high(CYCLE_PORT, PNEU_PIN);
 
@@ -562,28 +578,52 @@ void setup()
 {
 #if defined SERIAL_DEBUG
     Serial.begin(9600);
+
+    Serial.print("Number of profiles: ");
+    Serial.println(g_NumProfiles);
+        
+    Serial.print("Size of EyeSettings: ");
+    Serial.println(sizeof(EyeSettings));
+        
+    Serial.print("Size of MarkerTiming: ");
+    Serial.println(sizeof(MarkerTiming));
+        
+    Serial.print("Size of MarkerSettings: ");
+    Serial.println(sizeof(MarkerSettings));
+        
+    Serial.print("Size of FiringValues: ");
+    Serial.println(sizeof(FiringValues));
+        
+    Serial.print("Size of FiringProfile: ");
+    Serial.println(sizeof(FiringProfile));
 #endif
 
+    // Setup pin direction
     set_input(CYCLE_PORT_REG, TRIGGER_PIN);
     set_output(CYCLE_PORT_REG, SEAR_PIN);
     set_output(CYCLE_PORT_REG, PNEU_PIN);
 
-    /*
     set_output(EYE_PORT_REG, EYE_PIN);
     set_input(EYE_PORT_REG, IRED_PIN);
 
+    /*
     set_input(UP_BUTTON_PIN);
     set_input(OK_BUTTON_PIN);
     set_input(DN_BUTTON_PIN);
     */
+
+    // Enable internal pullups
+
     cli();
     timer_init();
-    //adc_init();
+    adc_init();
     trigger_init();
         
     // read initial trigger state
     if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
         bit_set(g_FiringValues.flags, FF_TriggerPressed);
+    else
+        bit_clear(g_FiringValues.flags, FF_TriggerPressed);
 
     sei();
 }

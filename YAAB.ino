@@ -158,7 +158,7 @@ enum FiringFlags
     FF_Use_Eyes,
     FF_TriggerPressed,
     FF_DebounceCharge,
-    FF_BallSeen,
+    FF_Reserved,
 };
 
 enum CycleStates
@@ -167,6 +167,14 @@ enum CycleStates
     CS_Sear_Firing,
     CS_Breech_Opening,
     CS_Breech_Closing,
+};
+
+enum EyeStates
+{
+    ES_Empty_Seen,
+    ES_Ball_Seen,
+    ES_Bolt_Seen,
+    ES_Reserved,
 };
 
 struct EyeSettings // 4 bytes
@@ -219,13 +227,13 @@ struct MarkerSettings // 16 bytes?
     uint32_t shotsSinceLastService;
 };
 
-struct FiringValues // 4 bytes?
+struct FiringValues // 3 bytes?
 {
     byte flags : 2;             // Flags using in marker cycle (FiringFlags)
     byte shotsToGo : 4;         // Shots to fire in 'cycle' (Burst)
-    byte currentState : 2;      // Marker current state
+    byte markerState : 2;       // Marker current state
+    byte eyesState : 2;         // Eyes current state
     uint16_t cycleCount : 14;   // Cycle counter in 0.1ms increments (max 1.6383 seconds)
-    uint16_t eyeRead : 10;      // Current value read from the eyes
 };
 
 ///
@@ -241,6 +249,16 @@ struct FiringProfile // 8 bytes
     byte reserved : 4;              // Padding
 };
 
+// Values specific to a marker cycle
+volatile FiringValues g_FiringValues = 
+{
+    0,                  // Flags using in marker cycle (FiringFlags)
+    0,                  // Shots to fire in 'cycle' (Burst)
+    CS_Ready_To_Fire,   // Marker current state
+    0,                  // Cycle counter in 0.1ms increments (max 1.6383 seconds)
+    0                   // Current value read from the eyes
+};
+
 // Store in EEMEM later
 // Marker Settings - things specific to the marker
 volatile MarkerSettings g_Settings = 
@@ -251,16 +269,6 @@ volatile MarkerSettings g_Settings =
     10,                     // Trigger Debounce
     1000,                   // C Timeout / Eye Timeout
     0                       // Shots since Service?
-};
-
-// Values specific to a marker cycle
-volatile FiringValues g_FiringValues = 
-{
-    _BV(FF_Use_Eyes),   // Flags using in marker cycle (FiringFlags)
-    0,                  // Shots to fire in 'cycle' (Burst)
-    CS_Ready_To_Fire,   // Marker current state
-    0,                  // Cycle counter in 0.1ms increments (max 1.6383 seconds)
-    0                   // Current value read from the eyes
 };
 
 // User Profiles
@@ -282,7 +290,7 @@ byte g_NumProfiles = sizeof g_Profiles/sizeof(FiringProfile);
 
 inline void changeState(byte newState)
 {
-    g_FiringValues.currentState = (CycleStates)newState;
+    g_FiringValues.markerState = (CycleStates)newState;
 
     g_FiringValues.cycleCount = 0;
 }
@@ -387,8 +395,13 @@ void adc_stop_all()
 ISR(ADC_vect) 
 { 
     // ADC Cycle Complete
-    // Read the value from ADC for a value between 0-1023
-    g_FiringValues.eyeRead = ADCH;
+    // Read the value ADC for a value between 0-255
+    if(ADCH >= g_Settings.eyeSettings.eyeBall)
+        g_FiringValues.eyesState = ES_Ball_Seen;
+    else if(ADCH >= g_Settings.eyeSettings.eyeBolt)
+        g_FiringValues.eyesState = ES_Bolt_Seen;
+    else
+        g_FiringValues.eyesState = ES_Empty_Seen;
 }
 
 ///
@@ -400,8 +413,13 @@ ISR(ADC_vect)
 ///
 void trigger_init()
 {
+#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
+    GIMSK |= _BV(INT0);  //Enable INT0
+    MCUCR |= _BV(ISC00); //Trigger on change of INT0
+#else
     EIMSK |= _BV(INT0);  //Enable INT0
     EICRA |= _BV(ISC10); //Trigger on change of INT0
+#endif
 }
 
 ///
@@ -494,7 +512,7 @@ ISR(TIMER0_COMPA_vect)
 #endif
 #endif
 
-    if(g_FiringValues.currentState == CS_Ready_To_Fire)
+    if(g_FiringValues.markerState == CS_Ready_To_Fire)
     {
         if(bitIsSet(g_FiringValues.flags, FF_DebounceCharge))
         {
@@ -512,7 +530,7 @@ ISR(TIMER0_COMPA_vect)
         // increment cycle time
         g_FiringValues.cycleCount++;
 
-        switch(g_FiringValues.currentState)
+        switch(g_FiringValues.markerState)
         {
         case CS_Sear_Firing:
             if(bit_is_set(CYCLE_PORT, SEAR_PIN) && g_FiringValues.cycleCount >= g_Settings.timings.searOn)

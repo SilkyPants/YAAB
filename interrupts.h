@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <avr\interrupt.h>
-#include <avr\io.h>
+#include "common.h"
+//#include <avr\interrupt.h>
+//#include <avr\io.h>
 
 inline void onExternalChange();
 
@@ -41,7 +42,11 @@ void trigger_init()
 ///
 /// External Interrupt 0
 ///
-ISR(SIG_INTERRUPT0)
+#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
+ISR(EXT_INT0_vect)
+#else
+ISR(INT0_vect)
+#endif
 {
     onExternalChange();
 }

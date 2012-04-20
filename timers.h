@@ -19,8 +19,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <avr\interrupt.h>
-#include <avr\io.h>
+#include "common.h"
+//#include <avr\interrupt.h>
+//#include <avr\io.h>
 
 /*
 Time values are in 0.1 milliseconds steps, this is to allow the use of integers for calculation

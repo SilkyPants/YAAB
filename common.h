@@ -18,6 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "Arduino.h"
 
 // Some macros that make the code more readable
 #define set_input(portdir,pin) portdir &= ~_BV(pin)

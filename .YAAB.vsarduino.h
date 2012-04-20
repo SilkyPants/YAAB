@@ -6,14 +6,14 @@
 #define __asm__(x)
 #define ARDUINO 100
 extern "C" void __cxa_pure_virtual() {}
+void setup();
+void loop();
 void changeState(byte newState);
 void startCycle();
 void fireMarker();
 inline void onExternalChange();
 inline void onADCReadComplete();
 inline void onTimerTick();
-void setup();
-void loop();
 
 #include "C:\Program Files (x86)\arduino\hardware\arduino\variants\standard\pins_arduino.h" 
 #include "C:\Program Files (x86)\arduino\hardware\arduino\cores\arduino\Arduino.h"

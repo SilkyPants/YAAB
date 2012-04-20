@@ -173,7 +173,71 @@ byte g_NumProfiles = sizeof g_Profiles/sizeof(FiringProfile);
 ///
 ///
 ///
+void setup() 
+{
+#if defined SERIAL_DEBUG
+    Serial.begin(9600);
 
+    Serial.print("Number of profiles: ");
+    Serial.println(g_NumProfiles);
+        
+    Serial.print("Size of EyeSettings: ");
+    Serial.println(sizeof(EyeSettings));
+        
+    Serial.print("Size of MarkerTiming: ");
+    Serial.println(sizeof(MarkerTiming));
+        
+    Serial.print("Size of MarkerSettings: ");
+    Serial.println(sizeof(MarkerSettings));
+        
+    Serial.print("Size of FiringValues: ");
+    Serial.println(sizeof(FiringValues));
+        
+    Serial.print("Size of FiringProfile: ");
+    Serial.println(sizeof(FiringProfile));
+#endif
+
+    // Setup pin direction
+    set_input(CYCLE_PORT_REG, TRIGGER_PIN);
+    set_output(CYCLE_PORT_REG, SEAR_PIN);
+    set_output(CYCLE_PORT_REG, PNEU_PIN);
+
+    set_output(EYE_PORT_REG, EYE_PIN);
+    set_input(EYE_PORT_REG, IRED_PIN);
+
+    /*
+    set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
+    set_input(INPUT_PORT_REG, OK_BUTTON_PIN);
+    set_input(INPUT_PORT_REG, DN_BUTTON_PIN);
+    */
+
+    // Enable internal pullups
+    output_high(CYCLE_PORT, TRIGGER_PIN);
+    /*
+    output_high(INPUT_PORT, UP_BUTTON_PIN);
+    output_high(INPUT_PORT, OK_BUTTON_PIN);
+    output_high(INPUT_PORT, DN_BUTTON_PIN);
+    */
+
+    cli();
+    timer_init();
+    adc_init();
+    trigger_init();
+        
+    // read initial trigger state
+    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
+        bit_set(g_FiringValues.flags, FF_TriggerPressed);
+    else
+        bit_clear(g_FiringValues.flags, FF_TriggerPressed);
+
+    sei();
+}
+
+void loop()
+{
+}
+
+// Change marker state
 void changeState(byte newState)
 {
     g_FiringValues.markerState = (CycleStates)newState;
@@ -181,6 +245,7 @@ void changeState(byte newState)
     g_FiringValues.cycleCount = 0;
 }
 
+// actually fire the marker
 void startCycle()
 {
     // stop counting for debounce
@@ -324,69 +389,6 @@ inline void onTimerTick()
             break;
         };
     }
-}
-
-void setup() 
-{
-#if defined SERIAL_DEBUG
-    Serial.begin(9600);
-
-    Serial.print("Number of profiles: ");
-    Serial.println(g_NumProfiles);
-        
-    Serial.print("Size of EyeSettings: ");
-    Serial.println(sizeof(EyeSettings));
-        
-    Serial.print("Size of MarkerTiming: ");
-    Serial.println(sizeof(MarkerTiming));
-        
-    Serial.print("Size of MarkerSettings: ");
-    Serial.println(sizeof(MarkerSettings));
-        
-    Serial.print("Size of FiringValues: ");
-    Serial.println(sizeof(FiringValues));
-        
-    Serial.print("Size of FiringProfile: ");
-    Serial.println(sizeof(FiringProfile));
-#endif
-
-    // Setup pin direction
-    set_input(CYCLE_PORT_REG, TRIGGER_PIN);
-    set_output(CYCLE_PORT_REG, SEAR_PIN);
-    set_output(CYCLE_PORT_REG, PNEU_PIN);
-
-    set_output(EYE_PORT_REG, EYE_PIN);
-    set_input(EYE_PORT_REG, IRED_PIN);
-
-    /*
-    set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
-    set_input(INPUT_PORT_REG, OK_BUTTON_PIN);
-    set_input(INPUT_PORT_REG, DN_BUTTON_PIN);
-    */
-
-    // Enable internal pullups
-    output_high(CYCLE_PORT, TRIGGER_PIN);
-    /*
-    output_high(INPUT_PORT, UP_BUTTON_PIN);
-    output_high(INPUT_PORT, OK_BUTTON_PIN);
-    output_high(INPUT_PORT, DN_BUTTON_PIN);
-    */
-    cli();
-    timer_init();
-    adc_init();
-    trigger_init();
-        
-    // read initial trigger state
-    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
-        bit_set(g_FiringValues.flags, FF_TriggerPressed);
-    else
-        bit_clear(g_FiringValues.flags, FF_TriggerPressed);
-
-    sei();
-}
-
-void loop()
-{
 }
 
 

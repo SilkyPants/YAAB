@@ -21,8 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr\interrupt.h>
 #include <avr\io.h>
-
-inline void onExternalChange();
+#include "common.h"
 
 ///
 /// Init External Interrupt 0

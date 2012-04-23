@@ -22,39 +22,39 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /// Flags for user profiles
 enum ProfileFlags
 {
-    PF_Pump,
-    PF_Semi,
-    PF_Auto,
-    PF_FireOnPress,
-    PF_FireOnRelease,
-    PF_CappedROF,
-    PF_Reserved1,
-    PF_Reserved2
+    PF_Pump             = 0x01,
+    PF_Semi             = 0x02,
+    PF_Auto             = 0x04,
+    PF_FireOnPress      = 0x08,
+    PF_FireOnRelease    = 0x10,
+    PF_CappedROF        = 0x20,
+    PF_Reserved1        = 0x40,
+    PF_Reserved2        = 0x80,
 };
 
 /// Flags used in a marker cycle
 enum CycleFlags
 {
-    CF_Use_Eyes,
-    CF_Trigger_Pressed,
-    CF_Debounce_Charge,
-    CF_Reserved,
+    CF_Use_Eyes         = 0x01,
+    CF_Trigger_Pressed  = 0x02,
+    CF_Debounce_Charge  = 0x04,
+    CF_Reserved         = 0x08,
 };
 
 /// The state of a marker cycle
 enum CycleStates
 {
-    CS_Ready_To_Fire,
-    CS_Sear_Firing,
-    CS_Breech_Opening,
-    CS_Breech_Closing,
+    CS_Ready_To_Fire    = 0x01,
+    CS_Sear_Firing      = 0x02,
+    CS_Breech_Opening   = 0x04,
+    CS_Breech_Closing   = 0x08,
 };
 
 /// State of the marker eyes
 enum EyeStates
 {
-    ES_Empty_Seen,
-    ES_Ball_Seen,
-    ES_Bolt_Seen,
-    ES_Reserved,
+    ES_Empty_Seen       = 0x01,
+    ES_Ball_Seen        = 0x02,
+    ES_Bolt_Seen        = 0x04,
+    ES_Reserved         = 0x08,
 };

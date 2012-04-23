@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr\interrupt.h>
 #include <avr\io.h>
-
+#include "common.h"
 /*
 Time values are in 0.1 milliseconds steps, this is to allow the use of integers for calculation
 and helps keep the size down
@@ -58,9 +58,6 @@ To break the units into printable values get the decimal with x % 10 and the mil
 #define TIMER_OVF_VAL 255 - TIMER_VAL
 #endif
 #endif
-
-// function to call on timer tick
-inline void onTimerTick();
 
 ///
 /// Timer (0.1 ms)

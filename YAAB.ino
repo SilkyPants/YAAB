@@ -26,6 +26,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "interrupts.h"
 #include "settings.h"
 
+///
+/// Program Specific defines - for readability
+#define bps_to_cycle_time(bps) 1000 / bps;
+
+
 /// Cycle Values
 /// Values specific to a marker cycle
 volatile CycleValues g_CycleValues = 
@@ -59,14 +64,28 @@ MarkerProfile g_Profiles[] =
 {
     { "Semi", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x1, 0x0 },
     { "Pump", _BV(PF_Pump)|_BV(PF_FireOnPress), 0x1, 0x0 },
-    //{ "Auto", _BV(PF_Auto)|_BV(PF_FireOnPress), 0x1, 0x0 },
-    //{ "Burst", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x3, 0x0 },
-    //{ "React", _BV(PF_Semi)|_BV(PF_FireOnPress)|_BV(PF_FireOnRelease), 0x1, 0x3 },
+    { "Auto", _BV(PF_Auto)|_BV(PF_FireOnPress), 0x1, 0x0 },
+    { "Burst", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x3, 0x0 },
+    { "React", _BV(PF_Semi)|_BV(PF_FireOnPress)|_BV(PF_FireOnRelease), 0x1, 0x3 },
 };
 
 MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
 byte g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
+///
+/// Used to blink an LED in the loop - to make sure the program is running
+#define KEEP_ALIVE_ACTIVE
+
+#if defined KEEP_ALIVE_ACTIVE
+#define KEEP_ALIVE_PIN 5        // Pin 13
+#define KEEP_ALIVE_PORT PORTB
+#define KEEP_ALIVE_PORT_REG DDRB
+#define KEEP_ALIVE_PULSE 1000
+unsigned long lastKeepAlivePulse = 0;
+#endif
+
+///
+/// Enable serial output
 //#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
@@ -107,6 +126,12 @@ void setup()
 
     set_output(EYE_PORT_REG, EYE_PIN);
     set_input(EYE_PORT_REG, IRED_PIN);
+
+#if defined KEEP_ALIVE_ACTIVE
+    // Set pins for Keep alive LED
+    // Just to prove the loop is ticking over
+    set_output(KEEP_ALIVE_PORT_REG, KEEP_ALIVE_PIN);
+#endif
 
     /*
     set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
@@ -152,10 +177,18 @@ void loop()
         Serial.println(lastEyeState, HEX);
     }
 #endif
+
+#if defined KEEP_ALIVE_ACTIVE
+    if(millis() - lastKeepAlivePulse > KEEP_ALIVE_PULSE)
+    {
+        lastKeepAlivePulse = millis();
+        output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
+    }
+#endif
 }
 
 // Change marker state
-void changeState(byte newState)
+inline void changeState(unsigned char newState)
 {
     g_CycleValues.markerState = (CycleStates)newState;
 
@@ -163,7 +196,7 @@ void changeState(byte newState)
 }
 
 // actually fire the marker
-void startCycle()
+inline void startCycle()
 {
     // stop counting for debounce
     bit_clear(g_CurrentProfile->profileFlags, CF_Debounce_Charge);
@@ -181,13 +214,13 @@ void startCycle()
     changeState(CS_Sear_Firing);
 }
 
-void fireMarker()
+inline void fireMarker()
 {
     // Determine how many shots to fire this 'cycle'
-    if(bitIsSet(g_CycleValues.flags, CF_Trigger_Pressed))
-        g_CycleValues.shotsToGo = shots_on_press(g_CurrentProfile->shotsToFirePress);
+    if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
+        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFirePress;
     else
-        g_CycleValues.shotsToGo = shots_on_release(g_CurrentProfile->shotsToFireRelease);
+        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFireRelease;
 
     startCycle();
 }
@@ -196,6 +229,8 @@ void fireMarker()
 /// Interrupts
 ///
 
+///
+/// External Interrupt 0 Changed
 inline void onExternalChange()
 {
     // Toggle the trigger pressed flag
@@ -205,8 +240,8 @@ inline void onExternalChange()
     g_CycleValues.cycleCount = 0;
 
     // Do we want to check for debounce?
-    if ((bitIsSet(g_CycleValues.flags, CF_Trigger_Pressed) && bitIsSet(g_CurrentProfile->profileFlags, PF_FireOnPress)) 
-    || (!bitIsSet(g_CycleValues.flags, CF_Trigger_Pressed) && bitIsSet(g_CurrentProfile->profileFlags, PF_FireOnRelease)))
+    if ((is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->profileFlags, PF_FireOnPress)) 
+    || (!is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->profileFlags, PF_FireOnRelease)))
     {
         bit_set(g_CycleValues.flags, CF_Debounce_Charge);
     }
@@ -216,6 +251,8 @@ inline void onExternalChange()
     }
 }
 
+///
+/// ADC Conversion Complete
 inline void onADCReadComplete()
 {
     // Read the value ADC for a value between 0-255
@@ -227,11 +264,13 @@ inline void onADCReadComplete()
         g_CycleValues.eyesState = ES_Empty_Seen;
 }
 
+///
+/// Timer Tick
 inline void onTimerTick()
 {
     if(g_CycleValues.markerState == CS_Ready_To_Fire)
     {
-        if(bitIsSet(g_CycleValues.flags, CF_Debounce_Charge))
+        if(is_bit_set(g_CycleValues.flags, CF_Debounce_Charge))
         {
             // increment cycle time
             g_CycleValues.cycleCount++;
@@ -268,7 +307,7 @@ inline void onTimerTick()
             break;
 
         case CS_Breech_Opening:
-            if(bitIsSet(g_CycleValues.flags, CF_Use_Eyes))
+            if(is_bit_set(g_CycleValues.flags, CF_Use_Eyes))
             {
                 // TODO: INSERT EYE LOGIC HERE
                 // Start read if needed
@@ -289,7 +328,7 @@ inline void onTimerTick()
             if(g_CycleValues.cycleCount == g_Settings.timings.pneuOff)
             {   
 
-                if(g_CycleValues.shotsToGo < 0 || (bitIsSet(g_CurrentProfile->profileFlags, PF_Auto) && bitIsSet(g_CycleValues.flags, CF_Trigger_Pressed)))
+                if(g_CycleValues.shotsToGo < 0 || (is_bit_set(g_CurrentProfile->profileFlags, PF_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
                 {
                     // Fire another shot
                     startCycle();

@@ -21,11 +21,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr\interrupt.h>
 #include <avr\io.h>
+#include "common.h"
 
 // ADC Completes faster
 #define FASTER_ADC
-
-inline void onADCReadComplete();
 
 ///
 /// Analog to Digital

@@ -19,21 +19,32 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Some macros that make the code more readable
-#define set_input(portdir,pin) portdir &= ~_BV(pin)
-#define set_output(portdir,pin) portdir |= _BV(pin)
+///
+/// Some macros that make the code more readable
+#define flag_set(flag) _BV(flag)
+#define flag_invert(flag) ~_BV(flag)
 
-#define output_low(port,pin) port &= ~_BV(pin)
-#define output_high(port,pin) port |= _BV(pin)
-#define output_toggle(port,pin) port ^= _BV(pin)
-#define input_value(port,pin) (port & _BV(pin))
+#define bit_set(val, bit) val |= flag_set(bit)
+#define bit_clear(val, bit) val &= flag_invert(bit)
+#define bit_toggle(val, bit) val ^= flag_set(bit)
+#define is_bit_set(val, bit) (val & flag_set(bit))
 
-#define bit_set(val, bit) output_high(val, bit)
-#define bit_clear(val, bit) output_low(val, bit)
-#define bit_toggle(val, bit) output_toggle(val, bit)
-#define bitIsSet(val, bit) input_value(val, bit)
+#define high_nybble(byte) ((byte >> 4) & 0x0F)
+#define low_nybble(byte) ((byte) & 0x0F)
 
-#define shots_on_press(val) (val & 0xF)
-#define shots_on_release(val) (val & 0xF0) >> 4
+#define set_input(portdir,pin) bit_clear(portdir,pin)
+#define set_output(portdir,pin) bit_set(portdir,pin)
 
-#define bps_to_cycle_time(bps) 1000 / bps;
+#define output_low(port,pin) bit_clear(port,pin)
+#define output_high(port,pin) bit_set(port,pin)
+#define output_toggle(port,pin) bit_toggle(port,pin)
+#define input_value(port,pin) is_bit_set(port,pin)
+
+///
+/// Mark functions that should always be inline
+inline void changeState(unsigned char newState) __attribute__((always_inline));
+inline void startCycle() __attribute__((always_inline));
+inline void fireMarker() __attribute__((always_inline));
+inline void onExternalChange() __attribute__((always_inline));
+inline void onADCReadComplete() __attribute__((always_inline));
+inline void onTimerTick() __attribute__((always_inline));

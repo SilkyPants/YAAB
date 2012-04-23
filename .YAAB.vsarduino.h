@@ -8,9 +8,9 @@
 extern "C" void __cxa_pure_virtual() {}
 void setup();
 void loop();
-void changeState(byte newState);
-void startCycle();
-void fireMarker();
+inline void changeState(unsigned char newState);
+inline void startCycle();
+inline void fireMarker();
 inline void onExternalChange();
 inline void onADCReadComplete();
 inline void onTimerTick();

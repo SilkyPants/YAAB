@@ -35,7 +35,7 @@ To break the units into printable values get the decimal with x % 10 and the mil
 
 // controls the speed of the cycle timer
 #if defined SLOW_THINGS_DOWN
-#define TIMER_FREQ 1000
+#define TIMER_FREQ 100
 #else
 #define TIMER_FREQ 10000
 #endif

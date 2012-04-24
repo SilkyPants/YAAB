@@ -61,6 +61,6 @@ struct MarkerProfile // 8 bytes
     char profileName[6];                    // Name for the profile
     unsigned char shotsToFirePress : 4;     // Burst fire on press (max 15)
     unsigned char shotsToFireRelease : 4;   // Burst fire on release (max 15)
-    unsigned char actionType : 2;           // Pump, Semi, Auto, Training
-    unsigned char triggerAction : 2;        // What to do on trigger state change
+    unsigned char actionType;           // Pump, Semi, Auto, Training
+    unsigned char triggerAction;        // What to do on trigger state change
 };

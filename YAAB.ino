@@ -48,10 +48,10 @@ volatile CycleValues g_CycleValues =
 /// Things specific to the marker
 volatile MarkerSettings g_Settings = 
 {
-    10,                     // Trigger Debounce
+    100,                     // Trigger Debounce
     0,                      // Current Profile
     0,                      // Shots since Service?
-    { 40, 550, 20, 240 },   // Sear on, C On, C Delay, C Off
+    { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
     { 10, 100, 70, 1000 }   // Eye Detect Time, Eye Ball Reflect, Eye Bolt Reflect, Eye Timeout
 };
 
@@ -197,9 +197,6 @@ inline void changeState(unsigned char newState)
 // actually fire the marker
 inline void startCycle()
 {
-    // stop counting for debounce
-    bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
-
     // Shot fired
     g_CycleValues.shotsToGo--;
 
@@ -215,6 +212,10 @@ inline void startCycle()
 
 inline void fireMarker()
 {
+    // stop counting for debounce
+    bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
+    g_CycleValues.debounceCharge = 0;
+    
     // Determine how many shots to fire this 'cycle'
     if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
         g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFirePress;
@@ -250,19 +251,6 @@ inline void onExternalChange()
     {
         bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
     }
-}
-
-///
-/// ADC Conversion Complete
-inline void onADCReadComplete()
-{
-    // Read the value ADC for a value between 0-255
-    if(ADCH >= g_Settings.eyeSettings.eyeBall)
-        g_CycleValues.eyesState = ES_Ball_Seen;
-    else if(ADCH >= g_Settings.eyeSettings.eyeBolt)
-        g_CycleValues.eyesState = ES_Bolt_Seen;
-    else
-        g_CycleValues.eyesState = ES_Empty_Seen;
 }
 
 ///
@@ -329,7 +317,7 @@ inline void onTimerTick()
             if(g_CycleValues.cycleCount == g_Settings.timings.pneuOff)
             {   
 
-                if(g_CycleValues.shotsToGo < 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
+                if(g_CycleValues.shotsToGo > 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
                 {
                     // Fire another shot
                     startCycle();
@@ -346,6 +334,19 @@ inline void onTimerTick()
             break;
         };
     }
+}
+
+///
+/// ADC Conversion Complete
+inline void onADCReadComplete()
+{
+    // Read the value ADC for a value between 0-255
+    if(ADCH >= g_Settings.eyeSettings.eyeBall)
+        g_CycleValues.eyesState = ES_Ball_Seen;
+    else if(ADCH >= g_Settings.eyeSettings.eyeBolt)
+        g_CycleValues.eyesState = ES_Bolt_Seen;
+    else
+        g_CycleValues.eyesState = ES_Empty_Seen;
 }
 
 

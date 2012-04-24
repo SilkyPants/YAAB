@@ -31,14 +31,14 @@ void trigger_init()
     MCUCR |= _BV(ISC00); //Trigger on change of INT0
 #else
     EIMSK |= _BV(INT0);  //Enable INT0
-    EICRA |= _BV(ISC10); //Trigger on change of INT0
+    EICRA |= _BV(ISC00); //Trigger on change of INT0
 #endif
 }
 
 ///
 /// External Interrupt 0
 ///
-ISR(SIG_INTERRUPT0)
+ISR(INT0_vect)
 {
     onExternalChange();
 }

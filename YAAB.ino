@@ -48,12 +48,11 @@ volatile CycleValues g_CycleValues =
 /// Things specific to the marker
 volatile MarkerSettings g_Settings = 
 {
-    { 40, 20, 550, 240 },   // Sear on, C Delay, C On, C Off
-    { 10, 10, 100, 70 },    // Eye Ball Detect, Eye Empty Detect, Eye Ball Reflect, Eye Bolt Reflect
-    0,                      // Current Profile
     10,                     // Trigger Debounce
-    1000,                   // C Timeout / Eye Timeout
-    0                       // Shots since Service?
+    0,                      // Current Profile
+    0,                      // Shots since Service?
+    { 40, 550, 20, 240 },   // Sear on, C On, C Delay, C Off
+    { 10, 100, 70, 1000 }   // Eye Detect Time, Eye Ball Reflect, Eye Bolt Reflect, Eye Timeout
 };
 
 
@@ -62,15 +61,15 @@ volatile MarkerSettings g_Settings =
 /// Customisable by the user
 MarkerProfile g_Profiles[] = 
 {
-    { "Semi", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x1, 0x0 },
-    { "Pump", _BV(PF_Pump)|_BV(PF_FireOnPress), 0x1, 0x0 },
-    { "Auto", _BV(PF_Auto)|_BV(PF_FireOnPress), 0x1, 0x0 },
-    { "Burst", _BV(PF_Semi)|_BV(PF_FireOnPress), 0x3, 0x0 },
-    { "React", _BV(PF_Semi)|_BV(PF_FireOnPress)|_BV(PF_FireOnRelease), 0x1, 0x3 },
+    { "Semi",  0x1, 0x0, AT_Semi, flag_set(TA_FireOnPress) },
+    { "Pump",  0x1, 0x0, AT_Pump, flag_set(TA_FireOnPress) },
+    { "Auto",  0x1, 0x0, AT_Auto, flag_set(TA_FireOnPress) },
+    { "Burst", 0x3, 0x0, AT_Semi, flag_set(TA_FireOnPress) },
+    { "React", 0x1, 0x3, AT_Semi, flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
 };
 
 MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
-byte g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
+unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
@@ -199,7 +198,7 @@ inline void changeState(unsigned char newState)
 inline void startCycle()
 {
     // stop counting for debounce
-    bit_clear(g_CurrentProfile->profileFlags, CF_Debounce_Charge);
+    bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
 
     // Shot fired
     g_CycleValues.shotsToGo--;
@@ -237,11 +236,13 @@ inline void onExternalChange()
     bit_toggle(g_CycleValues.flags, CF_Trigger_Pressed);
 
     // Clear counter
-    g_CycleValues.cycleCount = 0;
+    g_CycleValues.debounceCharge = 0;
 
     // Do we want to check for debounce?
-    if ((is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->profileFlags, PF_FireOnPress)) 
-    || (!is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->profileFlags, PF_FireOnRelease)))
+    bool triggerPressed = is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
+
+    if ((triggerPressed&& is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress)) 
+    || (!triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease)))
     {
         bit_set(g_CycleValues.flags, CF_Debounce_Charge);
     }
@@ -273,10 +274,10 @@ inline void onTimerTick()
         if(is_bit_set(g_CycleValues.flags, CF_Debounce_Charge))
         {
             // increment cycle time
-            g_CycleValues.cycleCount++;
+            g_CycleValues.debounceCharge++;
         }
 
-        if(g_CycleValues.cycleCount >= g_Settings.debounce)
+        if(g_CycleValues.debounceCharge >= g_Settings.debounceTime)
         {
             fireMarker();
         }
@@ -328,7 +329,7 @@ inline void onTimerTick()
             if(g_CycleValues.cycleCount == g_Settings.timings.pneuOff)
             {   
 
-                if(g_CycleValues.shotsToGo < 0 || (is_bit_set(g_CurrentProfile->profileFlags, PF_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
+                if(g_CycleValues.shotsToGo < 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
                 {
                     // Fire another shot
                     startCycle();

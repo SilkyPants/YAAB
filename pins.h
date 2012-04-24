@@ -61,7 +61,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define IRED_PIN 4
 #else
 // On Port D (5, 6, 7)
-#define TRIGGER_PIN 5
+#define TRIGGER_PIN 2
 #define PNEU_PIN 6
 #define SEAR_PIN 7
 

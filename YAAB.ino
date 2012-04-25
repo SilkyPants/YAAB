@@ -85,10 +85,10 @@ unsigned long lastKeepAlivePulse = 0;
 
 ///
 /// Enable serial output
-//#define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
-EyeStates lastEyeState = ES_Empty_Seen;
+unsigned char lastEyeState = ES_Empty_Seen;
 #endif
 
 ///
@@ -98,7 +98,19 @@ void setup()
 {
 #if defined SERIAL_DEBUG
     Serial.begin(9600);
+/*
+Number of profiles: 5
 
+Size of EyeSettings: 5
+
+Size of MarkerTiming: 6
+
+Size of MarkerSettings: 17
+
+Size of FiringValues: 7
+
+Size of MarkerProfile: 9
+*/
     Serial.print("Number of profiles: ");
     Serial.println(g_NumProfiles);
         
@@ -130,6 +142,7 @@ void setup()
     // Set pins for Keep alive LED
     // Just to prove the loop is ticking over
     set_output(KEEP_ALIVE_PORT_REG, KEEP_ALIVE_PIN);
+    set_output(KEEP_ALIVE_PORT_REG, 4);
 #endif
 
     /*
@@ -150,7 +163,7 @@ void setup()
     cli();
     timer_init();
     adc_init();
-    trigger_init();
+    //trigger_init();
         
     // read initial trigger state
     if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
@@ -166,12 +179,23 @@ void setup()
 #endif
 }
 
+bool lastTrigger = false;
 void loop()
 {
+  if(input_value(CYCLE_PORT, TRIGGER_PIN) != lastTrigger)
+  {
+    lastTrigger = input_value(CYCLE_PORT, TRIGGER_PIN);
+    onExternalChange();
+    output_toggle(KEEP_ALIVE_PORT, 4);
+  }
+  
 #if defined SERIAL_DEBUG
+
+//        Serial.print("Trigger: ");
+//Serial.println(input_value(CYCLE_PORT, TRIGGER_PIN));
     if(lastEyeState != g_CycleValues.eyesState)
     {
-        lastEyeState == g_CycleValues.eyesState;
+        lastEyeState = g_CycleValues.eyesState;
         Serial.print("Eye State: ");
         Serial.println(lastEyeState, HEX);
     }

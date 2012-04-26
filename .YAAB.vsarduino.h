@@ -12,8 +12,8 @@ inline void changeState(unsigned char newState);
 inline void startCycle();
 inline void fireMarker();
 inline void onExternalChange();
-inline void onADCReadComplete();
 inline void onTimerTick();
+inline void onADCReadComplete();
 
 #include "C:\Program Files (x86)\arduino\hardware\arduino\variants\standard\pins_arduino.h" 
 #include "C:\Program Files (x86)\arduino\hardware\arduino\cores\arduino\Arduino.h"

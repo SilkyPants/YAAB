@@ -74,12 +74,12 @@ inline void timer_init()
 
 #if defined OVERFLOW_TIMER
     TCNT1 = TIMER_OVF_VAL;      // preload timer
-    TIMSK1 |= (1 << TOIE1);    // enable timer
+//    TIMSK1 |= (1 << TOIE1);    // enable timer
 #else
     TCNT1 = 0;
     OCR1A = TIMER_VAL;
     TCCR1B |= (1 << WGM12);     // enable CTC mode
-    TIMSK1 |= (1 << OCIE1A);    // enable timer
+//    TIMSK1 |= (1 << OCIE1A);    // enable timer
 #endif
 #else
     TCCR0A = 0;
@@ -89,14 +89,24 @@ inline void timer_init()
 
 #if defined OVERFLOW_TIMER
     TCNT0 = TIMER_OVF_VAL;      // preload timer
-    TIMSK0 |= (1 << TOIE0);     // enable timer
+//    TIMSK0 |= (1 << TOIE0);     // enable timer
 #else
     TCNT0 = 0;
     OCR0A = TIMER_VAL;
     TCCR0B |= (1 << WGM01);     // enable CTC mode
-    TIMSK |= (1 << OCIE0A);    // enable timer
+//    TIMSK |= (1 << OCIE0A);    // enable timer
 #endif
 #endif
+}
+
+inline void startTimer()
+{
+    bit_set(TIMSK1, OCIE1A);
+}
+
+inline void stopTimer()
+{
+    bit_clear(TIMSK1, OCIE1A);
 }
 
 ///

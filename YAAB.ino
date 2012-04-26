@@ -48,11 +48,11 @@ volatile CycleValues g_CycleValues =
 /// Things specific to the marker
 volatile MarkerSettings g_Settings = 
 {
-    100,                     // Trigger Debounce
+    100,                    // Trigger Debounce
     0,                      // Current Profile
     0,                      // Shots since Service?
     { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
-    { 10, 100, 70, 1000 }   // Eye Detect Time, Eye Ball Reflect, Eye Bolt Reflect, Eye Timeout
+    { 10, 100, 1000 }       // Eye Detect Time, Eye Ball Reflect, Eye Timeout
 };
 
 
@@ -73,10 +73,11 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
-#define KEEP_ALIVE_ACTIVE
+//#define KEEP_ALIVE_ACTIVE
 
 #if defined KEEP_ALIVE_ACTIVE
 #define KEEP_ALIVE_PIN 5        // Pin 13
+#define TRIGGER_PRESSED_PIN 4   // Pin 12
 #define KEEP_ALIVE_PORT PORTB
 #define KEEP_ALIVE_PORT_REG DDRB
 #define KEEP_ALIVE_PULSE 1000
@@ -85,7 +86,7 @@ unsigned long lastKeepAlivePulse = 0;
 
 ///
 /// Enable serial output
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
 unsigned char lastEyeState = ES_Empty_Seen;
@@ -123,7 +124,7 @@ Size of MarkerProfile: 9
     Serial.print("Size of MarkerSettings: ");
     Serial.println(sizeof(MarkerSettings));
         
-    Serial.print("Size of FiringValues: ");
+    Serial.print("Size of CycleValues: ");
     Serial.println(sizeof(CycleValues));
         
     Serial.print("Size of MarkerProfile: ");
@@ -142,7 +143,7 @@ Size of MarkerProfile: 9
     // Set pins for Keep alive LED
     // Just to prove the loop is ticking over
     set_output(KEEP_ALIVE_PORT_REG, KEEP_ALIVE_PIN);
-    set_output(KEEP_ALIVE_PORT_REG, 4);
+    set_output(KEEP_ALIVE_PORT_REG, TRIGGER_PRESSED_PIN);
 #endif
 
     /*
@@ -179,20 +180,17 @@ Size of MarkerProfile: 9
 #endif
 }
 
-bool lastTrigger = false;
 void loop()
 {
-  if(input_value(CYCLE_PORT, TRIGGER_PIN) != lastTrigger)
-  {
-    lastTrigger = input_value(CYCLE_PORT, TRIGGER_PIN);
-    onExternalChange();
-    output_toggle(KEEP_ALIVE_PORT, 4);
-  }
+    if(input_value(CYCLE_PORT, TRIGGER_PIN) != !is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
+    {
+        onExternalChange();
+#if defined KEEP_ALIVE_ACTIVE
+        output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
+#endif
+    }
   
 #if defined SERIAL_DEBUG
-
-//        Serial.print("Trigger: ");
-//Serial.println(input_value(CYCLE_PORT, TRIGGER_PIN));
     if(lastEyeState != g_CycleValues.eyesState)
     {
         lastEyeState = g_CycleValues.eyesState;
@@ -221,8 +219,11 @@ inline void changeState(unsigned char newState)
 // actually fire the marker
 inline void startCycle()
 {
+    startTimer();
+
     // Shot fired
-    g_CycleValues.shotsToGo--;
+    if(!is_bit_set(g_CurrentProfile->actionType, AT_Auto))
+        g_CycleValues.shotsToGo--;
 
     // Increment shots fired
     g_Settings.shotsSinceLastReset++;
@@ -238,7 +239,6 @@ inline void fireMarker()
 {
     // stop counting for debounce
     bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
-    g_CycleValues.debounceCharge = 0;
     
     // Determine how many shots to fire this 'cycle'
     if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
@@ -261,7 +261,7 @@ inline void onExternalChange()
     bit_toggle(g_CycleValues.flags, CF_Trigger_Pressed);
 
     // Clear counter
-    g_CycleValues.debounceCharge = 0;
+    g_CycleValues.cycleCount = 0;
 
     // Do we want to check for debounce?
     bool triggerPressed = is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
@@ -281,15 +281,12 @@ inline void onExternalChange()
 /// Timer Tick
 inline void onTimerTick()
 {
-    if(g_CycleValues.markerState == CS_Ready_To_Fire)
+    if(g_CycleValues.markerState == CS_Ready_To_Fire && is_bit_set(g_CycleValues.flags, CF_Debounce_Charge))
     {
-        if(is_bit_set(g_CycleValues.flags, CF_Debounce_Charge))
-        {
-            // increment cycle time
-            g_CycleValues.debounceCharge++;
-        }
+        // increment cycle time
+        g_CycleValues.cycleCount++;
 
-        if(g_CycleValues.debounceCharge >= g_Settings.debounceTime)
+        if(g_CycleValues.cycleCount >= g_Settings.debounceTime)
         {
             fireMarker();
         }
@@ -338,10 +335,10 @@ inline void onTimerTick()
             break;
 
         case CS_Breech_Closing:
-            if(g_CycleValues.cycleCount == g_Settings.timings.pneuOff)
+            if(g_CycleValues.cycleCount >= g_Settings.timings.pneuOff)
             {   
 
-                if(g_CycleValues.shotsToGo > 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
+                if(g_CycleValues.shotsToGo > 0 || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
                 {
                     // Fire another shot
                     startCycle();
@@ -351,8 +348,7 @@ inline void onTimerTick()
                     // Ready for next shot
                     changeState(CS_Ready_To_Fire);
 
-                    // Clear shot count
-                    g_CycleValues.shotsToGo = 0;
+                    stopTimer();
                 }
             }
             break;
@@ -367,8 +363,6 @@ inline void onADCReadComplete()
     // Read the value ADC for a value between 0-255
     if(ADCH >= g_Settings.eyeSettings.eyeBall)
         g_CycleValues.eyesState = ES_Ball_Seen;
-    else if(ADCH >= g_Settings.eyeSettings.eyeBolt)
-        g_CycleValues.eyesState = ES_Bolt_Seen;
     else
         g_CycleValues.eyesState = ES_Empty_Seen;
 }

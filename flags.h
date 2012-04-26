@@ -57,5 +57,5 @@ enum EyeStates
 {
     ES_Empty_Seen       = 0x1,
     ES_Ball_Seen        = 0x2,
-    ES_Bolt_Seen        = 0x4,
+    ES_Bolt_Seen        = 0x3,
 };

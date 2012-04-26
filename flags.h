@@ -46,10 +46,10 @@ enum CycleFlags
 /// The state of a marker cycle
 enum CycleStates
 {
-    CS_Ready_To_Fire    = 0x0,
-    CS_Sear_Firing      = 0x1,
-    CS_Breech_Opening   = 0x2,
-    CS_Breech_Closing   = 0x3
+    CS_Ready_To_Fire    = 0,
+    CS_Sear_Firing      = 1,
+    CS_Breech_Opening   = 2,
+    CS_Breech_Closing   = 3
 };
 
 /// State of the marker eyes
@@ -57,5 +57,4 @@ enum EyeStates
 {
     ES_Empty_Seen       = 0x1,
     ES_Ball_Seen        = 0x2,
-    ES_Bolt_Seen        = 0x3,
 };

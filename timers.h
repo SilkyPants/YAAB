@@ -79,7 +79,7 @@ inline void timer_init()
     TCNT1 = 0;
     OCR1A = TIMER_VAL;
     TCCR1B |= (1 << WGM12);     // enable CTC mode
-//    TIMSK1 |= (1 << OCIE1A);    // enable timer
+    TIMSK1 |= (1 << OCIE1A);    // enable timer
 #endif
 #else
     TCCR0A = 0;

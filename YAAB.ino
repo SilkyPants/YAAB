@@ -95,15 +95,17 @@ void triggerToggle()
 {
     // Toggle Trigger LED
     output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
+    
+    onExternalChange();
 }
 
 IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
-PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 1000);
+PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 1);
 #endif
 
 ///
 /// Enable serial output
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
 unsigned char lastEyeState = ES_Empty_Seen;
@@ -179,8 +181,8 @@ Size of MarkerProfile: 9
     */
 
     cli();
-    //timer_init();
-    //adc_init();
+    timer_init();
+    adc_init();
     //trigger_init();
         
     // read initial trigger state
@@ -220,7 +222,7 @@ void loop()
 #if defined KEEP_ALIVE_ACTIVE
     unsigned long mil = millis();
     int delta = mil - lastKeepAlivePulse;
-    //keepAliveTask.Update(delta);
+    keepAliveTask.Update(delta);
     triggerChangeTask.Update(delta);
     lastKeepAlivePulse = mil;
 #endif
@@ -237,7 +239,7 @@ inline void changeState(unsigned char newState)
 // actually fire the marker
 inline void startCycle()
 {
-    startTimer();
+    //startTimer();
 
     // Shot fired
     if(!is_bit_set(g_CurrentProfile->actionType, AT_Auto))
@@ -366,7 +368,7 @@ inline void onTimerTick()
                     // Ready for next shot
                     changeState(CS_Ready_To_Fire);
 
-                    stopTimer();
+                    //stopTimer();
                 }
             }
             break;

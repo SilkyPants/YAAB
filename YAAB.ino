@@ -98,7 +98,7 @@ void triggerToggle()
 }
 
 IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
-PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 10);
+PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 1000);
 #endif
 
 ///
@@ -208,8 +208,7 @@ void loop()
 //    }
   
 #if defined SERIAL_DEBUG
-        Serial.print("Eye State: ");
-        Serial.println(input_value(PIND, TRIGGER_PIN), DEC);
+
     //if(lastEyeState != g_CycleValues.eyesState)
     {
     //    lastEyeState = g_CycleValues.eyesState;
@@ -221,7 +220,7 @@ void loop()
 #if defined KEEP_ALIVE_ACTIVE
     unsigned long mil = millis();
     int delta = mil - lastKeepAlivePulse;
-    keepAliveTask.Update(delta);
+    //keepAliveTask.Update(delta);
     triggerChangeTask.Update(delta);
     lastKeepAlivePulse = mil;
 #endif

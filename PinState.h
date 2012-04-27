@@ -54,23 +54,28 @@ class PinChange :
 private:
     volatile uint8_t* m_Port;
     char m_Pin;
-    char m_State;
+    uint8_t m_State;
+    uint8_t m_LastValidState;
     int m_Debounce;
     int m_InitialDebounce;
 
     bool IsConditionMet()
     {
-        return m_Debounce <= 0;
+        return m_Debounce <= 0 && m_Enabled && m_LastValidState == m_State;
     }
     
     void UpdateInternal(int delta)
     {
+
         if(input_value(*m_Port, m_Pin) != m_State)
         {
-        Serial.println("Reset!");
-            Reset();
+            m_Debounce = m_InitialDebounce;
+            m_State = input_value(*m_Port, m_Pin);
+            
+            if(!m_Enabled)
+              m_Enabled = true;
         }
-        else if(m_Enabled)
+        else if(m_Enabled && m_Debounce > 0)
         {
             m_Debounce -= delta;
         }
@@ -94,16 +99,9 @@ public:
         
         if(IsConditionMet())
         {
-          m_Debounce = 1;
-          m_Enabled = false;
+            m_Enabled = false;
+            m_LastValidState = !m_State;
         }
-    }
-
-    void Reset() 
-    { 
-        m_Debounce = m_InitialDebounce; 
-        m_State = input_value(*m_Port, m_Pin);
-        m_Enabled = true;
     }
 };
 

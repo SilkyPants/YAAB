@@ -51,7 +51,7 @@ volatile CycleValues g_CycleValues =
 volatile MarkerSettings g_Settings = 
 {
     100,                    // Trigger Debounce
-    0,                      // Current Profile
+    4,                      // Current Profile
     0,                      // Shots since Service?
     { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
     { 10, 100, 1000 }       // Eye Detect Time, Eye Ball Reflect, Eye Timeout
@@ -70,7 +70,7 @@ MarkerProfile g_Profiles[] =
     { "React", 0x1, 0x3, AT_Semi, flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
 };
 
-MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
+MarkerProfile* g_CurrentProfile = &g_Profiles[4];
 unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
@@ -286,15 +286,20 @@ inline void onExternalChange()
     // Do we want to check for debounce?
     bool triggerPressed = is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
 
-    if ((triggerPressed&& is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress)) 
+    if ((triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress)) 
     || (!triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease)))
     {
-        bit_set(g_CycleValues.flags, CF_Debounce_Charge);
+        //bit_set(g_CycleValues.flags, CF_Debounce_Charge);
+        fireMarker();
     }
     else
     {
-        bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
+    //    bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
     }
+    
+    //fireMarker();
+    
+    Serial.println(g_CycleValues.flags, BIN);
 }
 
 ///
@@ -303,13 +308,13 @@ inline void onTimerTick()
 {
     if(g_CycleValues.markerState == CS_Ready_To_Fire && is_bit_set(g_CycleValues.flags, CF_Debounce_Charge))
     {
-        // increment cycle time
-        g_CycleValues.cycleCount++;
-
-        if(g_CycleValues.cycleCount >= g_Settings.debounceTime)
-        {
-            fireMarker();
-        }
+//        // increment cycle time
+//        g_CycleValues.cycleCount++;
+//
+//        if(g_CycleValues.cycleCount >= g_Settings.debounceTime)
+//        {
+//            fireMarker();
+//        }
     }
     else
     {

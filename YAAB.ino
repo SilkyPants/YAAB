@@ -90,7 +90,7 @@ void keepAliveToggle()
     output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
 }
 
-IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE);
+IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
 #endif
 
 ///

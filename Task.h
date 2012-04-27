@@ -39,12 +39,16 @@ public:
 
     virtual ~Task(void) {};
 
-    void Update(int delta)
+    virtual void Update(int delta)
     {
         UpdateInternal(delta);
 
         if(IsConditionMet() && onConditionMet != 0)
+        {
             onConditionMet();
+        }
     }
+
+    virtual void Reset() { }
 };
 

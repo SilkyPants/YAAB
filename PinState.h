@@ -31,6 +31,11 @@ private:
     char m_Pin;
     bool m_State;
 
+    bool IsConditionMet()
+    {
+        return input_value(m_Port, m_Pin) == m_State;
+    }
+
 public:
 
     PinState(TaskConditionMet conditionMet, char pinPort, char pinBit, bool pinState) : Task(conditionMet)
@@ -41,10 +46,5 @@ public:
     }
 
     virtual ~PinState(void) {}
-
-    bool IsConditionMet()
-    {
-        return input_value(m_Port, m_Pin) == m_State;
-    }
 };
 

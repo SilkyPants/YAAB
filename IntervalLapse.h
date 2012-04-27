@@ -27,15 +27,8 @@ class IntervalLapse : public Task
 {
 private:
     int m_Interval;
-
-public:
-
-    IntervalLapse(TaskConditionMet conditionMet, int intervalTime) : Task(conditionMet)
-    {
-        m_Interval = intervalTime;
-    }
-
-    ~IntervalLapse(void) { }
+    int m_IntervalReset;
+    bool m_AutoReset;
 
     bool IsConditionMet()
     {
@@ -45,6 +38,29 @@ public:
     void UpdateInternal(int delta)
     {
         m_Interval -= delta;
+    }
+
+public:
+
+    IntervalLapse(TaskConditionMet conditionMet, int intervalTime, bool autoReset) : Task(conditionMet)
+    {
+        m_Interval = m_IntervalReset = intervalTime;
+        m_AutoReset = autoReset;
+    }
+
+    ~IntervalLapse(void) { }
+
+    void Update(int delta)
+    {
+        Task::Update(delta);
+
+        if(IsConditionMet() && m_AutoReset)
+            Reset();
+    }
+
+    void Reset() 
+    { 
+        m_Interval = m_IntervalReset; 
     }
 };
 

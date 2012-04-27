@@ -48,3 +48,62 @@ public:
     virtual ~PinState(void) {}
 };
 
+class PinChange :
+    public Task
+{
+private:
+    volatile uint8_t* m_Port;
+    char m_Pin;
+    char m_State;
+    int m_Debounce;
+    int m_InitialDebounce;
+
+    bool IsConditionMet()
+    {
+        return m_Debounce <= 0;
+    }
+    
+    void UpdateInternal(int delta)
+    {
+        if(input_value(*m_Port, m_Pin) != m_State)
+        {
+        Serial.println("Reset!");
+            Reset();
+        }
+        else if(m_Enabled)
+        {
+            m_Debounce -= delta;
+        }
+    }
+
+public:
+
+    PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, char pinBit, int debounce = 0) : Task(conditionMet)
+    {
+        m_Port = pinPort;
+        m_Pin = pinBit;
+        m_State = input_value(*m_Port, m_Pin);
+        m_Debounce = m_InitialDebounce = debounce;
+    }
+
+    virtual ~PinChange(void) {}
+    
+    void Update(int delta)
+    {
+        Task::Update(delta);
+        
+        if(IsConditionMet())
+        {
+          m_Debounce = 1;
+          m_Enabled = false;
+        }
+    }
+
+    void Reset() 
+    { 
+        m_Debounce = m_InitialDebounce; 
+        m_State = input_value(*m_Port, m_Pin);
+        m_Enabled = true;
+    }
+};
+

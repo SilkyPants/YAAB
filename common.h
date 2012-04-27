@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define bit_set(val, bit) val |= flag_set(bit)
 #define bit_clear(val, bit) val &= flag_invert(bit)
 #define bit_toggle(val, bit) val ^= flag_set(bit)
-#define is_bit_set(val, bit) (val & flag_set(bit))
+#define is_bit_set(val, bit) ((val & flag_set(bit)) != 0)
 
 #define high_nybble(byte) ((byte >> 4) & 0x0F)
 #define low_nybble(byte) ((byte) & 0x0F)

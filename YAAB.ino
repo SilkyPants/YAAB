@@ -26,6 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "interrupts.h"
 #include "settings.h"
 #include "IntervalLapse.h"
+#include "PinState.h"
 
 ///
 /// Program Specific defines - for readability
@@ -90,12 +91,19 @@ void keepAliveToggle()
     output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
 }
 
+void triggerToggle()
+{
+    // Toggle Trigger LED
+    output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
+}
+
 IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
+PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 10);
 #endif
 
 ///
 /// Enable serial output
-//#define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
 unsigned char lastEyeState = ES_Empty_Seen;
@@ -162,8 +170,8 @@ Size of MarkerProfile: 9
     */
 
     // Enable internal pullups
-    output_high(CYCLE_PORT, TRIGGER_PIN);
-
+    output_high(PORTD, TRIGGER_PIN);
+    
     /*
     output_high(INPUT_PORT, UP_BUTTON_PIN);
     output_high(INPUT_PORT, OK_BUTTON_PIN);
@@ -171,15 +179,15 @@ Size of MarkerProfile: 9
     */
 
     cli();
-    timer_init();
-    adc_init();
+    //timer_init();
+    //adc_init();
     //trigger_init();
         
     // read initial trigger state
-    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
-        bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
-    else
-        bit_clear(g_CycleValues.flags, CF_Trigger_Pressed);
+//    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
+//        bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
+//    else
+//        bit_clear(g_CycleValues.flags, CF_Trigger_Pressed);
 
     sei();
 
@@ -191,26 +199,31 @@ Size of MarkerProfile: 9
 
 void loop()
 {
-    if(input_value(CYCLE_PORT, TRIGGER_PIN) != !is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
-    {
-        onExternalChange();
-#if defined KEEP_ALIVE_ACTIVE
-        output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
-#endif
-    }
+//    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
+//    {
+//        onExternalChange();
+//#if defined KEEP_ALIVE_ACTIVE
+//        output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
+//#endif
+//    }
   
 #if defined SERIAL_DEBUG
-    if(lastEyeState != g_CycleValues.eyesState)
-    {
-        lastEyeState = g_CycleValues.eyesState;
         Serial.print("Eye State: ");
-        Serial.println(lastEyeState, HEX);
+        Serial.println(input_value(PIND, TRIGGER_PIN), DEC);
+    //if(lastEyeState != g_CycleValues.eyesState)
+    {
+    //    lastEyeState = g_CycleValues.eyesState;
+    //    Serial.print("Eye State: ");
+    //    Serial.println(input_value(CYCLE_PORT, TRIGGER_PIN), HEX);
     }
 #endif
 
 #if defined KEEP_ALIVE_ACTIVE
-    keepAliveTask.Update(millis() - lastKeepAlivePulse);
-    lastKeepAlivePulse = millis();
+    unsigned long mil = millis();
+    int delta = mil - lastKeepAlivePulse;
+    keepAliveTask.Update(delta);
+    triggerChangeTask.Update(delta);
+    lastKeepAlivePulse = mil;
 #endif
 }
 

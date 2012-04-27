@@ -27,6 +27,9 @@ class Task
 {
 private:
     TaskConditionMet onConditionMet;
+    
+protected:
+    bool m_Enabled;
 
     virtual bool IsConditionMet() = 0;
     virtual void UpdateInternal(int delta) { }
@@ -35,6 +38,7 @@ public:
     Task(TaskConditionMet conditionMet)
     {
         onConditionMet = conditionMet;
+        m_Enabled = true;
     }
 
     virtual ~Task(void) {};

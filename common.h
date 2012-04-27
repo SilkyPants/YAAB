@@ -45,6 +45,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define output_toggle(port,pin) bit_toggle(port,pin)
 #define input_value(port,pin) is_bit_set(port,pin)
 
+/// Function prototype for callbacks on tasks
+typedef void (*TaskConditionMet)();
+
 ///
 /// Mark functions that should always be inline
 inline void changeState(unsigned char newState) __attribute__((always_inline));

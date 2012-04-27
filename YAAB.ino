@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "adc.h"
 #include "interrupts.h"
 #include "settings.h"
+#include "IntervalLapse.h"
 
 ///
 /// Program Specific defines - for readability
@@ -73,7 +74,7 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
-//#define KEEP_ALIVE_ACTIVE
+#define KEEP_ALIVE_ACTIVE
 
 #if defined KEEP_ALIVE_ACTIVE
 #define KEEP_ALIVE_PIN 5        // Pin 13
@@ -82,6 +83,14 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 #define KEEP_ALIVE_PORT_REG DDRB
 #define KEEP_ALIVE_PULSE 1000
 unsigned long lastKeepAlivePulse = 0;
+
+void keepAliveToggle()
+{
+    // Toggle Kepp Alive LED
+    output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
+}
+
+IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE);
 #endif
 
 ///
@@ -200,11 +209,8 @@ void loop()
 #endif
 
 #if defined KEEP_ALIVE_ACTIVE
-    if(millis() - lastKeepAlivePulse > KEEP_ALIVE_PULSE)
-    {
-        lastKeepAlivePulse = millis();
-        output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
-    }
+    keepAliveTask.Update(millis() - lastKeepAlivePulse);
+    lastKeepAlivePulse = millis();
 #endif
 }
 

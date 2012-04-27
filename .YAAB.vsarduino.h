@@ -6,6 +6,7 @@
 #define __asm__(x)
 #define ARDUINO 100
 extern "C" void __cxa_pure_virtual() {}
+void keepAliveToggle();
 void setup();
 void loop();
 inline void changeState(unsigned char newState);

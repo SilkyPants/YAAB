@@ -43,7 +43,7 @@ public:
     {
         UpdateInternal(delta);
 
-        if(IsMet() && onConditionMet != 0)
+        if(IsConditionMet() && onConditionMet != 0)
             onConditionMet();
     }
 };

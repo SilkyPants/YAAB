@@ -22,39 +22,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /// Flags for user profiles
 enum ActionTypes
 {
-    AT_Training         = 0x1,
-    AT_Pump             = 0x2,
-    AT_Semi             = 0x4,
-    AT_Auto             = 0x8,
+    AT_Training,
+    AT_Pump,
+    AT_Semi,
+    AT_Auto,
 };
 
 enum TriggerActions
 {
-    TA_FireOnPress      = 0,
-    TA_FireOnRelease    = 0x1,
+    TA_FireOnPress,
+    TA_FireOnRelease,
 };
 
 /// Flags used in a marker cycle
 enum CycleFlags
 {
-    CF_Use_Eyes         = 0x01,
-    CF_Trigger_Pressed  = 0x02,
-    CF_Debounce_Charge  = 0x04,
-    CF_Reserved         = 0x08,
+    CF_Use_Eyes,
+    CF_Trigger_Pressed,
 };
 
 /// The state of a marker cycle
 enum CycleStates
 {
-    CS_Ready_To_Fire    = 0,
-    CS_Sear_Firing      = 1,
-    CS_Breech_Opening   = 2,
-    CS_Breech_Closing   = 3
+    CS_Ready_To_Fire,
+    CS_Sear_Firing,
+    CS_Breech_Opening,
+    CS_Breech_Closing
 };
 
 /// State of the marker eyes
 enum EyeStates
 {
-    ES_Empty_Seen       = 0x1,
-    ES_Ball_Seen        = 0x2,
+    ES_Empty_Seen,
+    ES_Ball_Seen,
 };

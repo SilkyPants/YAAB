@@ -45,11 +45,12 @@ struct MarkerSettings // 16 bytes
     EyeSettings eyeSettings;                // Settings for the eyes
 };
 
-struct CycleValues // 4 bytes?
+struct CycleValues // 4 bytes
 {
-    unsigned char flags : 4;                // Flags using in marker cycle (CycleFlags)
+    unsigned char flags : 2;                // Flags using in marker cycle (CycleFlags)
     unsigned char markerState : 2;          // Marker current state
     unsigned char eyesState : 2;            // Eyes current state
+    unsigned char : 0;                      // Eyes current state
     unsigned char shotsToGo;                // Shots to fire in 'cycle' (Burst)
     unsigned int cycleCount;                // Cycle counter in 0.1ms increments (max 6.5535 seconds)
 };

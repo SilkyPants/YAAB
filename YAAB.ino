@@ -63,14 +63,14 @@ volatile MarkerSettings g_Settings =
 /// Customisable by the user
 MarkerProfile g_Profiles[] = 
 {
-    { "Semi",  0x1, 0x0, AT_Semi, flag_set(TA_FireOnPress) },
-    { "Pump",  0x1, 0x0, AT_Pump, flag_set(TA_FireOnPress) },
-    { "Auto",  0x1, 0x0, AT_Auto, flag_set(TA_FireOnPress) },
-    { "Burst", 0x3, 0x0, AT_Semi, flag_set(TA_FireOnPress) },
-    { "React", 0x1, 0x3, AT_Semi, flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
+    { "Semi",  0x1, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
+    { "Pump",  0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
+    { "Auto",  0x0, 0x0, flag_set(AT_Auto), flag_set(TA_FireOnPress) },
+    { "Burst", 0x3, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
+    { "React", 0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
 };
 
-MarkerProfile* g_CurrentProfile = &g_Profiles[4];
+MarkerProfile* g_CurrentProfile = &g_Profiles[2];
 unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
@@ -83,7 +83,6 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 #define KEEP_ALIVE_PORT PORTB
 #define KEEP_ALIVE_PORT_REG DDRB
 #define KEEP_ALIVE_PULSE 1000
-unsigned long lastKeepAlivePulse = 0;
 
 void keepAliveToggle()
 {
@@ -91,17 +90,21 @@ void keepAliveToggle()
     output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
 }
 
+IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
+#endif
+
 void triggerToggle()
 {
+#if defined KEEP_ALIVE_ACTIVE
     // Toggle Trigger LED
     output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
+#endif
     
     onExternalChange();
 }
 
-IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
+unsigned long lastKeepAlivePulse = 0;
 PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 1);
-#endif
 
 ///
 /// Enable serial output
@@ -196,7 +199,7 @@ Size of MarkerProfile: 9
     
 #if defined SERIAL_DEBUG
     Serial.println("Setup complete");
-    Serial.println(g_CurrentProfile->profileName);
+    Serial.println(is_bit_set(g_CurrentProfile->actionType, AT_Auto), BIN);
 #endif
 }
 
@@ -220,13 +223,13 @@ void loop()
     }
 #endif
 
-#if defined KEEP_ALIVE_ACTIVE
     unsigned long mil = millis();
     int delta = mil - lastKeepAlivePulse;
+#if defined KEEP_ALIVE_ACTIVE
     keepAliveTask.Update(delta);
+#endif
     triggerChangeTask.Update(delta);
     lastKeepAlivePulse = mil;
-#endif
 }
 
 // Change marker state
@@ -243,8 +246,8 @@ inline void startCycle()
     //startTimer();
 
     // Shot fired
-    if(!is_bit_set(g_CurrentProfile->actionType, AT_Auto))
-        g_CycleValues.shotsToGo--;
+    if(g_CycleValues.shotsToGo)
+      g_CycleValues.shotsToGo--;
 
     // Increment shots fired
     g_Settings.shotsSinceLastReset++;
@@ -283,53 +286,22 @@ inline void onExternalChange()
 
     // Clear counter
     g_CycleValues.cycleCount = 0;
-    
-      Serial.print("Flags: ");
-      Serial.print(g_CycleValues.flags, BIN);
-      Serial.print(" Action: ");
-      Serial.print(g_CurrentProfile->triggerAction, BIN);
 
     // Do we want to check for debounce?
     bool triggerPressed = is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
-    
-      Serial.print(" Trigger: ");
-      Serial.println(triggerPressed, BIN);
 
-    if ((triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress)))
+    if ((triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress))
+    || (!triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease)))
     {
-        //bit_set(g_CycleValues.flags, CF_Debounce_Charge);
         fireMarker();
     }
-    else if(!triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease))
-    {
-      Serial.println("Release Fire");
-        fireMarker();
-    }
-    else
-    {
-    //    bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
-    }
-    
-    //fireMarker();
-    
-    Serial.println(g_CycleValues.flags, BIN);
 }
 
 ///
 /// Timer Tick
 inline void onTimerTick()
 {
-    if(g_CycleValues.markerState == CS_Ready_To_Fire && is_bit_set(g_CycleValues.flags, CF_Debounce_Charge))
-    {
-//        // increment cycle time
-//        g_CycleValues.cycleCount++;
-//
-//        if(g_CycleValues.cycleCount >= g_Settings.debounceTime)
-//        {
-//            fireMarker();
-//        }
-    }
-    else
+    if(g_CycleValues.markerState != CS_Ready_To_Fire)
     {
         // increment cycle time
         g_CycleValues.cycleCount++;

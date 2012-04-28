@@ -105,7 +105,7 @@ PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 1);
 
 ///
 /// Enable serial output
-//#define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
 unsigned char lastEyeState = ES_Empty_Seen;
@@ -196,6 +196,7 @@ Size of MarkerProfile: 9
     
 #if defined SERIAL_DEBUG
     Serial.println("Setup complete");
+    Serial.println(g_CurrentProfile->profileName);
 #endif
 }
 
@@ -258,7 +259,7 @@ inline void startCycle()
 inline void fireMarker()
 {
     // stop counting for debounce
-    bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
+    //bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
     
     // Determine how many shots to fire this 'cycle'
     if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
@@ -282,14 +283,26 @@ inline void onExternalChange()
 
     // Clear counter
     g_CycleValues.cycleCount = 0;
+    
+      Serial.print("Flags: ");
+      Serial.print(g_CycleValues.flags, BIN);
+      Serial.print(" Action: ");
+      Serial.print(g_CurrentProfile->triggerAction, BIN);
 
     // Do we want to check for debounce?
     bool triggerPressed = is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
+    
+      Serial.print(" Trigger: ");
+      Serial.println(triggerPressed, BIN);
 
-    if ((triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress)) 
-    || (!triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease)))
+    if ((triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress)))
     {
         //bit_set(g_CycleValues.flags, CF_Debounce_Charge);
+        fireMarker();
+    }
+    else if(!triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease))
+    {
+      Serial.println("Release Fire");
         fireMarker();
     }
     else

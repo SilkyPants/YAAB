@@ -30,8 +30,8 @@ enum ActionTypes
 
 enum TriggerActions
 {
-    TA_FireOnPress      = 0x1,
-    TA_FireOnRelease    = 0x2,
+    TA_FireOnPress      = 0,
+    TA_FireOnRelease    = 0x1,
 };
 
 /// Flags used in a marker cycle

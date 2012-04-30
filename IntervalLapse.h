@@ -30,17 +30,17 @@ private:
     int m_IntervalReset;
     bool m_AutoReset;
 
-    inline bool IsConditionMet()
+    bool IsConditionMet()
     {
         return m_Interval <= 0;
     }
 
-    inline void UpdateInternal(int &delta)
+    void UpdateInternal(int &delta)
     {
         m_Interval -= delta;
     }
 
-    inline void PostUpdate()
+    void PostUpdate()
     {
         if(IsConditionMet() && m_AutoReset)
             Reset();
@@ -56,13 +56,13 @@ public:
 
     ~IntervalLapse(void) { }
 
-    inline void UpdateOneTick()
+    void UpdateOneTick()
     {
         m_Interval--;
         Task::Update();
     }
 
-    inline void Reset() 
+    void Reset() 
     { 
         m_Interval = m_IntervalReset; 
     }

@@ -103,7 +103,11 @@ void onSecondTick();
 PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN, 1);
 IntervalLapse secondTickTask(onSecondTick, 10000, true); // in increments of 0.1ms
 
+//#define GAME_TIMER
+
+#if defined GAME_TIMER
 GameTimer g_GameTimer;
+#endif
 
 ///
 /// Enable serial output
@@ -231,7 +235,9 @@ void triggerToggle()
 
 void onSecondTick()
 {
+#if defined GAME_TIMER
     g_GameTimer.SubtractSecond();
+#endif
 }
 
 // Change marker state

@@ -34,9 +34,9 @@ private:
 protected:
     bool m_Enabled;
 
-    inline virtual bool IsConditionMet() = 0;
-    inline virtual void UpdateInternal() = 0;
-    inline virtual void PostUpdate() = 0;
+    virtual bool IsConditionMet() = 0;
+    virtual void UpdateInternal() = 0;
+    virtual void PostUpdate() = 0;
 
 public:
     Task(TaskConditionMet conditionMet)
@@ -47,7 +47,7 @@ public:
 
     virtual ~Task(void) { }
 
-    inline virtual void Update()
+    virtual void Update()
     {
         UpdateInternal();
 
@@ -58,7 +58,7 @@ public:
         }
     }
 
-    inline virtual void Reset() {  m_Enabled = true; }
+    virtual void Reset() {  m_Enabled = true; }
 };
 
 class TimeCriticalTask : public Task
@@ -68,14 +68,14 @@ private:
     void UpdateInternal() { }
 
 protected:
-    inline virtual void UpdateInternal(int &delta) = 0;
+    virtual void UpdateInternal(int &delta) = 0;
 
 public:
     TimeCriticalTask(TaskConditionMet conditionMet) : Task(conditionMet) { }
 
     virtual ~TimeCriticalTask(void) { }
 
-    inline virtual void Update(int &delta)
+    virtual void Update(int &delta)
     {
         UpdateInternal(delta);
 

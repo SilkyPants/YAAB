@@ -59,12 +59,12 @@ private:
     char m_Debounce;
     char m_InitialDebounce;
 
-    inline bool IsConditionMet()
+    bool IsConditionMet()
     {
         return m_Debounce <= 0 && m_Enabled && m_LastValidState == m_State;
     }
 
-    inline bool UpdatePinState()
+    bool UpdatePinState()
     {
         if(input_value(*m_Port, m_Pin) != m_State)
         {
@@ -80,7 +80,7 @@ private:
         return false;
     }
     
-    inline void UpdateInternal(int &delta)
+    void UpdateInternal(int &delta)
     {
         if(!UpdatePinState())
         {
@@ -112,7 +112,7 @@ public:
 
     virtual ~PinChange(void) { }
 
-    inline void UpdateOneTick()
+    void UpdateOneTick()
     {
         if(!UpdatePinState())
             m_Debounce--;

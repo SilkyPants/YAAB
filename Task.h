@@ -23,6 +23,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "common.h"
 
+/// Function prototype for callbacks on tasks
+typedef void (*TaskConditionMet)();
+
 class Task
 {
 private:
@@ -31,8 +34,9 @@ private:
 protected:
     bool m_Enabled;
 
-    virtual bool IsConditionMet() = 0;
-    virtual void UpdateInternal(int delta) { }
+    inline virtual bool IsConditionMet() = 0;
+    inline virtual void UpdateInternal() = 0;
+    inline virtual void PostUpdate() = 0;
 
 public:
     Task(TaskConditionMet conditionMet)
@@ -41,18 +45,41 @@ public:
         m_Enabled = true;
     }
 
-    virtual ~Task(void) {};
+    virtual ~Task(void) { }
 
-    virtual void Update(int delta)
+    inline virtual void Update()
     {
-        UpdateInternal(delta);
+        UpdateInternal();
 
         if(IsConditionMet() && onConditionMet != 0)
-        {
+        { 
+            m_Enabled = false;
             onConditionMet();
         }
     }
 
-    virtual void Reset() { }
+    inline virtual void Reset() {  m_Enabled = true; }
 };
 
+class TimeCriticalTask : public Task
+{
+private:
+    Task::Update;
+    void UpdateInternal() { }
+
+protected:
+    inline virtual void UpdateInternal(int &delta) = 0;
+
+public:
+    TimeCriticalTask(TaskConditionMet conditionMet) : Task(conditionMet) { }
+
+    virtual ~TimeCriticalTask(void) { }
+
+    inline virtual void Update(int &delta)
+    {
+        UpdateInternal(delta);
+
+        Task::Update();
+    }
+
+};

@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define bit_set(val, bit) val |= flag_set(bit)
 #define bit_clear(val, bit) val &= flag_invert(bit)
 #define bit_toggle(val, bit) val ^= flag_set(bit)
-#define is_bit_set(val, bit) ((val & flag_set(bit)) != 0)
+#define is_bit_set(val, bit) ((val & flag_set(bit)) == bit) // (((val) >> (bit)) & 0x01)
 
 #define high_nybble(byte) ((byte >> 4) & 0x0F)
 #define low_nybble(byte) ((byte) & 0x0F)
@@ -44,9 +44,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define output_high(port,pin) bit_set(port,pin)
 #define output_toggle(port,pin) bit_toggle(port,pin)
 #define input_value(port,pin) is_bit_set(port,pin)
-
-/// Function prototype for callbacks on tasks
-typedef void (*TaskConditionMet)();
 
 ///
 /// Mark functions that should always be inline

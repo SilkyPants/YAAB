@@ -31,7 +31,7 @@ private:
     char m_Pin;
     bool m_State;
 
-    bool IsConditionMet()
+    inline bool IsConditionMet()
     {
         return input_value(m_Port, m_Pin) == m_State;
     }
@@ -49,24 +49,23 @@ public:
 };
 
 class PinChange :
-    public Task
+    public TimeCriticalTask
 {
 private:
     volatile uint8_t* m_Port;
     char m_Pin;
-    uint8_t m_State;
-    uint8_t m_LastValidState;
-    int m_Debounce;
-    int m_InitialDebounce;
+    bool m_State;
+    bool m_LastValidState;
+    char m_Debounce;
+    char m_InitialDebounce;
 
-    bool IsConditionMet()
+    inline bool IsConditionMet()
     {
         return m_Debounce <= 0 && m_Enabled && m_LastValidState == m_State;
     }
-    
-    void UpdateInternal(int delta)
-    {
 
+    inline bool UpdatePinState()
+    {
         if(input_value(*m_Port, m_Pin) != m_State)
         {
             m_Debounce = m_InitialDebounce;
@@ -74,16 +73,36 @@ private:
             
             if(!m_Enabled)
               m_Enabled = true;
+
+            return true;
         }
-        else if(m_Enabled && m_Debounce > 0)
+
+        return false;
+    }
+    
+    inline void UpdateInternal(int &delta)
+    {
+        if(!UpdatePinState())
         {
-            m_Debounce -= delta;
+            if(m_Enabled && m_Debounce > 0)
+            {
+                m_Debounce -= delta;
+            }
+        }
+    }
+
+    void PostUpdate()
+    {
+        if(IsConditionMet())
+        {
+            m_Enabled = false;
+            m_LastValidState = !m_State;
         }
     }
 
 public:
 
-    PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, char pinBit, int debounce = 0) : Task(conditionMet)
+    PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, char pinBit, char debounce = 0) : TimeCriticalTask(conditionMet)
     {
         m_Port = pinPort;
         m_Pin = pinBit;
@@ -91,17 +110,14 @@ public:
         m_Debounce = m_InitialDebounce = debounce;
     }
 
-    virtual ~PinChange(void) {}
-    
-    void Update(int delta)
+    virtual ~PinChange(void) { }
+
+    inline void UpdateOneTick()
     {
-        Task::Update(delta);
-        
-        if(IsConditionMet())
-        {
-            m_Enabled = false;
-            m_LastValidState = !m_State;
-        }
+        if(!UpdatePinState())
+            m_Debounce--;
+
+        Task::Update();
     }
 };
 

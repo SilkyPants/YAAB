@@ -28,6 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
 #define CYCLE_PORT PORTA
 #define CYCLE_PORT_REG DDRA
+#define CYCLE_PIN_REG PINA
 
 #define EYE_PORT PORTA
 #define EYE_PORT_REG DDRA
@@ -35,18 +36,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
 #define CYCLE_PORT PORTB
 #define CYCLE_PORT_REG DDRB
+#define CYCLE_PIN_REG PINB
 
 #define EYE_PORT PORTB
 #define EYE_PORT_REG DDRB
 #else
 #define CYCLE_PORT PORTD
 #define CYCLE_PORT_REG DDRD
+#define CYCLE_PIN_REG PIND
 
 #define EYE_PORT PORTC
 #define EYE_PORT_REG DDRC
 
 #define INPUT_PORT PORTB
 #define INPUT_PORT_REG DDRB
+#define INPUT_PIN_REG PINB
 #define TIMER_16_BIT
 #endif
 
@@ -60,7 +64,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EYE_PIN 3
 #define IRED_PIN 4
 #else
-// On Port D (5, 6, 7)
+// On Port D (2, 6, 7)
 #define TRIGGER_PIN 2
 #define PNEU_PIN 6
 #define SEAR_PIN 7

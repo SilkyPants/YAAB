@@ -23,10 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pins.h"
 #include "timers.h"
 #include "adc.h"
-#include "interrupts.h"
 #include "settings.h"
+
 #include "IntervalLapse.h"
 #include "PinState.h"
+
+#include "GameTimer.h"
 
 ///
 /// Program Specific defines - for readability
@@ -75,7 +77,7 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
-#define KEEP_ALIVE_ACTIVE
+//#define KEEP_ALIVE_ACTIVE
 
 #if defined KEEP_ALIVE_ACTIVE
 #define KEEP_ALIVE_PIN 5        // Pin 13
@@ -83,6 +85,8 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 #define KEEP_ALIVE_PORT PORTB
 #define KEEP_ALIVE_PORT_REG DDRB
 #define KEEP_ALIVE_PULSE 1000
+
+unsigned long lastKeepAlivePulse = 0;
 
 void keepAliveToggle()
 {
@@ -93,22 +97,17 @@ void keepAliveToggle()
 IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
 #endif
 
-void triggerToggle()
-{
-#if defined KEEP_ALIVE_ACTIVE
-    // Toggle Trigger LED
-    output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
-#endif
-    
-    onExternalChange();
-}
+void triggerToggle();
+void onSecondTick();
 
-unsigned long lastKeepAlivePulse = 0;
-PinChange triggerChangeTask(triggerToggle, &PIND, TRIGGER_PIN, 1);
+PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN, 1);
+IntervalLapse secondTickTask(onSecondTick, 10000, true); // in increments of 0.1ms
+
+GameTimer g_GameTimer;
 
 ///
 /// Enable serial output
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
 unsigned char lastEyeState = ES_Empty_Seen;
@@ -121,19 +120,7 @@ void setup()
 {
 #if defined SERIAL_DEBUG
     Serial.begin(9600);
-/*
-Number of profiles: 5
 
-Size of EyeSettings: 5
-
-Size of MarkerTiming: 6
-
-Size of MarkerSettings: 17
-
-Size of FiringValues: 7
-
-Size of MarkerProfile: 9
-*/
     Serial.print("Number of profiles: ");
     Serial.println(g_NumProfiles);
         
@@ -151,6 +138,15 @@ Size of MarkerProfile: 9
         
     Serial.print("Size of MarkerProfile: ");
     Serial.println(sizeof(MarkerProfile));
+        
+    Serial.print("Size of uint8_t: ");
+    Serial.println(sizeof(uint8_t));
+        
+    Serial.print("Size of uint16_t: ");
+    Serial.println(sizeof(uint16_t));
+        
+    Serial.print("Size of uint32_t: ");
+    Serial.println(sizeof(uint32_t));
 #endif
 
     // Setup pin direction
@@ -184,37 +180,21 @@ Size of MarkerProfile: 9
     */
 
     cli();
+
     timer_init();
     adc_init();
-    //trigger_init();
-        
-    // read initial trigger state
-//    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
-//        bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
-//    else
-//        bit_clear(g_CycleValues.flags, CF_Trigger_Pressed);
 
     sei();
 
     
 #if defined SERIAL_DEBUG
     Serial.println("Setup complete");
-    Serial.println(is_bit_set(g_CurrentProfile->actionType, AT_Auto), BIN);
 #endif
 }
 
 void loop()
-{
-//    if(input_value(CYCLE_PORT, TRIGGER_PIN) == LOW)
-//    {
-//        onExternalChange();
-//#if defined KEEP_ALIVE_ACTIVE
-//        output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
-//#endif
-//    }
-  
+{  
 #if defined SERIAL_DEBUG
-
     //if(lastEyeState != g_CycleValues.eyesState)
     {
     //    lastEyeState = g_CycleValues.eyesState;
@@ -223,19 +203,41 @@ void loop()
     }
 #endif
 
-    unsigned long mil = millis();
-    int delta = mil - lastKeepAlivePulse;
 #if defined KEEP_ALIVE_ACTIVE
     keepAliveTask.Update(delta);
-#endif
-    triggerChangeTask.Update(delta);
     lastKeepAlivePulse = mil;
+    unsigned long mil = millis();
+    int delta = mil - lastKeepAlivePulse;
+#endif
+}
+
+void triggerToggle()
+{
+#if defined KEEP_ALIVE_ACTIVE
+    // Toggle Trigger LED
+    output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
+#endif
+    
+    // Toggle the trigger pressed flag
+    bit_toggle(g_CycleValues.flags, CF_Trigger_Pressed);
+
+    // Do we want to fire?
+    if ((is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress))
+    || (!is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease)))
+    {
+        fireMarker();
+    }
+}
+
+void onSecondTick()
+{
+    g_GameTimer.SubtractSecond();
 }
 
 // Change marker state
-inline void changeState(unsigned char newState)
+inline void changeState(CycleStates newState)
 {
-    g_CycleValues.markerState = (CycleStates)newState;
+    g_CycleValues.markerState = newState;
 
     g_CycleValues.cycleCount = 0;
 }
@@ -243,8 +245,6 @@ inline void changeState(unsigned char newState)
 // actually fire the marker
 inline void startCycle()
 {
-    //startTimer();
-
     // Shot fired
     if(g_CycleValues.shotsToGo)
       g_CycleValues.shotsToGo--;
@@ -261,9 +261,10 @@ inline void startCycle()
 
 inline void fireMarker()
 {
-    // stop counting for debounce
-    //bit_clear(g_CycleValues.flags, CF_Debounce_Charge);
-    
+    // Check we are ready to fire
+    if(g_CycleValues.markerState != CS_Ready_To_Fire)
+        return;
+
     // Determine how many shots to fire this 'cycle'
     if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
         g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFirePress;
@@ -278,29 +279,12 @@ inline void fireMarker()
 ///
 
 ///
-/// External Interrupt 0 Changed
-inline void onExternalChange()
-{
-    // Toggle the trigger pressed flag
-    bit_toggle(g_CycleValues.flags, CF_Trigger_Pressed);
-
-    // Clear counter
-    g_CycleValues.cycleCount = 0;
-
-    // Do we want to check for debounce?
-    bool triggerPressed = is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed);
-
-    if ((triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress))
-    || (!triggerPressed && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease)))
-    {
-        fireMarker();
-    }
-}
-
-///
 /// Timer Tick
 inline void onTimerTick()
 {
+    secondTickTask.UpdateOneTick();
+    triggerChangeTask.UpdateOneTick();
+
     if(g_CycleValues.markerState != CS_Ready_To_Fire)
     {
         // increment cycle time

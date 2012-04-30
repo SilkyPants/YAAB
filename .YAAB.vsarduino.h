@@ -9,10 +9,11 @@ extern "C" void __cxa_pure_virtual() {}
 void keepAliveToggle();
 void setup();
 void loop();
-inline void changeState(unsigned char newState);
+void triggerToggle();
+void onSecondTick();
+inline void changeState(CycleStates newState);
 inline void startCycle();
 inline void fireMarker();
-inline void onExternalChange();
 inline void onTimerTick();
 inline void onADCReadComplete();
 

@@ -32,7 +32,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define bit_set(val, bit) val |= flag_set(bit)
 #define bit_clear(val, bit) val &= flag_invert(bit)
 #define bit_toggle(val, bit) val ^= flag_set(bit)
-#define is_bit_set(val, bit) ((val & flag_set(bit)) == bit) // (((val) >> (bit)) & 0x01)
+#define is_bit_set(val, bit) ((val & flag_set(bit)) == bit)
 
 #define high_nybble(byte) ((byte >> 4) & 0x0F)
 #define low_nybble(byte) ((byte) & 0x0F)
@@ -46,10 +46,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define input_value(port,pin) is_bit_set(port,pin)
 
 ///
-/// Mark functions that should always be inline
-inline void changeState(unsigned char newState) __attribute__((always_inline));
-inline void startCycle() __attribute__((always_inline));
-inline void fireMarker() __attribute__((always_inline));
-inline void onExternalChange() __attribute__((always_inline));
-inline void onADCReadComplete() __attribute__((always_inline));
-inline void onTimerTick() __attribute__((always_inline));
+/// Prototype functions
+void onADCReadComplete();
+void onTimerTick();

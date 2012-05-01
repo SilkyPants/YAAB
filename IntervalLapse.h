@@ -23,32 +23,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Task.h"
 
-class IntervalLapse : public TimeCriticalTask
+class IntervalLapse : public Task
 {
-private:
-    int m_Interval;
-    int m_IntervalReset;
+protected:
+    uint16_t m_Interval;
+    uint16_t m_IntervalReset;
     bool m_AutoReset;
 
     bool IsConditionMet()
     {
-        return m_Interval <= 0;
+        return m_Interval == 0 && m_Enabled;
     }
 
-    void UpdateInternal(int &delta)
+    void UpdateInternal()
     {
-        m_Interval -= delta;
+        m_Interval--;
     }
 
-    void PostUpdate()
+    void ConditionMet()
     {
-        if(IsConditionMet() && m_AutoReset)
+        if(m_AutoReset)
             Reset();
     }
 
 public:
 
-    IntervalLapse(TaskConditionMet conditionMet, int intervalTime, bool autoReset) : TimeCriticalTask(conditionMet)
+    IntervalLapse(TaskConditionMet conditionMet, uint16_t intervalTime, bool autoReset) : Task(conditionMet)
     {
         m_Interval = m_IntervalReset = intervalTime;
         m_AutoReset = autoReset;
@@ -56,14 +56,9 @@ public:
 
     ~IntervalLapse(void) { }
 
-    void UpdateOneTick()
-    {
-        m_Interval--;
-        Task::Update();
-    }
-
     void Reset() 
-    { 
+    {
+        Task::Reset();
         m_Interval = m_IntervalReset; 
     }
 };

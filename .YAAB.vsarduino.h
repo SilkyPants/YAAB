@@ -9,9 +9,12 @@ extern "C" void __cxa_pure_virtual() {}
 void keepAliveToggle();
 void setup();
 void loop();
+void searDrop();
+void pneumaticsCocking();
+void pneumaticsCocked();
+void cycleComplete();
 void triggerToggle();
 void onSecondTick();
-inline void changeState(CycleStates newState);
 inline void startCycle();
 inline void fireMarker();
 inline void onTimerTick();

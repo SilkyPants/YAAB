@@ -22,7 +22,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /// Flags for user profiles
 enum ActionTypes
 {
-    AT_Training,
     AT_Pump,
     AT_Semi,
     AT_Auto,
@@ -39,15 +38,7 @@ enum CycleFlags
 {
     CF_Use_Eyes,
     CF_Trigger_Pressed,
-};
-
-/// The state of a marker cycle
-enum CycleStates
-{
-    CS_Ready_To_Fire,
-    CS_Sear_Firing,
-    CS_Breech_Opening,
-    CS_Breech_Closing
+    CF_Marker_Firing,
 };
 
 /// State of the marker eyes

@@ -27,6 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "IntervalLapse.h"
 #include "PinState.h"
+#include "BreechEyesTask.h"
 
 #include "GameTimer.h"
 
@@ -41,9 +42,6 @@ volatile CycleValues g_CycleValues =
 {
     0,                  // Flags using in marker cycle (CycleFlags)
     0,                  // Shots to fire in 'cycle' (Burst)
-    CS_Ready_To_Fire,   // Marker current state
-    0,                  // Cycle counter in 0.1ms increments (max 1.6383 seconds)
-    0                   // Current value read from the eyes
 };
 
 // Store in EEMEM later
@@ -53,7 +51,7 @@ volatile CycleValues g_CycleValues =
 volatile MarkerSettings g_Settings = 
 {
     100,                    // Trigger Debounce
-    4,                      // Current Profile
+    2,                      // Current Profile
     0,                      // Shots since Service?
     { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
     { 10, 100, 1000 }       // Eye Detect Time, Eye Ball Reflect, Eye Timeout
@@ -72,7 +70,7 @@ MarkerProfile g_Profiles[] =
     { "React", 0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
 };
 
-MarkerProfile* g_CurrentProfile = &g_Profiles[2];
+MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
 unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
@@ -84,9 +82,7 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 #define TRIGGER_PRESSED_PIN 4   // Pin 12
 #define KEEP_ALIVE_PORT PORTB
 #define KEEP_ALIVE_PORT_REG DDRB
-#define KEEP_ALIVE_PULSE 1000
-
-unsigned long lastKeepAlivePulse = 0;
+#define KEEP_ALIVE_PULSE 1      // Because we put this in the second tick function
 
 void keepAliveToggle()
 {
@@ -97,10 +93,32 @@ void keepAliveToggle()
 IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
 #endif
 
+///
+/// Other Setting Stuff!
+///
+
+uint8_t g_triggerPullCount;
+uint8_t g_ballShotCount;
+
+///
+/// End Other Setting Stuff!
+///
+
 void triggerToggle();
+void searDrop();
+void pneumaticsCocking();
+void pneumaticsCocked();
+void cycleComplete();
 void onSecondTick();
 
-PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN, 1);
+PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN, 10);
+
+IntervalLapse searOnTask(searDrop, 40, false); 
+IntervalLapse pneuDelayTask(pneumaticsCocking, 60, false);
+IntervalLapse pneuOnTask(pneumaticsCocked, 550, false);
+IntervalLapse pneuOffTask(cycleComplete, 240, false);
+BreechEyesTask eyeCycleTask(pneumaticsCocked, 10000, 10, 50);
+
 IntervalLapse secondTickTask(onSecondTick, 10000, true); // in increments of 0.1ms
 
 //#define GAME_TIMER
@@ -185,8 +203,17 @@ void setup()
 
     cli();
 
+    // Init timers
     timer_init();
     adc_init();
+
+    // Kick off the taks
+    triggerChangeTask.Reset();
+    secondTickTask.Reset();
+    
+#if defined KEEP_ALIVE_ACTIVE
+    keepAliveToggle.Reset();
+#endif
 
     sei();
 
@@ -203,16 +230,44 @@ void loop()
     {
     //    lastEyeState = g_CycleValues.eyesState;
     //    Serial.print("Eye State: ");
-    //    Serial.println(input_value(CYCLE_PORT, TRIGGER_PIN), HEX);
+    //    Serial.println(g_CycleValues.eyesState, HEX);
     }
 #endif
+}
 
-#if defined KEEP_ALIVE_ACTIVE
-    keepAliveTask.Update(delta);
-    lastKeepAlivePulse = mil;
-    unsigned long mil = millis();
-    int delta = mil - lastKeepAlivePulse;
-#endif
+void searDrop()
+{
+    output_low(CYCLE_PORT, SEAR_PIN);
+}
+
+void pneumaticsCocking()
+{
+    output_high(CYCLE_PORT, PNEU_PIN);
+
+    if(is_bit_set(g_CycleValues.flags, CF_Use_Eyes))
+        eyeCycleTask.Reset();
+    else
+        pneuOnTask.Reset();
+}
+
+void pneumaticsCocked()
+{
+    output_low(CYCLE_PORT, PNEU_PIN);
+    pneuOffTask.Reset();
+}
+
+void cycleComplete()
+{
+    if(g_CycleValues.shotsToGo > 0 || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
+    {
+        // Fire another shot
+        startCycle();
+    }
+    else
+    {
+        // Ready for next shot
+        bit_clear(g_CycleValues.flags, CF_Marker_Firing);
+    }
 }
 
 void triggerToggle()
@@ -226,8 +281,12 @@ void triggerToggle()
     bit_toggle(g_CycleValues.flags, CF_Trigger_Pressed);
 
     // Do we want to fire?
-    if ((is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress))
-    || (!is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease)))
+    if (is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress))
+    {
+        g_triggerPullCount++;
+        fireMarker();
+    }
+    else if(!is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease))
     {
         fireMarker();
     }
@@ -235,17 +294,20 @@ void triggerToggle()
 
 void onSecondTick()
 {
+#if defined SERIAL_DEBUG
+    Serial.println("Pull Count(/s): " + g_triggerPullCount);
+    Serial.println("Current BPS: " + g_ballShotCount);
+#endif
+    g_triggerPullCount = 0;
+    g_ballShotCount = 0;
+
 #if defined GAME_TIMER
     g_GameTimer.SubtractSecond();
 #endif
-}
-
-// Change marker state
-inline void changeState(CycleStates newState)
-{
-    g_CycleValues.markerState = newState;
-
-    g_CycleValues.cycleCount = 0;
+    
+#if defined KEEP_ALIVE_ACTIVE
+    keepAliveTask.Update();
+#endif
 }
 
 // actually fire the marker
@@ -257,19 +319,22 @@ inline void startCycle()
 
     // Increment shots fired
     g_Settings.shotsSinceLastReset++;
+    g_ballShotCount++;
+    
+    searOnTask.Reset();
+    pneuDelayTask.Reset();
 
     // Set Sear High (Release hammer)
     output_high(CYCLE_PORT, SEAR_PIN);
-
-    // We are now firing
-    changeState(CS_Sear_Firing);
 }
 
 inline void fireMarker()
 {
     // Check we are ready to fire
-    if(g_CycleValues.markerState != CS_Ready_To_Fire)
+    if(is_bit_set(g_CycleValues.flags, CF_Marker_Firing))
         return;
+
+    bit_set(g_CycleValues.flags, CF_Marker_Firing);
 
     // Determine how many shots to fire this 'cycle'
     if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
@@ -288,10 +353,15 @@ inline void fireMarker()
 /// Timer Tick
 inline void onTimerTick()
 {
-    secondTickTask.UpdateOneTick();
-    triggerChangeTask.UpdateOneTick();
+    secondTickTask.Update();
+    triggerChangeTask.Update();
+    searOnTask.Update();
+    pneuDelayTask.Update();
+    pneuOnTask.Update();
+    pneuOffTask.Update();
+    eyeCycleTask.Update();
 
-    if(g_CycleValues.markerState != CS_Ready_To_Fire)
+    /*if(g_CycleValues.markerState != CS_Ready_To_Fire)
     {
         // increment cycle time
         g_CycleValues.cycleCount++;
@@ -353,7 +423,7 @@ inline void onTimerTick()
             }
             break;
         };
-    }
+    }*/
 }
 
 ///
@@ -361,10 +431,7 @@ inline void onTimerTick()
 inline void onADCReadComplete()
 {
     // Read the value ADC for a value between 0-255
-    if(ADCH >= g_Settings.eyeSettings.eyeBall)
-        g_CycleValues.eyesState = ES_Ball_Seen;
-    else
-        g_CycleValues.eyesState = ES_Empty_Seen;
+    eyeCycleTask.SetCurrentEye(ADCH);
 }
 
 

@@ -36,7 +36,6 @@ protected:
 
     virtual bool IsConditionMet() = 0;
     virtual void UpdateInternal() = 0;
-    virtual void ConditionMet() { };
 
 public:
     Task(TaskConditionMet conditionMet)
@@ -53,9 +52,7 @@ public:
         UpdateInternal();
 
         if(IsConditionMet())
-        { 
-            ConditionMet();
-
+        {
             m_Enabled = false;
 
             if(onConditionMet != 0)

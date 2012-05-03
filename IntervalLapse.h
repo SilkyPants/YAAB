@@ -48,7 +48,9 @@ protected:
 
 public:
 
-    IntervalLapse(TaskConditionMet conditionMet, uint16_t intervalTime, bool autoReset) : Task(conditionMet)
+    IntervalLapse(TaskConditionMet conditionMet) : Task(conditionMet) { }
+
+    void SetIntervalTime(uint16_t intervalTime, bool autoReset = false)
     {
         m_Interval = m_IntervalReset = intervalTime;
         m_AutoReset = autoReset;

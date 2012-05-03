@@ -50,7 +50,7 @@ volatile CycleValues g_CycleValues =
 /// Things specific to the marker
 volatile MarkerSettings g_Settings = 
 {
-    100,                    // Trigger Debounce
+    10,                     // Trigger Debounce
     2,                      // Current Profile
     0,                      // Shots since Service?
     { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
@@ -63,11 +63,11 @@ volatile MarkerSettings g_Settings =
 /// Customisable by the user
 MarkerProfile g_Profiles[] = 
 {
-    { "Semi",  0x1, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
-    { "Pump",  0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
-    { "Auto",  0x0, 0x0, flag_set(AT_Auto), flag_set(TA_FireOnPress) },
-    { "Burst", 0x3, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
-    { "React", 0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
+    { "Semi Auto\0",    0x1, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
+    { "Pump\0",         0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
+    { "Full Auto\0",    0x0, 0x0, flag_set(AT_Auto), flag_set(TA_FireOnPress) },
+    { "Burst\0",        0x3, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
+    { "Reactive\0",     0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
 };
 
 MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
@@ -111,15 +111,15 @@ void pneumaticsCocked();
 void cycleComplete();
 void onSecondTick();
 
-PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN, 10);
+PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN);
 
-IntervalLapse searOnTask(searDrop, 40, false); 
-IntervalLapse pneuDelayTask(pneumaticsCocking, 60, false);
-IntervalLapse pneuOnTask(pneumaticsCocked, 550, false);
-IntervalLapse pneuOffTask(cycleComplete, 240, false);
-BreechEyesTask eyeCycleTask(pneumaticsCocked, 10000, 10, 50);
+IntervalLapse searOnTask(searDrop); 
+IntervalLapse pneuDelayTask(pneumaticsCocking);
+IntervalLapse pneuOnTask(pneumaticsCocked);
+IntervalLapse pneuOffTask(cycleComplete);
+BreechEyesTask eyeCycleTask(pneumaticsCocked);
 
-IntervalLapse secondTickTask(onSecondTick, 10000, true); // in increments of 0.1ms
+IntervalLapse secondTickTask(onSecondTick); // in increments of 0.1ms
 
 //#define GAME_TIMER
 
@@ -206,6 +206,18 @@ void setup()
     // Init timers
     timer_init();
     adc_init();
+
+    // Setup the tasks
+    secondTickTask.SetIntervalTime(10000, true);
+
+    triggerChangeTask.SetDebounce(g_Settings.debounceTime);
+
+    searOnTask.SetIntervalTime(g_Settings.timings.searOn);
+    pneuDelayTask.SetIntervalTime(g_Settings.timings.pneuDel);
+    pneuOnTask.SetIntervalTime(g_Settings.timings.pneuOn);
+    pneuOffTask.SetIntervalTime(g_Settings.timings.pneuOff);
+
+    eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout, g_Settings.eyeSettings.detectionTime, g_Settings.eyeSettings.eyeBall);
 
     // Kick off the taks
     triggerChangeTask.Reset();

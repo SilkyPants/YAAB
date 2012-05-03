@@ -80,7 +80,9 @@ private:
 
 public:
 
-    BreechEyesTask(TaskConditionMet conditionsMet, uint16_t timeout, uint8_t detectTime, uint8_t ballDetect) : Task(conditionsMet)
+    BreechEyesTask(TaskConditionMet conditionsMet) : Task(conditionsMet) { }
+
+    void SetTaskValues(uint16_t timeout, uint8_t detectTime, uint8_t ballDetect)
     {
         m_DetectCount = m_DetectTime = detectTime;
         m_BallDetect = ballDetect;

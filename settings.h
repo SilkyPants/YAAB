@@ -75,12 +75,15 @@ struct CycleValues // 2 bytes
     unsigned char shotsToGo;                // Shots to fire in 'cycle' (Burst)
 };
 
-struct MarkerProfile // 8 bytes
+struct MarkerProfile // 16 bytes
 {
-    char profileName[6];                    // Name for the profile
+    char profileName[13];                   // Name for the profile
     unsigned char shotsToFirePress : 4;     // Burst fire on press (max 15)
     unsigned char shotsToFireRelease : 4;   // Burst fire on release (max 15)
     unsigned char actionType : 4;           // Pump, Semi, Auto
     unsigned char triggerAction : 2;        // What to do on trigger state change
+    unsigned char rofCapped : 1;            // Is the ROF capped
+    unsigned char : 0;                      // Padding
+    unsigned char rofCap : 5;               // Is the ROF capped
     unsigned char : 0;                      // Padding
 };

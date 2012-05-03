@@ -96,62 +96,16 @@ protected:
 
 public:
 
-    PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, char pinBit, char debounce = 0) : Task(conditionMet)
+    PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, uint8_t pinBit) : Task(conditionMet)
     {
         m_State = input_value(*m_Port, m_Pin);
+    }
+
+    void SetDebounce(uint8_t debounce = 0)
+    {
         m_Debounce = m_InitialDebounce = debounce;
     }
 
     virtual ~PinChange(void) { }
-};
-
-class PinDrive : public IntervalLapse
-{
-protected:
-    uint8_t m_Port;
-    uint8_t m_Pin;
-    uint16_t m_Delay;
-    uint16_t m_DelayReset;
-
-    bool IsConditionMet()
-    {
-        return m_Delay == 0 && IntervalLapse::IsConditionMet();
-    }
-    
-    void UpdateInternal()
-    {
-        if(m_Delay == 0)
-        {
-            output_high(m_Port, m_Pin);
-            IntervalLapse::UpdateInternal();
-        }
-        else
-            m_Delay--;
-    }
-
-    void PostUpdate()
-    {
-        if(IsConditionMet())
-        {
-            output_low(m_Port, m_Pin);
-        }
-    }
-
-public:
-
-    PinDrive(TaskConditionMet conditionMet, uint8_t pinPort, char pinBit, uint16_t delay, uint16_t interval) : IntervalLapse(conditionMet, interval, false)
-    {
-        m_Port = pinPort;
-        m_Pin = pinBit;
-        m_Delay = m_DelayReset = delay;
-    }
-
-    virtual ~PinDrive(void) { }
-
-    void Reset() 
-    {
-        IntervalLapse::Reset();
-        m_Delay = m_DelayReset; 
-    }
 };
 

@@ -39,6 +39,7 @@ enum CycleFlags
     CF_Use_Eyes,
     CF_Trigger_Pressed,
     CF_Marker_Firing,
+    CF_Training_Mode,
 };
 
 /// State of the marker eyes

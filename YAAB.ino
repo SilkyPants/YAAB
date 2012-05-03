@@ -332,12 +332,17 @@ inline void startCycle()
     // Increment shots fired
     g_Settings.shotsSinceLastReset++;
     g_ballShotCount++;
-    
-    searOnTask.Reset();
+
+    // Start Pneumatics task
     pneuDelayTask.Reset();
 
-    // Set Sear High (Release hammer)
-    output_high(CYCLE_PORT, SEAR_PIN);
+    if(!is_bit_set(g_CycleValues.flags, CF_Training_Mode))
+    {
+        // Set Sear High (Release hammer)
+        output_high(CYCLE_PORT, SEAR_PIN);
+        // Restart sear task
+        searOnTask.Reset();
+    }
 }
 
 inline void fireMarker()

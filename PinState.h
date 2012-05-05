@@ -70,9 +70,6 @@ protected:
         {
             m_Debounce = m_InitialDebounce;
             m_State = input_value(*m_Port, m_Pin);
-            
-            if(!m_Enabled)
-              m_Enabled = true;
 
             return true;
         }
@@ -82,22 +79,22 @@ protected:
     
     void UpdateInternal()
     {
-        if(!UpdatePinState())
+        if(!UpdatePinState() && m_Debounce > 0)
             m_Debounce--;
     }
 
-    void PostUpdate()
+    void ConditionMet()
     {
-        if(IsConditionMet())
-        {
-            m_LastValidState = !m_State;
-        }
+        m_LastValidState = !m_State;
+        m_Enabled = true;
     }
 
 public:
 
     PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, uint8_t pinBit) : Task(conditionMet)
     {
+      m_Port = pinPort;
+      m_Pin = pinBit;
         m_State = input_value(*m_Port, m_Pin);
     }
 

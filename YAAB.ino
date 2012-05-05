@@ -51,7 +51,7 @@ volatile CycleValues g_CycleValues =
 volatile MarkerSettings g_Settings = 
 {
     10,                     // Trigger Debounce
-    2,                      // Current Profile
+    0,                      // Current Profile
     0,                      // Shots since Service?
     { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
     { 10, 100, 1000 }       // Eye Detect Time, Eye Ball Reflect, Eye Timeout
@@ -75,7 +75,7 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
-//#define KEEP_ALIVE_ACTIVE
+#define KEEP_ALIVE_ACTIVE
 
 #if defined KEEP_ALIVE_ACTIVE
 #define KEEP_ALIVE_PIN 5        // Pin 13
@@ -90,7 +90,7 @@ void keepAliveToggle()
     output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
 }
 
-IntervalLapse keepAliveTask(keepAliveToggle, KEEP_ALIVE_PULSE, true);
+IntervalLapse keepAliveTask(keepAliveToggle);
 #endif
 
 ///
@@ -129,7 +129,7 @@ GameTimer g_GameTimer;
 
 ///
 /// Enable serial output
-//#define SERIAL_DEBUG
+#define SERIAL_DEBUG
 
 #if defined SERIAL_DEBUG
 unsigned char lastEyeState = ES_Empty_Seen;
@@ -210,7 +210,7 @@ void setup()
     // Setup the tasks
     secondTickTask.SetIntervalTime(10000, true);
 
-    triggerChangeTask.SetDebounce(g_Settings.debounceTime);
+    triggerChangeTask.SetDebounce(10);
 
     searOnTask.SetIntervalTime(g_Settings.timings.searOn);
     pneuDelayTask.SetIntervalTime(g_Settings.timings.pneuDel);
@@ -224,7 +224,8 @@ void setup()
     secondTickTask.Reset();
     
 #if defined KEEP_ALIVE_ACTIVE
-    keepAliveToggle.Reset();
+    keepAliveTask.SetIntervalTime( KEEP_ALIVE_PULSE, true);
+    keepAliveTask.Reset();
 #endif
 
     sei();
@@ -370,8 +371,9 @@ inline void fireMarker()
 /// Timer Tick
 inline void onTimerTick()
 {
-    secondTickTask.Update();
+
     triggerChangeTask.Update();
+    secondTickTask.Update();
     searOnTask.Update();
     pneuDelayTask.Update();
     pneuOnTask.Update();

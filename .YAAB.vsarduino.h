@@ -7,19 +7,20 @@
 #define ARDUINO 100
 extern "C" void __cxa_pure_virtual() {}
 void keepAliveToggle();
+int main(void);
 void setup();
 void loop();
-void searDrop();
-void pneumaticsCocking();
-void pneumaticsCocked();
-void cycleComplete();
-void triggerToggle();
-void onSecondTick();
-inline void startCycle();
-inline void fireMarker();
+static void searDrop();
+static void pneumaticsCocking();
+static void pneumaticsCocked();
+static void cycleComplete();
+static void triggerToggle();
+static void onSecondTick();
+static inline void startCycle();
+static inline void fireMarker();
 inline void onTimerTick();
 inline void onADCReadComplete();
 
 #include "C:\Program Files (x86)\arduino\hardware\arduino\variants\standard\pins_arduino.h" 
 #include "C:\Program Files (x86)\arduino\hardware\arduino\cores\arduino\Arduino.h"
-#include "C:\Programming\YAAB\YAAB.ino" 
+#include "C:\Personal\YAAB\YAAB.ino" 

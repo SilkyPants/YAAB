@@ -19,12 +19,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "common.h"
+
 /// Flags for user profiles
 enum ActionTypes
 {
     AT_Pump,
     AT_Semi,
+#if defined AUTO_ALLOWED
     AT_Auto,
+#endif
 };
 
 enum TriggerActions

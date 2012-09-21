@@ -25,6 +25,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define FASTER_ADC
 
 ///
+/// ADC Read Complete Function Prototype
+inline void onADCReadComplete();
+
+///
 /// Analog to Digital
 ///
 

@@ -58,6 +58,10 @@ To break the units into printable values get the decimal with x % 10 and the mil
 #endif
 
 ///
+/// Timer Tick Function Prototype
+inline void onTimerTick();
+
+///
 /// Timer (0.1 ms)
 ///
 

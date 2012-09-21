@@ -64,10 +64,12 @@ volatile MarkerSettings g_Settings =
 MarkerProfile g_Profiles[] = 
 {
     { "Semi Auto\0",    0x1, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
-    { "Pump\0",         0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
+    { "  Pump   \0",    0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
+#if defined AUTO_ALLOWED
     { "Full Auto\0",    0x0, 0x0, flag_set(AT_Auto), flag_set(TA_FireOnPress) },
-    { "Burst\0",        0x3, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
-    { "Reactive\0",     0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
+    { "  Burst  \0",    0x3, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
+    { "Reactive \0",    0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
+#endif
 };
 
 MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
@@ -75,8 +77,6 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
-#define KEEP_ALIVE_ACTIVE
-
 #if defined KEEP_ALIVE_ACTIVE
 #define KEEP_ALIVE_PIN 5        // Pin 13
 #define TRIGGER_PRESSED_PIN 4   // Pin 12
@@ -104,12 +104,12 @@ uint8_t g_ballShotCount;
 /// End Other Setting Stuff!
 ///
 
-void triggerToggle();
-void searDrop();
-void pneumaticsCocking();
-void pneumaticsCocked();
-void cycleComplete();
-void onSecondTick();
+static void triggerToggle();
+static void searDrop();
+static void pneumaticsCocking();
+static void pneumaticsCocked();
+static void cycleComplete();
+static void onSecondTick();
 
 PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN);
 
@@ -121,18 +121,30 @@ BreechEyesTask eyeCycleTask(pneumaticsCocked);
 
 IntervalLapse secondTickTask(onSecondTick); // in increments of 0.1ms
 
-//#define GAME_TIMER
-
+///
+/// Game Timer
 #if defined GAME_TIMER
 GameTimer g_GameTimer;
 #endif
 
-///
-/// Enable serial output
-#define SERIAL_DEBUG
-
 #if defined SERIAL_DEBUG
 unsigned char lastEyeState = ES_Empty_Seen;
+#endif
+
+#if !defined USE_ARDUINO
+///
+///
+///
+int main(void)
+{	
+	setup();
+    
+	for (;;) {
+		loop();
+	}
+        
+	return 0;
+}
 #endif
 
 ///
@@ -201,6 +213,7 @@ void setup()
     output_high(INPUT_PORT, DN_BUTTON_PIN);
     */
 
+    // stop interrupts
     cli();
 
     // Init timers
@@ -228,6 +241,7 @@ void setup()
     keepAliveTask.Reset();
 #endif
 
+    // start interrupts
     sei();
 
     
@@ -248,12 +262,12 @@ void loop()
 #endif
 }
 
-void searDrop()
+static void searDrop()
 {
     output_low(CYCLE_PORT, SEAR_PIN);
 }
 
-void pneumaticsCocking()
+static void pneumaticsCocking()
 {
     output_high(CYCLE_PORT, PNEU_PIN);
 
@@ -263,13 +277,13 @@ void pneumaticsCocking()
         pneuOnTask.Reset();
 }
 
-void pneumaticsCocked()
+static void pneumaticsCocked()
 {
     output_low(CYCLE_PORT, PNEU_PIN);
     pneuOffTask.Reset();
 }
 
-void cycleComplete()
+static void cycleComplete()
 {
     if(g_CycleValues.shotsToGo > 0 || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
     {
@@ -283,7 +297,7 @@ void cycleComplete()
     }
 }
 
-void triggerToggle()
+static void triggerToggle()
 {
 #if defined KEEP_ALIVE_ACTIVE
     // Toggle Trigger LED
@@ -305,7 +319,7 @@ void triggerToggle()
     }
 }
 
-void onSecondTick()
+static void onSecondTick()
 {
 #if defined SERIAL_DEBUG
     Serial.println("Pull Count(/s): " + g_triggerPullCount);
@@ -324,7 +338,7 @@ void onSecondTick()
 }
 
 // actually fire the marker
-inline void startCycle()
+static inline void startCycle()
 {
     // Shot fired
     if(g_CycleValues.shotsToGo)
@@ -346,7 +360,7 @@ inline void startCycle()
     }
 }
 
-inline void fireMarker()
+static inline void fireMarker()
 {
     // Check we are ready to fire
     if(is_bit_set(g_CycleValues.flags, CF_Marker_Firing))

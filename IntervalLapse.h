@@ -30,38 +30,16 @@ protected:
     uint16_t m_IntervalReset;
     bool m_AutoReset;
 
-    bool IsConditionMet()
-    {
-        return m_Interval == 0 && m_Enabled;
-    }
-
-    void UpdateInternal()
-    {
-        m_Interval--;
-    }
-
-    void ConditionMet()
-    {
-        if(m_AutoReset)
-            Reset();
-    }
+    bool IsConditionMet();
+    void UpdateInternal();
+    void ConditionMet();
 
 public:
 
-    IntervalLapse(TaskConditionMet conditionMet) : Task(conditionMet) { }
+    IntervalLapse(TaskConditionMet conditionMet);
+    ~IntervalLapse(void);
 
-    void SetIntervalTime(uint16_t intervalTime, bool autoReset = false)
-    {
-        m_Interval = m_IntervalReset = intervalTime;
-        m_AutoReset = autoReset;
-    }
-
-    ~IntervalLapse(void) { }
-
-    void Reset() 
-    {
-        Task::Reset();
-        m_Interval = m_IntervalReset; 
-    }
+    void SetIntervalTime(uint16_t intervalTime, bool autoReset = false);
+    void Reset();
 };
 

@@ -21,28 +21,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "common.h"
+#include "IntervalLapse.h"
 
-/// Function prototype for callbacks on tasks
-typedef void (*TaskConditionMet)();
+IntervalLapse::IntervalLapse(TaskConditionMet conditionMet) : Task(conditionMet) 
+{ 
+}
 
-class Task
+IntervalLapse::~IntervalLapse(void) 
+{ 
+}
+
+bool IntervalLapse::IsConditionMet()
 {
-private:
-    TaskConditionMet onConditionMet;
-    
-protected:
-    bool m_Enabled;
+    return m_Interval == 0 && m_Enabled;
+}
 
-    virtual bool IsConditionMet() = 0;
-    virtual void UpdateInternal() = 0;
-    virtual void ConditionMet();
+void IntervalLapse::UpdateInternal()
+{
+    m_Interval--;
+}
 
-public:
-    Task(TaskConditionMet conditionMet);
-    virtual ~Task(void);
+void IntervalLapse::ConditionMet()
+{
+    if(m_AutoReset)
+        Reset();
+}
 
-    virtual void Update();
-    void Stop();
-    virtual void Reset();
-};
+void IntervalLapse::SetIntervalTime(uint16_t intervalTime, bool autoReset)
+{
+    m_Interval = m_IntervalReset = intervalTime;
+    m_AutoReset = autoReset;
+}
+
+void IntervalLapse::Reset() 
+{
+    Task::Reset();
+    m_Interval = m_IntervalReset; 
+}
+

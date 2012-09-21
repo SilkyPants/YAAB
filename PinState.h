@@ -32,21 +32,12 @@ private:
     char m_Pin;
     bool m_State;
 
-    inline bool IsConditionMet()
-    {
-        return input_value(m_Port, m_Pin) == m_State;
-    }
+    bool IsConditionMet();
 
 public:
 
-    PinState(TaskConditionMet conditionMet, char pinPort, char pinBit, bool pinState) : Task(conditionMet)
-    {
-        m_Port = pinPort;
-        m_Pin = pinBit;
-        m_State = pinState;
-    }
-
-    virtual ~PinState(void) {}
+    PinState(TaskConditionMet conditionMet, char pinPort, char pinBit, bool pinState);
+    virtual ~PinState(void);
 };
 
 class PinChange : public Task
@@ -59,50 +50,16 @@ protected:
     bool m_State;
     bool m_LastValidState;
 
-    bool IsConditionMet()
-    {
-        return m_Debounce <= 0 && m_Enabled && m_LastValidState == m_State;
-    }
-
-    bool UpdatePinState()
-    {
-        if(input_value(*m_Port, m_Pin) != m_State)
-        {
-            m_Debounce = m_InitialDebounce;
-            m_State = input_value(*m_Port, m_Pin);
-
-            return true;
-        }
-
-        return false;
-    }
-    
-    void UpdateInternal()
-    {
-        if(!UpdatePinState() && m_Debounce > 0)
-            m_Debounce--;
-    }
-
-    void ConditionMet()
-    {
-        m_LastValidState = !m_State;
-        m_Enabled = true;
-    }
+    bool IsConditionMet();
+    bool UpdatePinState();
+    void UpdateInternal();
+    void ConditionMet();
 
 public:
 
-    PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, uint8_t pinBit) : Task(conditionMet)
-    {
-      m_Port = pinPort;
-      m_Pin = pinBit;
-        m_State = input_value(*m_Port, m_Pin);
-    }
+    PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, uint8_t pinBit);
+    virtual ~PinChange(void);
 
-    void SetDebounce(uint8_t debounce = 0)
-    {
-        m_Debounce = m_InitialDebounce = debounce;
-    }
-
-    virtual ~PinChange(void) { }
+    void SetDebounce(uint8_t debounce);
 };
 

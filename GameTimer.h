@@ -32,40 +32,11 @@ struct Timer
     uint8_t m_Seconds;
     char stringBuffer[9];
 
-    void SubtractSecond()
-    {
-        if(m_Seconds == 0)
-        {
-            SubtractMinute();
-            m_Seconds = 59;
-        }
-        else
-            m_Seconds--;
-    }
+    void SubtractSecond();
+    void SubtractMinute();
+    void SubtractHour();
 
-    void SubtractMinute()
-    {
-        if(m_Minutes == 0)
-        {
-            SubtractHour();
-            m_Minutes = 59;
-        }
-        else
-            m_Minutes--;
-    }
-
-    void SubtractHour()
-    {
-        if(m_Hours > 0)
-            m_Hours--;
-    }
-
-    const char* ToString()
-    {
-        sprintf(stringBuffer, "%02d:%02d:%02d", m_Hours, m_Minutes, m_Seconds);
-
-        return stringBuffer;
-    }
+    const char* ToString();
 };
 
 class GameTimer
@@ -76,77 +47,21 @@ class GameTimer
     AlarmTimerCallback m_OnTimer;
     AlarmTimerCallback m_OnAlarm;
 
-    void SubtractMinute()
-    {
-        m_GameTimer.SubtractMinute();
-    }
-
-    void SubtractHour()
-    {
-        m_GameTimer.SubtractHour();
-    }
+    void SubtractMinute();
+    void SubtractHour();
 
 public:
-    GameTimer(void)
-    {
-        m_OnAlarm = 0;
-        m_Enabled = false;
-    }
+    GameTimer(void);
+    ~GameTimer(void);
 
-    void StartTimer()
-    {
-        m_Enabled = true;
-    }
+    void StartTimer();
 
-    void SetGameTimer(uint8_t hours, uint8_t mins, uint8_t secs, AlarmTimerCallback timerCallback)
-    {
-        m_GameTimer.m_Hours = hours;
-        m_GameTimer.m_Minutes = mins;
-        m_GameTimer.m_Seconds = secs;
+    void SetGameTimer(uint8_t hours, uint8_t mins, uint8_t secs, AlarmTimerCallback timerCallback);
+    void SetAlarmTimer(uint8_t hours, uint8_t mins, uint8_t secs, AlarmTimerCallback alarmCallback);
 
-        m_OnTimer = timerCallback;
-    }
+    void SubtractSecond();
 
-    void SetAlarmTimer(uint8_t hours, uint8_t mins, uint8_t secs, AlarmTimerCallback alarmCallback)
-    {
-        m_AlarmTimer.m_Hours = hours;
-        m_AlarmTimer.m_Minutes = mins;
-        m_AlarmTimer.m_Seconds = secs;
-
-        m_OnAlarm = alarmCallback;
-    }
-
-    void SubtractSecond()
-    {
-        if(!m_Enabled) return;
-
-        m_GameTimer.SubtractSecond();
-
-        if(m_GameTimer.m_Hours == m_AlarmTimer.m_Hours 
-            && m_GameTimer.m_Minutes == m_AlarmTimer.m_Minutes 
-            && m_GameTimer.m_Seconds == m_AlarmTimer.m_Seconds
-            && m_OnAlarm != 0)
-        {
-            m_OnAlarm();
-        }
-        else if(m_GameTimer.m_Hours == 0 
-            && m_GameTimer.m_Minutes == 0
-            && m_GameTimer.m_Seconds == 0
-            && m_OnTimer != 0)
-        {
-            m_OnTimer();
-            m_Enabled = false;
-        }
-    }
-
-    const char* GameTimerToString()
-    {
-        return m_GameTimer.ToString();
-    }
-
-    const char* AlarmTimerToString()
-    {
-        return m_AlarmTimer.ToString();
-    }
+    const char* GameTimerToString();
+    const char* AlarmTimerToString();
 };
 

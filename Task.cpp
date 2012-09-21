@@ -19,30 +19,44 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "Task.h"
 
-#include "common.h"
-
-/// Function prototype for callbacks on tasks
-typedef void (*TaskConditionMet)();
-
-class Task
+Task::Task(TaskConditionMet conditionMet)
 {
-private:
-    TaskConditionMet onConditionMet;
-    
-protected:
-    bool m_Enabled;
+    onConditionMet = conditionMet;
+}
 
-    virtual bool IsConditionMet() = 0;
-    virtual void UpdateInternal() = 0;
-    virtual void ConditionMet();
+Task::~Task(void) 
+{ 
+}
 
-public:
-    Task(TaskConditionMet conditionMet);
-    virtual ~Task(void);
+void Task::Update()
+{
+    if(!m_Enabled) return;
 
-    virtual void Update();
-    void Stop();
-    virtual void Reset();
-};
+    UpdateInternal();
+
+    if(IsConditionMet())
+    {
+        m_Enabled = false;
+
+        if(onConditionMet != 0)
+            onConditionMet();
+            
+        ConditionMet();
+    }
+}
+
+void Task::ConditionMet() 
+{
+}
+
+void Task::Stop() 
+{  
+    m_Enabled = false; 
+}
+
+void Task::Reset() 
+{  
+    m_Enabled = true; 
+}

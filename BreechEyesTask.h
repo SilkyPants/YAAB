@@ -35,77 +35,16 @@ private:
     bool m_EmptySeen;
     bool m_BallSeen;
 
-    bool UpdateEye()
-    {
-        if(!m_EmptySeen)
-        {
-            if(m_CurrentEye >= m_BallDetect)
-            {
-                m_DetectCount = m_DetectTime;
-                return false;
-            }
-        }
-        else
-        {
-            if(m_CurrentEye < m_BallDetect)
-            {
-                m_DetectCount = m_DetectTime;
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    void UpdateInternal()
-    {
-        if(UpdateEye())
-            m_DetectCount--;
-
-        if(m_DetectCount == 0)
-        {
-            if(m_EmptySeen)
-                m_BallSeen = true;
-            else
-                m_EmptySeen = true;
-        }
-
-        m_TimeoutCount--;
-    }
-
-    bool IsConditionMet()
-    {
-        return ((m_EmptySeen && m_BallSeen) || m_TimeoutCount == 0) && m_Enabled;
-    }
+    bool UpdateEye();
+    void UpdateInternal();
+    bool IsConditionMet();
 
 public:
+    BreechEyesTask(TaskConditionMet conditionsMet);
+    virtual ~BreechEyesTask(void);
 
-    BreechEyesTask(TaskConditionMet conditionsMet) : Task(conditionsMet) { }
-
-    void SetTaskValues(uint16_t timeout, uint8_t detectTime, uint8_t ballDetect)
-    {
-        m_DetectCount = m_DetectTime = detectTime;
-        m_BallDetect = ballDetect;
-        m_TimeoutCount = m_Timeout = timeout;
-        m_EmptySeen = false;
-        m_BallSeen = false;
-    }
-
-    void SetCurrentEye(uint8_t currentEye)
-    {
-        m_CurrentEye = currentEye;
-    }
-
-    virtual ~BreechEyesTask(void)
-    {
-    }
-
-    void Reset()
-    {
-        m_TimeoutCount = m_Timeout;
-        m_DetectCount = m_DetectTime;
-        m_EmptySeen = false;
-        m_BallSeen = false;
-    }
+    void SetTaskValues(uint16_t timeout, uint8_t detectTime, uint8_t ballDetect);
+    void SetCurrentEye(uint8_t currentEye);
+    void Reset();
 };
 

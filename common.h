@@ -19,9 +19,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#pragma once
+
 ///
 /// Whether to use the full Arduino libraries or not (allows serial loading/debug etc)
 //#define USE_ARDUINO
+
+///
+/// ADC Completes faster
+#define FASTER_ADC
 
 ///
 /// Enabled the ability to select and use full Automatic and Burst fire modes
@@ -33,7 +39,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ///
 /// Enable the use of the game timer
-//#define GAME_TIMER
+#define GAME_TIMER
 
 #if defined USE_ARDUINO
 #include "Arduino.h"

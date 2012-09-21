@@ -21,19 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "common.h"
-
-///
-/// Analog to Digital
-///
-
-///
-/// Init ADC
-///
-void adc_init();
-
-///
-/// Start Read ADC Channel
-///
-void adc_start_read(uint8_t ch);
-void adc_stop_all();
+void initMarker();
+void loopMarker();
+void onADCReadComplete();
+void onTimerTick();

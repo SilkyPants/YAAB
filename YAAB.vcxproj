@@ -74,12 +74,23 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="flags.h" />
     <ClInclude Include="IntervalLapse.h" />
+    <ClInclude Include="main.h" />
     <ClInclude Include="pins.h" />
     <ClInclude Include="PinState.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="timers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="adc.cpp" />
+    <ClCompile Include="BreechEyesTask.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="IntervalLapse.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="PinState.cpp" />
+    <ClCompile Include="Task.cpp" />
+    <ClCompile Include="timers.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

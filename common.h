@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ///
 /// Whether to use the full Arduino libraries or not (allows serial loading/debug etc)
-//#define USE_ARDUINO
+#define USE_ARDUINO
 
 ///
 /// ADC Completes faster

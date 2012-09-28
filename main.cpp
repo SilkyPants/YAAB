@@ -142,7 +142,8 @@ int main(void)
 {	
 	initMarker();
     
-	for (;;) {
+	while (true) 
+    {
 		loopMarker();
 	}
         

@@ -86,6 +86,6 @@ struct MarkerProfile // 16 bytes
     unsigned char triggerAction : 2;        // What to do on trigger state change
     unsigned char rofCapped : 1;            // Is the ROF capped
     unsigned char : 0;                      // Padding
-    unsigned char rofCap : 5;               // Is the ROF capped
+    unsigned char rofCap : 6;               // ROF capped value (max 63)
     unsigned char : 0;                      // Padding
 };

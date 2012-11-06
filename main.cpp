@@ -178,7 +178,7 @@ void initMarker()
     */
 
     // Enable internal pullups
-    output_high(PORTD, TRIGGER_PIN);
+    output_high(CYCLE_PORT, TRIGGER_PIN);
     
     /*
     output_high(INPUT_PORT, UP_BUTTON_PIN);

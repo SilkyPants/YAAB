@@ -36,7 +36,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /// Program Specific defines - for readability
 #define bps_to_cycle_time(bps) 1000 / bps;
 
-
 /// Cycle Values
 /// Values specific to a marker cycle
 volatile CycleValues g_CycleValues = 
@@ -196,7 +195,7 @@ void initMarker()
     // Setup the tasks
     secondTickTask.SetIntervalTime(10000, true);
 
-    triggerChangeTask.SetDebounce(10);
+    triggerChangeTask.SetDebounce(g_Settings.debounceTime);
 
     searOnTask.SetIntervalTime(g_Settings.timings.searOn);
     pneuDelayTask.SetIntervalTime(g_Settings.timings.pneuDel);
@@ -253,7 +252,7 @@ static void pneumaticsCocked()
 
 static void cycleComplete()
 {
-    if(g_CycleValues.shotsToGo > 0 || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
+    if(g_CycleValues.shotsToGo > 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
     {
         // Fire another shot
         startCycle();
@@ -317,7 +316,10 @@ static void startCycle()
     g_ballShotCount++;
 
     // Start Pneumatics task
-    pneuDelayTask.Reset();
+    if(g_CurrentProfile->actionType != AT_Pump)
+    {
+        pneuDelayTask.Reset();
+    }
 
     if(!is_bit_set(g_CycleValues.flags, CF_Training_Mode))
     {

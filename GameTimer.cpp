@@ -51,7 +51,7 @@ void Timer::SubtractHour()
 
 const char* Timer::ToString()
 {
-    sprintf(stringBuffer, "%02d:%02d:%02d", m_Hours, m_Minutes, m_Seconds);
+    sprintf(stringBuffer, "%02d:%02d:%02d\0", m_Hours, m_Minutes, m_Seconds);
 
     return stringBuffer;
 }
@@ -105,17 +105,17 @@ void GameTimer::SubtractSecond()
 
     m_GameTimer.SubtractSecond();
 
-    if(m_GameTimer.m_Hours == m_AlarmTimer.m_Hours && m_GameTimer.m_Minutes == m_AlarmTimer.m_Minutes 
-        && m_GameTimer.m_Seconds == m_AlarmTimer.m_Seconds&& m_OnAlarm != 0)
-    {
-        m_OnAlarm();
-    }
-    else if(m_GameTimer.m_Hours == 0 && m_GameTimer.m_Minutes == 0
+    if(m_GameTimer.m_Hours == 0 && m_GameTimer.m_Minutes == 0
         && m_GameTimer.m_Seconds == 0 && m_OnTimer != 0)
     {
         m_OnTimer();
         m_Enabled = false;
     }
+    else if(m_GameTimer.m_Hours == m_AlarmTimer.m_Hours && m_GameTimer.m_Minutes == m_AlarmTimer.m_Minutes 
+        && m_GameTimer.m_Seconds == m_AlarmTimer.m_Seconds&& m_OnAlarm != 0)
+    {
+        m_OnAlarm();
+    } 
 }
 
 const char* GameTimer::GameTimerToString()

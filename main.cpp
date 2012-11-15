@@ -220,12 +220,12 @@ void initMarker()
 void loopMarker()
 {  
 #if defined SERIAL_DEBUG
-    //if(lastEyeState != g_CycleValues.eyesState)
+    /*if(lastEyeState != eyeCycleTask.GetCurrentEye())
     {
-    //    lastEyeState = g_CycleValues.eyesState;
-    //    Serial.print("Eye State: ");
-    //    Serial.println(g_CycleValues.eyesState, HEX);
-    }
+        lastEyeState = eyeCycleTask.GetCurrentEye();
+        Serial.print("Eye State: ");
+        Serial.println(lastEyeState, HEX);
+    }*/
 #endif
 }
 
@@ -363,70 +363,6 @@ void onTimerTick()
     pneuOnTask.Update();
     pneuOffTask.Update();
     eyeCycleTask.Update();
-
-    /*if(g_CycleValues.markerState != CS_Ready_To_Fire)
-    {
-        // increment cycle time
-        g_CycleValues.cycleCount++;
-
-        switch(g_CycleValues.markerState)
-        {
-        case CS_Sear_Firing:
-            if(bit_is_set(CYCLE_PORT, SEAR_PIN) && g_CycleValues.cycleCount >= g_Settings.timings.searOn)
-            {
-                // Turn off sear
-                output_low(CYCLE_PORT, SEAR_PIN);
-            }
-
-            if(g_CycleValues.cycleCount >= g_Settings.timings.pneuDel)
-            {
-                // TODO: Something about pump!
-
-                // Turn on pneumatics
-                output_high(CYCLE_PORT, PNEU_PIN);
-
-                changeState(CS_Breech_Opening);
-            }
-            break;
-
-        case CS_Breech_Opening:
-            if(is_bit_set(g_CycleValues.flags, CF_Use_Eyes))
-            {
-                // TODO: INSERT EYE LOGIC HERE
-                // Start read if needed
-                // else compare read for empty
-                // then compare read for ball seen
-                // Change state once ball seen long enough
-
-            }
-            else if(g_CycleValues.cycleCount == g_Settings.timings.pneuOn)
-            {
-                // Turn off pneumatics
-                output_low(CYCLE_PORT, PNEU_PIN);
-                changeState(CS_Breech_Closing);
-            }
-            break;
-
-        case CS_Breech_Closing:
-            if(g_CycleValues.cycleCount >= g_Settings.timings.pneuOff)
-            {   
-
-                if(g_CycleValues.shotsToGo > 0 || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
-                {
-                    // Fire another shot
-                    startCycle();
-                }
-                else
-                {
-                    // Ready for next shot
-                    changeState(CS_Ready_To_Fire);
-
-                    //stopTimer();
-                }
-            }
-            break;
-        };
-    }*/
 }
 
 ///

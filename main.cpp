@@ -30,7 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "PinState.h"
 #include "BreechEyesTask.h"
 
-#include "GameTimer.h"
+#include "Timer.h"
 
 ///
 /// Program Specific defines - for readability
@@ -126,7 +126,8 @@ IntervalLapse secondTickTask(onSecondTick); // in increments of 0.1ms
 ///
 /// Game Timer
 #if defined GAME_TIMER
-GameTimer g_GameTimer;
+Timer g_GameTimer;
+Timer g_AlarmTimer;
 #endif
 
 #if defined SERIAL_DEBUG
@@ -297,6 +298,7 @@ static void onSecondTick()
 
 #if defined GAME_TIMER
     g_GameTimer.SubtractSecond();
+    g_AlarmTimer.SubtractSecond();
 #endif
     
 #if defined KEEP_ALIVE_ACTIVE

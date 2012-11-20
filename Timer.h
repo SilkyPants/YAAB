@@ -23,45 +23,38 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "common.h"
 
-typedef void (*AlarmTimerCallback)();
+typedef void (*TimerCallback)();
 
-struct Timer
+class Timer
 {
+    bool m_Enabled;
+
+    uint8_t m_SetHours;
+    uint8_t m_SetMinutes;
+    uint8_t m_SetSeconds;
+
     uint8_t m_Hours;
     uint8_t m_Minutes;
     uint8_t m_Seconds;
+
     char stringBuffer[9];
 
-    void SubtractSecond();
-    void SubtractMinute();
-    void SubtractHour();
-
-    const char* ToString();
-};
-
-class GameTimer
-{
-    bool m_Enabled;
-    Timer m_GameTimer;
-    Timer m_AlarmTimer;
-    AlarmTimerCallback m_OnTimer;
-    AlarmTimerCallback m_OnAlarm;
+    TimerCallback m_OnTimer;
 
     void SubtractMinute();
     void SubtractHour();
 
 public:
-    GameTimer(void);
-    ~GameTimer(void);
-
-    void StartTimer();
-
-    void SetGameTimer(uint8_t hours, uint8_t mins, uint8_t secs, AlarmTimerCallback timerCallback);
-    void SetAlarmTimer(uint8_t hours, uint8_t mins, uint8_t secs, AlarmTimerCallback alarmCallback);
+    Timer(void);
+    ~Timer(void);
 
     void SubtractSecond();
+    void SetTimer(uint8_t hours, uint8_t mins, uint8_t secs, TimerCallback timerCallback);
+    
+    void StartTimer() { m_Enabled = true; }
+    void StopTimer() { m_Enabled = false; }
+    void Reset();
 
-    const char* GameTimerToString();
-    const char* AlarmTimerToString();
+    const char* ToString();
 };
 

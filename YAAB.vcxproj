@@ -79,13 +79,13 @@
     <ClInclude Include="PinState.h" />
     <ClInclude Include="settings.h" />
     <ClInclude Include="Task.h" />
-    <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="timers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="adc.cpp" />
     <ClCompile Include="BreechEyesTask.cpp" />
-    <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="IntervalLapse.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PinState.cpp" />

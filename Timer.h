@@ -23,38 +23,72 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "common.h"
 
+///
+/// Typedef for function pointer. This is used when a timer has lapsed.
 typedef void (*TimerCallback)();
 
+///
+/// Counts down a certain time, and can call back to a function once its lapsed.
 class Timer
 {
+    ///
+    /// Is the timer enabled?
     bool m_Enabled;
-
+    
+    ///
+    /// The set time, this is used to reset the timer
     uint8_t m_SetHours;
     uint8_t m_SetMinutes;
     uint8_t m_SetSeconds;
-
+    
+    ///
+    /// Current time left on timer
     uint8_t m_Hours;
     uint8_t m_Minutes;
     uint8_t m_Seconds;
-
+    
+    ///
+    /// Stored string buffer to make it easier to print to string
     char stringBuffer[9];
-
+    
+    ///
+    /// Function pointer to call once timer has lapsed
     TimerCallback m_OnTimer;
-
+    
+    ///
+    /// Subtracts a minute from the timer
     void SubtractMinute();
+    
+    ///
+    /// Subtracts an hour fron the timer
     void SubtractHour();
 
 public:
-    Timer(void);
-    ~Timer(void);
-
-    void SubtractSecond();
-    void SetTimer(uint8_t hours, uint8_t mins, uint8_t secs, TimerCallback timerCallback);
     
+    ///
+    /// Constructor/Destructor
+    Timer(TimerCallback timerCallback);
+    ~Timer(void);
+    
+    ///
+    /// Set the initial timer
+    void SetTimer(uint8_t hours, uint8_t mins, uint8_t secs);
+    
+    ///
+    /// Subtracts a second from the timer, and responsible for triggering Timer Callback
+    void SubtractSecond();
+    
+    ///
+    /// Start/Stop the timer
     void StartTimer() { m_Enabled = true; }
     void StopTimer() { m_Enabled = false; }
+    
+    ///
+    /// Resets the timer back to it's default settings
     void Reset();
 
+    ///
+    /// Returns the timer left on the timer in HH:MM:SS format
     const char* ToString();
 };
 

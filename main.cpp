@@ -113,6 +113,11 @@ static void onSecondTick();
 static void startCycle();
 static void fireMarker();
 
+#if defined GAME_TIMER
+void onGameLapsed(); 
+void onAlarmLapsed();
+#endif
+
 PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN);
 
 IntervalLapse searOnTask(searDrop); 
@@ -126,8 +131,8 @@ IntervalLapse secondTickTask(onSecondTick); // in increments of 0.1ms
 ///
 /// Game Timer
 #if defined GAME_TIMER
-Timer g_GameTimer;
-Timer g_AlarmTimer;
+Timer g_GameTimer(onGameLapsed);
+Timer g_AlarmTimer(onAlarmLapsed);
 #endif
 
 #if defined SERIAL_DEBUG
@@ -232,27 +237,32 @@ void loopMarker()
 
 static void searDrop()
 {
+    // Reactivate Sear
     output_low(CYCLE_PORT, SEAR_PIN);
 }
 
 static void pneumaticsCocking()
 {
+    // Start cocking pneumatics
     output_high(CYCLE_PORT, PNEU_PIN);
 
+    // Are we using eyes?
     if(is_bit_set(g_CycleValues.flags, CF_Use_Eyes))
-        eyeCycleTask.Reset();
+        eyeCycleTask.Reset(); // Start testing eyes
     else
-        pneuOnTask.Reset();
+        pneuOnTask.Reset(); // Start pneumatics count down
 }
 
 static void pneumaticsCocked()
 {
+    // Marker is cocked, switch pneumatics off
     output_low(CYCLE_PORT, PNEU_PIN);
-    pneuOffTask.Reset();
+    pneuOffTask.Reset(); // wait for penumatics to come to rest
 }
 
 static void cycleComplete()
 {
+    // If we have any more shots to fire (burst) or we are in Auto mode with the trigger down
     if(g_CycleValues.shotsToGo > 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
     {
         // Fire another shot
@@ -332,12 +342,13 @@ static void startCycle()
     }
 }
 
-static inline void fireMarker()
+static void fireMarker()
 {
-    // Check we are ready to fire
+    // Check we can fire
     if(is_bit_set(g_CycleValues.flags, CF_Marker_Firing))
         return;
 
+    // Mark that we are firing
     bit_set(g_CycleValues.flags, CF_Marker_Firing);
 
     // Determine how many shots to fire this 'cycle'
@@ -357,7 +368,6 @@ static inline void fireMarker()
 /// Timer Tick
 void onTimerTick()
 {
-
     triggerChangeTask.Update();
     secondTickTask.Update();
     searOnTask.Update();
@@ -374,3 +384,17 @@ void onADCReadComplete()
     // Read the value ADC for a value between 0-255
     eyeCycleTask.SetCurrentEye(ADCH);
 }
+
+#if defined GAME_TIMER
+///
+/// Game Timer Lapsed Callback
+void onGameLapsed()
+{
+}
+
+///
+/// Alarm Timer Lapsed Callback
+void onAlarmLapsed()
+{
+}
+#endif

@@ -41,6 +41,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /// Enable the use of the game timer
 #define GAME_TIMER
 
+#ifndef F_CPU
+// define F_CPU when it's not there
+// Set this to clock speed
+#define F_CPU 16000000U
+#endif
+
+///
+/// Need to define what processor we are using
+#define __AVR_ATmega328P__
+
 #if defined USE_ARDUINO
 #include "Arduino.h"
 

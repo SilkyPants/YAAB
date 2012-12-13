@@ -23,12 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "common.h"
 
-#ifndef F_CPU
-// define F_CPU when it's not there
-// Set this to clock speed
-#define F_CPU 16000000U
-#endif
-
 #if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
 #define CYCLE_PORT PORTA
 #define CYCLE_PORT_REG DDRA

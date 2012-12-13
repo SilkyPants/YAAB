@@ -226,12 +226,15 @@ void initMarker()
 void loopMarker()
 {  
 #if defined SERIAL_DEBUG
-    /*if(lastEyeState != eyeCycleTask.GetCurrentEye())
+    // Need to copy since it could change between now and then
+    uint8_t currEye = eyeCycleTask.GetCurrentEye();
+
+    if(lastEyeState != currEye)
     {
-        lastEyeState = eyeCycleTask.GetCurrentEye();
+        lastEyeState = currEye;
         Serial.print("Eye State: ");
         Serial.println(lastEyeState, HEX);
-    }*/
+    }
 #endif
 }
 

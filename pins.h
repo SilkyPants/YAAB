@@ -30,14 +30,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define EYE_PORT PORTA
 #define EYE_PORT_REG DDRA
-#define TIMER_16_BIT
 #elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+
+#if F_CPU > 8000000UL
+    #error Cannot use an ATTiny*5 chip with a clock speed greater than 8Mhz. Not enough pins!
+#endif
+
 #define CYCLE_PORT PORTB
 #define CYCLE_PORT_REG DDRB
 #define CYCLE_PIN_REG PINB
 
 #define EYE_PORT PORTB
 #define EYE_PORT_REG DDRB
+
+#define TIMSK0 TIMSK // As the ATTiny*5 does not refer to timer 0 as such
 #else
 #define CYCLE_PORT PORTD
 #define CYCLE_PORT_REG DDRD
@@ -49,7 +55,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define INPUT_PORT PORTB
 #define INPUT_PORT_REG DDRB
 #define INPUT_PIN_REG PINB
-#define TIMER_16_BIT
 #endif
 
 #if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
@@ -75,8 +80,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UP_BUTTON_PIN 0
 #define OK_BUTTON_PIN 1
 #define DN_BUTTON_PIN 2
-
-#if !defined TIMER_16_BIT
-#define TIMSK TIMSK0
-#endif
 #endif

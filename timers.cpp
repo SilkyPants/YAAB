@@ -24,6 +24,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pins.h"
 #include "main.h"
 
+// Are we using the 16 bit timer
+#define TIMER_16_BIT
+
 /*
 Time values are in 0.1 milliseconds steps, this is to allow the use of integers for calculation
 and helps keep the size down
@@ -34,9 +37,6 @@ To break the units into printable values get the decimal with x % 10 and the mil
 */
 //#define SLOW_THINGS_DOWN
 
-// This allows use of the overflow timer instead of compare
-//#define OVERFLOW_TIMER
-
 // controls the speed of the cycle timer
 #if defined SLOW_THINGS_DOWN
 #define TIMER_FREQ 100
@@ -44,21 +44,35 @@ To break the units into printable values get the decimal with x % 10 and the mil
 #define TIMER_FREQ 10000
 #endif
 
-// This prescale will give no errors in accuracy, but won't work for 20MHz CPU
-#if defined TIMER_16_BIT
-#define TIMER_PRESCALE 64
-#else
+// This prescale will give no errors in accuracy
+// MUST CHANGE PRESCALER BELOW TO MATCH!!
 #define TIMER_PRESCALE 8
-#endif
-
 #define TIMER_VAL F_CPU/TIMER_PRESCALE/TIMER_FREQ
 
-#if defined OVERFLOW_TIMER
 #if defined TIMER_16_BIT
-#define TIMER_OVF_VAL 65536 - TIMER_VAL
+#define TIMER_COMPARE_VECT TIMER1_COMPA_vect
+#define TIMER_CONTROL_A TCCR1A
+#define TIMER_CONTROL_B TCCR1B
+#define TIMER_ENABLE_MASK TIMSK1
+
+#define TIMER_ENABLE_BIT OCIE1A
+#define TIMER_CTC_MODE_BIT WGM12
+#define TIMER_COUNT TCNT1
+#define TIMER_OUTPUT_COMPARE_A OCR1A
+
+#define TIMER_PRESCALER (1 << CS11)
 #else
-#define TIMER_OVF_VAL 255 - TIMER_VAL
-#endif
+#define TIMER_COMPARE_VECT TIMER0_COMPA_vect
+#define TIMER_CONTROL_A TCCR0A
+#define TIMER_CONTROL_B TCCR0B
+#define TIMER_ENABLE_MASK TIMSK0
+
+#define TIMER_ENABLE_BIT OCIE0A
+#define TIMER_CTC_MODE_BIT WGM01
+#define TIMER_COUNT TCNT0
+#define TIMER_OUTPUT_COMPARE_A OCR0A
+
+#define TIMER_PRESCALER (1 << CS01)
 #endif
 
 ///
@@ -74,73 +88,31 @@ void onTimerTick();
 ///
 void timer_init()
 {
-#if defined TIMER_16_BIT
-    TCCR1A = 0;
-    TCCR1B = 0;
+    TIMER_CONTROL_A = 0;                    // clear A control register (we don't need anything here)
+    TIMER_CONTROL_B = TIMER_PRESCALER;      // set B control register to the prescaler value
+    TCCR1B |= (1 << TIMER_CTC_MODE_BIT);    // enable CTC mode
 
-    TCCR1B |= (1 << CS11)|(1 << CS10);    // 64 prescaler
+    TIMER_COUNT = 0;                        // clear the timer
+    TIMER_OUTPUT_COMPARE_A = TIMER_VAL;     // set the compare value
 
-#if defined OVERFLOW_TIMER
-    TCNT1 = TIMER_OVF_VAL;      // preload timer
-    TIMSK1 |= (1 << TOIE1);    // enable timer
-#else
-    TCNT1 = 0;
-    OCR1A = TIMER_VAL;
-    TCCR1B |= (1 << WGM12);     // enable CTC mode
-    TIMSK1 |= (1 << OCIE1A);    // enable timer
-#endif
-#else
-    TCCR0A = 0;
-    TCCR0B = 0;
-
-    TCCR0B |= (1 << CS01);    // 8 prescaler
-
-#if defined OVERFLOW_TIMER
-    TCNT0 = TIMER_OVF_VAL;      // preload timer
-    TIMSK0 |= (1 << TOIE0);     // enable timer
-#else
-    TCNT0 = 0;
-    OCR0A = TIMER_VAL;
-    TCCR0B |= (1 << WGM01);     // enable CTC mode
-    TIMSK |= (1 << OCIE0A);    // enable timer
-#endif
-#endif
+    // Start the timer
+    startTimer();
 }
 
 void startTimer()
 {
-    bit_set(TIMSK1, OCIE1A);
+    bit_set(TIMER_ENABLE_MASK, TIMER_ENABLE_BIT);
 }
 
 void stopTimer()
 {
-    bit_clear(TIMSK1, OCIE1A);
+    bit_clear(TIMER_ENABLE_MASK, TIMER_ENABLE_BIT);
 }
 
 ///
 /// Timer Interrupt
 ///
-#if defined TIMER_16_BIT
-#if defined OVERFLOW_TIMER
-ISR(TIMER1_OVF_vect)
-#else
-ISR(TIMER1_COMPA_vect)
-#endif
-#else
-#if defined OVERFLOW_TIMER
-ISR(TIMER0_OVF_vect)
-#else
-ISR(TIMER0_COMPA_vect)
-#endif
-#endif
+ISR(TIMER_COMPARE_VECT)
 {
-#if defined OVERFLOW_TIMER
-#if defined TIMER_16_BIT
-    TCNT1 = TIMER_OVF_VAL;    // reload timer
-#else
-    TCNT0 = TIMER_OVF_VAL;    // reload timer
-#endif
-#endif
-
     onTimerTick();
 }

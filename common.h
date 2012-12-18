@@ -50,6 +50,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /// Need to define what processor we are using
 #define __AVR_ATmega328P__
+//#define __AVR_ATtiny85__
+//#define __AVR_ATtiny84__
 
 #if defined USE_ARDUINO
 #include "Arduino.h"

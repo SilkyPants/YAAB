@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "adc.h"
-#include "main.h"
+#include "mainx.h"
 
 // ADC Completes faster
 #define FASTER_ADC

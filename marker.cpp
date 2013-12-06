@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "pins.h"
 #include "timers.h"
 #include "adc.h"
+#include "i2c.h"
 #include "settings.h"
 
 #include "IntervalLapse.h"
@@ -31,6 +32,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "BreechEyesTask.h"
 
 #include "Timer.h"
+
+#include "crius_oled.h"
 
 ///
 /// Program Specific defines - for readability
@@ -106,6 +109,8 @@ IntervalLapse keepAliveTask(keepAliveToggle);
 
 uint8_t g_triggerPullCount;
 uint8_t g_ballShotCount;
+
+crius_oled oled;
 
 ///
 /// End Other Setting Stuff!
@@ -204,6 +209,7 @@ void initMarker()
     // Init timers
     timer_init();
     adc_init();
+	i2c_init();
 
     // Setup the tasks
     secondTickTask.SetIntervalTime(10000, true);
@@ -217,7 +223,7 @@ void initMarker()
 
     eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout, g_Settings.eyeSettings.detectionTime, g_Settings.eyeSettings.eyeBall);
 
-    // Kick off the taks
+    // Kick off the tasks
     triggerChangeTask.Reset();
     secondTickTask.Reset();
     
@@ -228,10 +234,15 @@ void initMarker()
 
     // start interrupts
     sei();
+	
+	oled.initDisplay();
 }
 
 void loopMarker()
 {  
+	// Display the LCD
+	oled.display();
+	
 #if defined SERIAL_DEBUG
     // Need to copy since it could change between now and then
     uint8_t currEye = eyeCycleTask.GetCurrentEye();

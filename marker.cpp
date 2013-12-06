@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "mainx.h"
+#include "marker.h"
 #include "common.h"
 #include "pins.h"
 #include "timers.h"
@@ -44,7 +44,10 @@ volatile CycleValues g_CycleValues =
     0,                  // Shots to fire in 'cycle' (Burst)
 };
 
-// Store in EEMEM later
+///
+/// Store in EEMEM later
+///
+
 ///
 /// Marker Settings
 /// Things specific to the marker
@@ -72,6 +75,10 @@ MarkerProfile g_Profiles[] =
 #endif
 };
 
+///
+/// End EEPROM stuff
+///
+
 MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
 unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
@@ -86,7 +93,7 @@ unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
 
 void keepAliveToggle()
 {
-    // Toggle Kepp Alive LED
+    // Toggle Keep Alive LED
     output_toggle(KEEP_ALIVE_PORT, KEEP_ALIVE_PIN);
 }
 

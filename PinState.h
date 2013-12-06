@@ -37,7 +37,7 @@ private:
 public:
 
     PinState(TaskConditionMet conditionMet, char pinPort, char pinBit, bool pinState);
-    virtual ~PinState(void);
+    ~PinState(void);
 };
 
 class PinChange : public Task
@@ -58,7 +58,7 @@ protected:
 public:
 
     PinChange(TaskConditionMet conditionMet, volatile uint8_t *pinPort, uint8_t pinBit);
-    virtual ~PinChange(void);
+    ~PinChange(void);
 
     void SetDebounce(uint8_t debounce);
 };

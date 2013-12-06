@@ -41,7 +41,7 @@ private:
 
 public:
     BreechEyesTask(TaskConditionMet conditionsMet);
-    virtual ~BreechEyesTask(void);
+    ~BreechEyesTask(void);
 
     void SetTaskValues(uint16_t timeout, uint8_t detectTime, uint8_t ballDetect);
     void SetCurrentEye(uint8_t currentEye);

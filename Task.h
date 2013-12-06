@@ -34,13 +34,13 @@ private:
 protected:
     bool m_Enabled;
 
-    virtual bool IsConditionMet() = 0;
-    virtual void UpdateInternal() = 0;
+    virtual bool IsConditionMet() { return false; };
+    virtual void UpdateInternal() { };
     virtual void ConditionMet();
 
 public:
     Task(TaskConditionMet conditionMet);
-    virtual ~Task(void);
+    ~Task(void);
 
     virtual void Update();
     void Stop();

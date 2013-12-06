@@ -49,9 +49,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ///
 /// Need to define what processor we are using
+#ifndef __AVR_ATmega328P__
 #define __AVR_ATmega328P__
+
+//#ifndef __AVR_ATtiny85__
 //#define __AVR_ATtiny85__
+
+//#ifndef __AVR_ATtiny84__
 //#define __AVR_ATtiny84__
+#endif
 
 #if defined USE_ARDUINO
 #include "Arduino.h"
@@ -75,7 +81,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define bit_set(val, bit) val |= flag_set(bit)
 #define bit_clear(val, bit) val &= flag_invert(bit)
 #define bit_toggle(val, bit) val ^= flag_set(bit)
-#define is_bit_set(val, bit) ((val & flag_set(bit))) != 0
+#define is_bit_set(val, bit) ( ( ( val & flag_set( bit ) ) ) != 0 )
 
 #define high_nybble(byte) ((byte >> 4) & 0x0F)
 #define low_nybble(byte) ((byte) & 0x0F)

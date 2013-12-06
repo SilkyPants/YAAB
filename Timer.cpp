@@ -56,7 +56,7 @@ void Timer::Reset()
 
 const char* Timer::ToString()
 {
-    sprintf(stringBuffer, "%02d:%02d:%02d\0", m_Hours, m_Minutes, m_Seconds);
+    sprintf(stringBuffer, "%02d:%02d:%02d", m_Hours, m_Minutes, m_Seconds);
 
     return stringBuffer;
 }

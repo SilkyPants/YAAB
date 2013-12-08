@@ -95,3 +95,4 @@ void Timer::SubtractHour()
     if(m_Hours > 0)
         m_Hours--;
 }
+

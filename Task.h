@@ -46,3 +46,4 @@ public:
     void Stop();
     virtual void Reset();
 };
+

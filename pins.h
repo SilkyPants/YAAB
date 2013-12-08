@@ -23,14 +23,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "common.h"
 
-#if defined(__AVR_ATtiny24__) || defined(__AVR_ATtiny44__) || defined(__AVR_ATtiny84__)
+#if defined(__AVR_ATtiny84__)
+
 #define CYCLE_PORT PORTA
 #define CYCLE_PORT_REG DDRA
 #define CYCLE_PIN_REG PINA
 
 #define EYE_PORT PORTA
 #define EYE_PORT_REG DDRA
-#elif defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
+
+#elif defined(__AVR_ATtiny85__)
 
 #if F_CPU > 8000000UL
     #error Cannot use an ATTiny*5 chip with a clock speed greater than 8Mhz. Not enough pins!
@@ -44,7 +46,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EYE_PORT_REG DDRB
 
 #define TIMSK0 TIMSK // As the ATTiny*5 does not refer to timer 0 as such
-#else
+
+#elif defined( __AVR_ATmega328__ ) || defined( __AVR_ATmega328P__ )
 #define CYCLE_PORT PORTD
 #define CYCLE_PORT_REG DDRD
 #define CYCLE_PIN_REG PIND
@@ -55,6 +58,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define INPUT_PORT PORTB
 #define INPUT_PORT_REG DDRB
 #define INPUT_PIN_REG PINB
+
+#else
+
+#error Unsupported chip! Please edit pins.h to support your chosen AVR chip.
+
 #endif
 
 #if defined(__AVR_ATtiny25__) || defined(__AVR_ATtiny45__) || defined(__AVR_ATtiny85__)
@@ -81,3 +89,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define OK_BUTTON_PIN 1
 #define DN_BUTTON_PIN 2
 #endif
+

@@ -24,3 +24,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 void i2c_init(void);
 void i2c_OLED_send_cmd(uint8_t address, uint8_t val);
 void i2c_OLED_send_byte(uint8_t address, uint8_t val);
+

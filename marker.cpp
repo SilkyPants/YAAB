@@ -110,7 +110,7 @@ IntervalLapse keepAliveTask(keepAliveToggle);
 uint8_t g_triggerPullCount;
 uint8_t g_ballShotCount;
 
-crius_oled oled;
+//crius_oled oled;
 
 ///
 /// End Other Setting Stuff!
@@ -209,7 +209,7 @@ void initMarker()
     // Init timers
     timer_init();
     adc_init();
-	i2c_init();
+//	i2c_init();
 
     // Setup the tasks
     secondTickTask.SetIntervalTime(10000, true);
@@ -235,13 +235,13 @@ void initMarker()
     // start interrupts
     sei();
 	
-	oled.initDisplay();
+//	oled.initDisplay();
 }
 
 void loopMarker()
 {  
 	// Display the LCD
-	oled.display();
+//	oled.display();
 	
 #if defined SERIAL_DEBUG
     // Need to copy since it could change between now and then
@@ -419,3 +419,4 @@ void onAlarmLapsed()
 {
 }
 #endif
+

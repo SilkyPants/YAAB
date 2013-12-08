@@ -57,3 +57,4 @@ void IntervalLapse::Reset()
     m_Interval = m_IntervalReset; 
 }
 
+

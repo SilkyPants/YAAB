@@ -35,7 +35,6 @@ class crius_oled
 public:
 protected:
 private:
-	uint8_t buffer[ LCD_BUFFER_SIZE ];
 
 //functions
 public:
@@ -45,15 +44,19 @@ public:
 	void initDisplay();
 	
 	void drawPixel( uint16_t x, uint16_t y, bool drawPixel );
-	void drawChar( uint16_t x, uint16_t y, uint8_t character);
-	void drawString( uint16_t x, uint16_t y, uint8_t * string);
+	void drawChar( uint16_t x, uint16_t y, unsigned char character);
+	void drawString( uint16_t x, uint16_t y, unsigned char * string);
+	void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 	
 	void display();
 	void clear();
 	
 protected:
 private:
+  void ssd1306_command(uint8_t cmd);
+
 
 }; //crius_oled
 
 #endif //__CRIUS_OLED_H__
+

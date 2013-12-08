@@ -89,3 +89,4 @@ struct MarkerProfile // 16 bytes
     unsigned char rofCap : 6;               // ROF capped value (max 63)
     unsigned char : 0;                      // Padding
 };
+

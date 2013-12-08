@@ -102,3 +102,4 @@ void i2c_OLED_send_byte(uint8_t address, uint8_t val)
 	TWBR = 12;//TWBR = ((F_CPU / 400000L) - 16) / 2; // change the I2C clock rate
 	i2c_writeReg(address, 0x40, (uint8_t)val);
 }
+

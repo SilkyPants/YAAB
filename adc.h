@@ -37,3 +37,4 @@ void adc_init();
 ///
 void adc_start_read(uint8_t ch);
 void adc_stop_all();
+

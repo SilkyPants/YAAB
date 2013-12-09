@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __CRIUS_OLED_H__
 #define __CRIUS_OLED_H__
 
-#include "common.h"
+#include "Arduino.h"
 
 #define LCD_WIDTH 128
 #define LCD_HEIGHT 64
@@ -44,8 +44,8 @@ public:
 	void initDisplay();
 	
 	void drawPixel( uint16_t x, uint16_t y, bool drawPixel );
-	void drawChar( uint16_t x, uint16_t y, unsigned char character);
-	void drawString( uint16_t x, uint16_t y, unsigned char * string);
+	void drawChar( uint16_t x, uint16_t y, uint8_t character);
+	void drawString( uint16_t x, uint16_t y, uint8_t * string);
 	void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 	
 	void display();

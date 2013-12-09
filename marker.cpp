@@ -241,9 +241,9 @@ void initMarker()
 
     
   
-  drawString( 52, 5, fill_string1 );
-  drawString( 6, 5, fill_string2 );
-  drawString( 3, 19, fill_string3 );
+  drawString( 52, 4, fill_string1 );
+  drawString( 5, 4, fill_string2 );
+  drawString( 3, 17, fill_string3 );
 }
 
 void loopMarker()

@@ -247,7 +247,9 @@ void initMarker()
 }
 
 void loopMarker()
-{  	
+{
+	// Display the LCD
+	displayBuffer();
 #if defined SERIAL_DEBUG
     // Need to copy since it could change between now and then
     uint8_t currEye = eyeCycleTask.GetCurrentEye();
@@ -325,8 +327,6 @@ static void triggerToggle()
 
 static void onSecondTick()
 {
-	// Display the LCD
-	displayBuffer();
 #if defined SERIAL_DEBUG
     Serial.println("Pull Count(/s): " + g_triggerPullCount);
     Serial.println("Current BPS: " + g_ballShotCount);

@@ -266,7 +266,7 @@ void  i2c_OLED_init(void)
   //  i2c_OLED_send_cmd(0xC0);            // Scan from Right to Left (POR)         *** wires at bottom
   sendcommand(0xC8);          // Scan from Left to Right               ** wires at top
   
-  sendcommand(0xa7);            // Set WHITE chars on BLACK backround
+  sendcommand(0xa6);            // Set WHITE chars on BLACK backround
   
   sendcommand(0x20);            //Set Memory Addressing Mode
   sendcommand(0x01);            //Set Memory Addressing Mode to Page addressing mode(RESET)
@@ -274,7 +274,7 @@ void  i2c_OLED_init(void)
 
   //  i2c_OLED_send_cmd(0xa7);            // Set BLACK chars on WHITE backround
   sendcommand(0x81);            // 81 Setup CONTRAST CONTROL, following byte is the contrast Value
-  sendcommand(0xCC);            // af contrast value between 1 ( == dull) to 255 ( == bright)
+  sendcommand(0x01);            // af contrast value between 1 ( == dull) to 255 ( == bright)
   _delay_ms(20);
 
   sendcommand(0xaf);          //display on

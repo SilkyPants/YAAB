@@ -114,8 +114,6 @@ IntervalLapse keepAliveTask(keepAliveToggle);
 uint8_t g_triggerPullCount;
 uint8_t g_ballShotCount;
 
-crius_oled oled;
-
 ///
 /// End Other Setting Stuff!
 ///
@@ -239,13 +237,13 @@ void initMarker()
     // start interrupts
     sei();
 	
-    oled.initDisplay();
+    init_OLED();
 
     
   
-  //oled.drawString( 52, 5, fill_string1 );
-  oled.drawString( 6, 5, fill_string2 );
-  //oled.drawString( 3, 20, fill_string3 );
+  drawString( 52, 5, fill_string1 );
+  drawString( 6, 5, fill_string2 );
+  drawString( 3, 19, fill_string3 );
 }
 
 void loopMarker()
@@ -328,7 +326,7 @@ static void triggerToggle()
 static void onSecondTick()
 {
 	// Display the LCD
-	oled.display();
+	displayBuffer();
 #if defined SERIAL_DEBUG
     Serial.println("Pull Count(/s): " + g_triggerPullCount);
     Serial.println("Current BPS: " + g_ballShotCount);

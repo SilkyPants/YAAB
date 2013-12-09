@@ -214,16 +214,16 @@ PROGMEM const unsigned char Borders[] =
 // Start Character: 32
 // Stop Character: 122
 //---------------------------------------------------------------
-unsigned char SmallFont[] = 
+const unsigned char SmallFont[] = 
 {
-	// Font Header 
-	0x00,	// 0x00: Monospace, 0x01: Proportional 
-	0x02,	// 0x00: horizontalLeft,  0x01: horizontalRight 
-			// 0x02: verticalCeiling, 0x03: verticalBottom 
-	0x20,	// Startcharacter 
-	0x5B,	// Number of Bitmaps 
-	0x6,	// Height 
-	0x6,	// Width 
+	// Font Header
+	0x00,	// 0x00: Monospace, 0x01: Proportional
+	0x02,	// 0x00: horizontalLeft,  0x01: horizontalRight
+	// 0x02: verticalCeiling, 0x03: verticalBottom
+	0x20,	// Startcharacter
+	0x5B,	// Number of Bitmaps
+	0x6,	// Height
+	0x6,	// Width
 
 
 	/* Character Data - Index: 0 */

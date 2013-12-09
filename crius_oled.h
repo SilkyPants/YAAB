@@ -23,12 +23,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __CRIUS_OLED_H__
 #define __CRIUS_OLED_H__
 
-#include "Arduino.h"
-
 #define LCD_WIDTH 128
 #define LCD_HEIGHT 64
 #define LCD_BUFFER_SIZE ( ( LCD_WIDTH * LCD_HEIGHT ) / 8 ) 
 
+void drawString( int x, int y, unsigned char * string );
+void clear_display(void);
+void init_OLED(void);
+void displayBuffer();
+
+/*
 class crius_oled
 {
 //variables
@@ -46,7 +50,6 @@ public:
 	void drawPixel( uint16_t x, uint16_t y, bool drawPixel );
 	void drawChar( uint16_t x, uint16_t y, uint8_t character);
 	void drawString( uint16_t x, uint16_t y, uint8_t * string);
-	void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 	
 	void display();
 	void clear();
@@ -57,6 +60,6 @@ private:
 
 
 }; //crius_oled
-
+*/
 #endif //__CRIUS_OLED_H__
 

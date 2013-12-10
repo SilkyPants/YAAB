@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 unsigned char fill_string1[]="PUMP";
 unsigned char fill_string2[]="(";
 unsigned char fill_string3[]="@ SELECT FIRE MODE\n  SELECT BPS\n  TRAINING MODE\n  SHOW STATISTICS\n  SET GAME TIMER\n  SET GAME ALARM";
+uint8_t battLevel = 100;
 
 ///
 /// Program Specific defines - for readability
@@ -240,10 +241,11 @@ void initMarker()
     init_OLED();
 
     
+    drawBatteryLevel( battLevel );
   
-  drawString( 52, 4, fill_string1 );
-  drawString( 5, 4, fill_string2 );
-  drawString( 3, 17, fill_string3 );
+	drawString( 52, 4, fill_string1 );
+	drawString( 5, 4, fill_string2 );
+	drawString( 3, 17, fill_string3 );
 }
 
 void loopMarker()
@@ -326,7 +328,18 @@ static void triggerToggle()
 }
 
 static void onSecondTick()
-{
+{			
+	if( battLevel <= 0 )
+	{
+		battLevel = 100;
+	}
+	else
+	{
+		battLevel -= 25;
+	}
+	
+	drawBatteryLevel( battLevel );
+	
 #if defined SERIAL_DEBUG
     Serial.println("Pull Count(/s): " + g_triggerPullCount);
     Serial.println("Current BPS: " + g_ballShotCount);

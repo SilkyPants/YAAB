@@ -126,10 +126,24 @@ void drawPixel( int x, int y, bool draw )
 		buffer[ pageIdx ] &= ~( 1 << pixelIdx );
 }
 
-void drawChar( int x, int y, unsigned char character )
+const unsigned char * GetFont( FontType font )
 {
-	const unsigned char * font = FONT;
-	
+	switch( font )
+	{
+		case BPS_FONT:
+			return BPSFont;
+			
+		case LARGE_FONT:
+			return LargeFont;
+		
+		case SMALL_FONT:
+		default:
+			return SmallFont;
+	}
+}
+
+void drawChar( int x, int y, unsigned char character, const unsigned char * font )
+{	
 	uint8_t startChar = pgm_read_byte_near(font + 2);
 	uint8_t charWidth = pgm_read_byte_near(font + 5);
 	uint8_t charHeight = pgm_read_byte_near(font + 4);
@@ -158,10 +172,12 @@ void drawChar( int x, int y, unsigned char character )
 	}
 }
 
-void drawString( int x, int y, unsigned char * string )
+void drawString( int x, int y, unsigned char * string, FontType fontType )
 {
-	uint8_t charWidth = pgm_read_byte_near(FONT + 5);
-	uint8_t charHeight = pgm_read_byte_near(FONT + 4);
+	const unsigned char * font = GetFont( fontType );
+	
+	uint8_t charWidth = pgm_read_byte_near(font + 5);
+	uint8_t charHeight = pgm_read_byte_near(font + 4);
 	int runningX = x;
 	
 	while(*string)
@@ -177,7 +193,7 @@ void drawString( int x, int y, unsigned char * string )
 		}
 		else
 		{
-			drawChar( runningX, y, *string );
+			drawChar( runningX, y, *string, font );
 			
 			runningX += charWidth;
 		}
@@ -242,6 +258,46 @@ void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1)
 			y0 += ystep;
 			err += dx;
 		}
+	}
+}
+
+void fillRect( int x, int y, int w, int h, bool fill )
+{
+	for( int i = x; i < x + w; i++ )
+	{
+		for( int j = y; j < y + h; j++ )
+		{
+			drawPixel( i, j, fill );
+		}	
+	}
+}
+
+void drawBatteryLevel( uint8_t battPercent )
+{
+	fillRect( 112, 5, 11, 5, false );
+	
+	if( battPercent >= 25 )
+	{
+		drawLine( 121, 5, 121, 9 );
+		drawLine( 122, 5, 122, 9 );
+	}
+	
+	if( battPercent >= 50 )
+	{
+		drawLine( 118, 5, 118, 9 );
+		drawLine( 119, 5, 119, 9 );
+	}
+	
+	if( battPercent >= 75 )
+	{
+		drawLine( 115, 5, 115, 9 );
+		drawLine( 116, 5, 116, 9 );
+	}
+	
+	if( battPercent >= 100 )
+	{
+		drawLine( 112, 5, 112, 9 );
+		drawLine( 113, 5, 113, 9 );
 	}
 }
 

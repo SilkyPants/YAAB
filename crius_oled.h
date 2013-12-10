@@ -27,7 +27,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define LCD_HEIGHT 64
 #define LCD_BUFFER_SIZE ( ( LCD_WIDTH * LCD_HEIGHT ) / 8 ) 
 
-void drawString( int x, int y, unsigned char * string );
+enum FontType
+{
+	SMALL_FONT,
+	LARGE_FONT,
+	BPS_FONT
+};
+
+void fillRect( int x, int y, int w, int h, bool fill = true );
+void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
+void drawString( int x, int y, unsigned char * string, FontType type = SMALL_FONT );
+void drawBatteryLevel( uint8_t battPercent );
 void clear_display(void);
 void init_OLED(void);
 void displayBuffer();

@@ -156,7 +156,7 @@
     <Compile Include="flags.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="font.c">
+    <Compile Include="font.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="i2c.cpp">

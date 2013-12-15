@@ -20,6 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "marker.h"
+#include "common.h"
+#include "settings.h"
 
 void setup() 
 {

@@ -3,7 +3,7 @@ YAAB - Yet Another Autococker Board
 Arduino based autococker board developed around the platform and ATMEL AVR 
 chips
 
-Copyright (C) 2012  Dan Silk
+Copyright (C) 2013  Dan Silk
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -49,44 +49,44 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 struct EyeSettings // 4 bytes
 {
-    unsigned char detectionTime;            // Time before eye state change triggered
-    unsigned char eyeBall;                  // Value for ball seen
-    unsigned int eyeTimeout;                // How long to wait for the eyes before closing
+    uint8_t detectionTime;            // Time before eye state change triggered
+    uint8_t eyeBall;                  // Value for ball seen
+    uint16_t eyeTimeout;              // How long to wait for the eyes before closing
 };
 
 struct MarkerTiming // 6 bytes
 {
-    unsigned char searOn;                   // How long the hammer sear is down for
-    unsigned char pneuDel;                  // How long to wait from the start of the cycle before cocking the marker
-    unsigned int pneuOn;                    // How long to open the cocking solenoid
-    unsigned int pneuOff;                   // How long after cocking the marker before we can fire again
+    uint8_t searOn;                   // How long the hammer sear is down for
+    uint8_t pneuDel;                  // How long to wait from the start of the cycle before cocking the marker
+    uint16_t pneuOn;                  // How long to open the cocking solenoid
+    uint16_t pneuOff;                 // How long after cocking the marker before we can fire again
 };
 
 struct MarkerSettings // 16 bytes
 {
-    unsigned char debounceTime;             // How long before saying the trigger is pressed/released
-    unsigned char currentProfile;           // The current profile in use
-    unsigned long shotsSinceLastReset;      // Shot counter
-    MarkerTiming timings;                   // Settings for the marker pneumatics cycle
-    EyeSettings eyeSettings;                // Settings for the eyes
+    uint8_t debounceTime;             // How long before saying the trigger is pressed/released
+    uint8_t currentProfile;           // The current profile in use
+    uint32_t shotsSinceLastReset;     // Shot counter
+    MarkerTiming timings;             // Settings for the marker pneumatics cycle
+    EyeSettings eyeSettings;          // Settings for the eyes
 };
 
 struct CycleValues // 2 bytes
 {
-    unsigned char flags;                    // Flags using in marker cycle (CycleFlags)
-    unsigned char shotsToGo;                // Shots to fire in 'cycle' (Burst)
+    uint8_t flags;                    // Flags using in marker cycle (CycleFlags)
+    uint8_t shotsToGo;                // Shots to fire in 'cycle' (Burst)
 };
 
 struct MarkerProfile // 16 bytes
 {
-    char profileName[13];                   // Name for the profile
-    unsigned char shotsToFirePress : 4;     // Burst fire on press (max 15)
-    unsigned char shotsToFireRelease : 4;   // Burst fire on release (max 15)
-    unsigned char actionType : 4;           // Pump, Semi, Auto
-    unsigned char triggerAction : 2;        // What to do on trigger state change
-    unsigned char rofCapped : 1;            // Is the ROF capped
-    unsigned char : 0;                      // Padding
-    unsigned char rofCap : 6;               // ROF capped value (max 63)
-    unsigned char : 0;                      // Padding
+    char profileName[13];             // Name for the profile
+    uint8_t shotsToFirePress : 4;     // Burst fire on press (max 15)
+    uint8_t shotsToFireRelease : 4;   // Burst fire on release (max 15)
+    uint8_t actionType : 4;           // Pump, Semi, Auto
+    uint8_t triggerAction : 2;        // What to do on trigger state change
+    uint8_t rofCapped : 1;            // Is the ROF capped
+    uint8_t : 0;                      // Padding
+    uint8_t rofCap : 6;               // ROF capped value (max 63)
+    uint8_t : 0;                      // Padding
 };
 

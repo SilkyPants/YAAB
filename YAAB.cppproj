@@ -189,6 +189,9 @@
     <Compile Include="settings.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="strings.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Task.cpp">
       <SubType>compile</SubType>
     </Compile>

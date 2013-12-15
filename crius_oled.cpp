@@ -3,7 +3,7 @@ YAAB - Yet Another Autococker Board
 Arduino based autococker board developed around the platform and ATMEL AVR
 chips
 
-Copyright (C) 2012  Dan Silk
+Copyright (C) 2013  Dan Silk
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -116,6 +116,9 @@ void displayBuffer()
 
 void drawPixel( int x, int y, bool draw )
 {
+	if( x < 0 || x >= LCD_WIDTH || y < 0 || y >= LCD_HEIGHT )
+		return;
+	
 	int bitIdx = y + ( x * 64 );
 	int pageIdx = bitIdx / 8;
 	uint8_t pixelIdx = bitIdx % 8;

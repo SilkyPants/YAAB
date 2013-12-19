@@ -191,20 +191,18 @@ void initMarker()
     set_output(KEEP_ALIVE_PORT_REG, TRIGGER_PRESSED_PIN);
 #endif
 
-    /*
     set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
     set_input(INPUT_PORT_REG, OK_BUTTON_PIN);
     set_input(INPUT_PORT_REG, DN_BUTTON_PIN);
-    */
+    
 
     // Enable internal pullups
     output_high(CYCLE_PORT, TRIGGER_PIN);
     
-    /*
     output_high(INPUT_PORT, UP_BUTTON_PIN);
     output_high(INPUT_PORT, OK_BUTTON_PIN);
     output_high(INPUT_PORT, DN_BUTTON_PIN);
-    */
+    
 
     // stop interrupts
     cli();
@@ -252,6 +250,7 @@ void loopMarker()
 {
 	// Display the LCD
 	displayBuffer();
+	
 #if defined SERIAL_DEBUG
     // Need to copy since it could change between now and then
     uint8_t currEye = eyeCycleTask.GetCurrentEye();
@@ -263,6 +262,7 @@ void loopMarker()
         Serial.println(lastEyeState, HEX);
     }
 #endif
+
 }
 
 static void searDrop()
@@ -287,7 +287,7 @@ static void pneumaticsCocked()
 {
     // Marker is cocked, switch pneumatics off
     output_low(CYCLE_PORT, PNEU_PIN);
-    pneuOffTask.Reset(); // wait for penumatics to come to rest
+    pneuOffTask.Reset(); // wait for pneumatics to come to rest
 }
 
 static void cycleComplete()

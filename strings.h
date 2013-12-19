@@ -43,11 +43,15 @@ PROGMEM const unsigned char strTraining_Burst[]		= "TRAINING [BRST]";
 PROGMEM const unsigned char strTraining_Reactive[]	= "TRAINING [RCTV]";
 
 PROGMEM const unsigned char strMenu_Menu[]			= "MENU";
+PROGMEM const unsigned char strMenu_Sleep[]			= "TURN OFF";
 PROGMEM const unsigned char strMenu_RateOfFire[]	= "RATE OF FIRE";
-PROGMEM const unsigned char strMenu_FireModes[]		= "FIRING MODES";
+PROGMEM const unsigned char strMenu_FireModes[]		= "PROFILES";
 PROGMEM const unsigned char strMenu_Hardware[]		= "HARDWARE";
 PROGMEM const unsigned char strMenu_Timing[]		= "MARKER TIMING";
+PROGMEM const unsigned char strMenu_Filter[]		= "EYE SETTINGS";
 PROGMEM const unsigned char strMenu_GameScreen[]	= "GAME SCREEN";
+PROGMEM const unsigned char strMenu_Training[]		= "TRAINING";
+PROGMEM const unsigned char strMenu_Timers[]		= "GAME TIMERS";
 
 
 #endif /* STRINGS_H_ */

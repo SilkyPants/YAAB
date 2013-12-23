@@ -26,10 +26,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define FASTER_ADC
 
 ///
-/// ADC Read Complete Function Prototype
-void onADCReadComplete();
-
-///
 /// Analog to Digital
 ///
 
@@ -42,24 +38,21 @@ void adc_init()
     // AREF = AVcc
     ADMUX = (1<<REFS0);
 
-    // 8-bit resolution
-    ADMUX |= (1 << ADLAR);
-
-    // ADC Auto Trigger Enable
-    ADCSRA |= (1 << ADATE);
-
     // Clearing all of ADCSRB will enable free running mode
     ADCSRB = 0x0;
 
 #if defined FASTER_ADC
     // ADC Enable and prescaler of 16 and interrupt ((1 << ADIE))
     // 16000000/16 = 1000000
-    ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1 << ADIE);
+    ADCSRA = (1 << ADEN)|(1 << ADPS2)|(1 << ADIE);
 #else
     // ADC Enable and prescaler of 128 and interrupt ((1 << ADIE))
     // 16000000/128 = 125000
-    ADCSRA = (1<<ADEN)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)|(1 << ADIE);
+    ADCSRA = (1 << ADEN)|(1 << ADPS2)|(1 << ADPS1)|(1 << ADPS0)|(1 << ADIE);
 #endif
+
+    // ADC Auto Trigger Enable
+    ADCSRA |= (1 << ADATE);
 }
 
 ///

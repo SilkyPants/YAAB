@@ -74,19 +74,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // On Port B (3, 4)
 #define EYE_PIN 3
 #define IRED_PIN 4
-#else
+#elif defined( __AVR_ATmega328__ ) || defined( __AVR_ATmega328P__ )
 // On Port D (2, 6, 7)
-#define TRIGGER_PIN 2
-#define PNEU_PIN 6
-#define SEAR_PIN 7
+#define TRIGGER_PIN 2	// Arduino Pin 2
+#define PNEU_PIN 6		// Arduino Pin 6
+#define SEAR_PIN 7		// Arduino Pin 7
 
 // On Port C (0, 2)
-#define EYE_PIN 0
-#define IRED_PIN 2
+#define EYE_PIN 0		// Arduino Pin A0
+#define IRED_PIN 1		// Arduino Pin A1
 
 // On Port B (0-2)
-#define UP_BUTTON_PIN 0
-#define OK_BUTTON_PIN 1
-#define DN_BUTTON_PIN 2
+#define UP_BUTTON_PIN 0	// Arduino Pin 8
+#define OK_BUTTON_PIN 1	// Arduino Pin 9
+#define DN_BUTTON_PIN 2	// Arduino Pin 10
 #endif
 

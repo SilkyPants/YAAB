@@ -151,7 +151,8 @@ Timer g_AlarmTimer(onAlarmLapsed);
 #endif
 
 #if defined SERIAL_DEBUG
-unsigned char lastEyeState = ES_Empty_Seen;
+uint16_t eyeState = 1234;
+uint16_t lastEyeState = 1000;
 #endif
 
 #if !defined USE_ARDUINO
@@ -181,8 +182,8 @@ void initMarker()
     set_output(CYCLE_PORT_REG, SEAR_PIN);
     set_output(CYCLE_PORT_REG, PNEU_PIN);
 
-    set_output(EYE_PORT_REG, EYE_PIN);
-    set_input(EYE_PORT_REG, IRED_PIN);
+    set_output(EYE_PORT_REG, IRED_PIN);
+    set_input(EYE_PORT_REG, EYE_PIN);
 
 #if defined KEEP_ALIVE_ACTIVE
     // Set pins for Keep alive LED
@@ -202,6 +203,8 @@ void initMarker()
     output_high(INPUT_PORT, UP_BUTTON_PIN);
     output_high(INPUT_PORT, OK_BUTTON_PIN);
     output_high(INPUT_PORT, DN_BUTTON_PIN);
+	
+    output_high(EYE_PORT, IRED_PIN);
     
 
     // stop interrupts
@@ -238,6 +241,7 @@ void initMarker()
 	
     init_OLED();
 
+	adc_start_read( 0 );
     
     drawBatteryLevel( battLevel );
   
@@ -253,13 +257,13 @@ void loopMarker()
 	
 #if defined SERIAL_DEBUG
     // Need to copy since it could change between now and then
-    uint8_t currEye = eyeCycleTask.GetCurrentEye();
+    //uint8_t currEye = eyeCycleTask.GetCurrentEye();
 
-    if(lastEyeState != currEye)
+    if(lastEyeState != eyeState)
     {
-        lastEyeState = currEye;
+        lastEyeState = eyeState;
         Serial.print("Eye State: ");
-        Serial.println(lastEyeState, HEX);
+        Serial.println(lastEyeState, DEC);
     }
 #endif
 
@@ -341,8 +345,8 @@ static void onSecondTick()
 	drawBatteryLevel( battLevel );
 	
 #if defined SERIAL_DEBUG
-    Serial.println("Pull Count(/s): " + g_triggerPullCount);
-    Serial.println("Current BPS: " + g_ballShotCount);
+    //Serial.println("Pull Count(/s): " + g_triggerPullCount);
+    //Serial.println("Current BPS: " + g_ballShotCount);
 #endif
     g_triggerPullCount = 0;
     g_ballShotCount = 0;
@@ -423,7 +427,8 @@ void onTimerTick()
 void onADCReadComplete()
 {
     // Read the value ADC for a value between 0-255
-    eyeCycleTask.SetCurrentEye(ADCH);
+    //eyeCycleTask.SetCurrentEye(ADCH);
+	eyeState = ADC;
 }
 
 #if defined GAME_TIMER

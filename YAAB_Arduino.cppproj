@@ -425,6 +425,9 @@
     <Compile Include="timers.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Visual Micro\.YAAB.vsarduino.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

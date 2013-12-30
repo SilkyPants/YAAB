@@ -76,7 +76,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define IRED_PIN 4
 #elif defined( __AVR_ATmega328__ ) || defined( __AVR_ATmega328P__ )
 // On Port D (5, 6, 7)
-#define TRIGGER_PIN 5	        // Arduino Pin 5
+#define TRIGGER_PIN 5	// Arduino Pin 5
 #define PNEU_PIN 6		// Arduino Pin 6
 #define SEAR_PIN 7		// Arduino Pin 7
 

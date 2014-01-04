@@ -150,8 +150,8 @@ Timer g_GameTimer(onGameLapsed);
 Timer g_AlarmTimer(onAlarmLapsed);
 #endif
 
-#if defined SERIAL_DEBUG
 uint16_t eyeState = 1234;
+#if defined SERIAL_DEBUG
 uint16_t lastEyeState = 1000;
 #endif
 
@@ -428,7 +428,7 @@ void onADCReadComplete()
 {
     // Read the value ADC for a value between 0-255
     //eyeCycleTask.SetCurrentEye(ADCH);
-	eyeState = ADC;
+    eyeState = ADC;
 }
 
 #if defined GAME_TIMER

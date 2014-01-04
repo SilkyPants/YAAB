@@ -10,6 +10,7 @@
 #define ARDUINO_MAIN
 #define F_CPU 16000000L
 #define __AVR__
+#define USE_ARDUINO
 #define __cplusplus
 extern "C" void __cxa_pure_virtual() {;}
 
@@ -18,7 +19,7 @@ extern "C" void __cxa_pure_virtual() {;}
 
 #include "E:\arduino\hardware\arduino\variants\standard\pins_arduino.h" 
 #include "E:\arduino\hardware\arduino\cores\arduino\arduino.h"
-#include "C:\Users\Dan\Documents\Arduino\YAAB\YAAB_Arduino.ino"
+#include "C:\Users\Dan\Documents\Arduino\YAAB\YAAB.ino"
 #include "C:\Users\Dan\Documents\Arduino\YAAB\BreechEyesTask.cpp"
 #include "C:\Users\Dan\Documents\Arduino\YAAB\BreechEyesTask.h"
 #include "C:\Users\Dan\Documents\Arduino\YAAB\IntervalLapse.cpp"

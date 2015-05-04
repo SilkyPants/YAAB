@@ -66,8 +66,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /// Enable serial output
 #define SERIAL_DEBUG
 #else
-#include <avr\interrupt.h>
-#include <avr\io.h>
+#include <avr/interrupt.h>
+#include <avr/io.h>
 #include <stdio.h>
 #endif
 

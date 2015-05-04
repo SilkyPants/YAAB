@@ -155,23 +155,6 @@ uint16_t eyeState = 1234;
 uint16_t lastEyeState = 1000;
 #endif
 
-#if !defined USE_ARDUINO
-///
-///
-///
-int main(void)
-{	
-	initMarker();
-    
-	while (true) 
-    {
-		loopMarker();
-	}
-        
-	return 0;
-}
-#endif
-
 ///
 ///
 ///

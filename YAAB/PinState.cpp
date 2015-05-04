@@ -23,10 +23,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 bool PinState::IsConditionMet()
 {
-    return input_value(m_Port, m_Pin) == m_State;
+    return (input_value(*m_Port, m_Pin) == m_State);
 }
 
-PinState::PinState(TaskConditionMet conditionMet, char pinPort, char pinBit, bool pinState) : Task(conditionMet)
+PinState::PinState(TaskConditionMet conditionMet, volatile uint8_t *pinPort, uint8_t pinBit, bool pinState) : Task(conditionMet)
 {
     m_Port = pinPort;
     m_Pin = pinBit;

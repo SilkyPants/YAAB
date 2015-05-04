@@ -52,7 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ///
 /// Enabled the ability to select and use full Automatic and Burst fire modes
-#define AUTO_ALLOWED
+//#define AUTO_ALLOWED
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running

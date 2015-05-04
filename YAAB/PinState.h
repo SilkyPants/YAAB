@@ -28,15 +28,15 @@ class PinState :
     public Task
 {
 private:
-    char m_Port;
-    char m_Pin;
+    volatile uint8_t* m_Port;
+    uint8_t m_Pin;
     bool m_State;
 
     bool IsConditionMet();
 
 public:
 
-    PinState(TaskConditionMet conditionMet, char pinPort, char pinBit, bool pinState);
+    PinState(TaskConditionMet conditionMet, volatile uint8_t *pinPort, uint8_t pinBit, bool pinState);
     ~PinState(void);
 };
 

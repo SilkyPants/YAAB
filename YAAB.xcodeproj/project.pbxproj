@@ -63,34 +63,11 @@
 		44B1D3751AF7024F00F223E0 /* YAAB */ = {
 			isa = PBXGroup;
 			children = (
-				44B1D38C1AF7028B00F223E0 /* marker.cpp */,
-				44B1D38D1AF7028B00F223E0 /* main.cpp */,
+				44B1D3B31AF7055200F223E0 /* AVR */,
 				44B1D38E1AF7028B00F223E0 /* common.h */,
-				44B1D38F1AF7028B00F223E0 /* adc.cpp */,
-				44B1D3901AF7028B00F223E0 /* adc.h */,
-				44B1D3911AF7028B00F223E0 /* BreechEyesTask.cpp */,
-				44B1D3921AF7028B00F223E0 /* BreechEyesTask.h */,
-				44B1D3931AF7028B00F223E0 /* crius_oled.cpp */,
-				44B1D3941AF7028B00F223E0 /* crius_oled.h */,
-				44B1D3951AF7028B00F223E0 /* flags.h */,
-				44B1D3961AF7028B00F223E0 /* font.h */,
-				44B1D3971AF7028B00F223E0 /* i2c.cpp */,
-				44B1D3981AF7028B00F223E0 /* i2c.h */,
-				44B1D3991AF7028B00F223E0 /* IntervalLapse.cpp */,
-				44B1D39A1AF7028B00F223E0 /* IntervalLapse.h */,
-				44B1D39B1AF7028B00F223E0 /* marker.h */,
-				44B1D39C1AF7028B00F223E0 /* pins.h */,
-				44B1D39D1AF7028B00F223E0 /* PinState.cpp */,
-				44B1D39E1AF7028B00F223E0 /* PinState.h */,
-				44B1D39F1AF7028B00F223E0 /* settings.h */,
-				44B1D3A01AF7028B00F223E0 /* strings.h */,
-				44B1D3A11AF7028B00F223E0 /* Task.cpp */,
-				44B1D3A21AF7028B00F223E0 /* Task.h */,
-				44B1D3A31AF7028B00F223E0 /* Timer.cpp */,
-				44B1D3A41AF7028B00F223E0 /* Timer.h */,
-				44B1D3A51AF7028B00F223E0 /* timers.cpp */,
-				44B1D3A61AF7028B00F223E0 /* timers.h */,
+				44B1D38D1AF7028B00F223E0 /* main.cpp */,
 				44B1D3781AF7024F00F223E0 /* Makefiles */,
+				44B1D3B41AF7057800F223E0 /* Marker */,
 			);
 			path = YAAB;
 			sourceTree = "<group>";
@@ -101,6 +78,61 @@
 				44B1D3791AF7024F00F223E0 /* Makefile */,
 			);
 			name = Makefiles;
+			sourceTree = "<group>";
+		};
+		44B1D3B31AF7055200F223E0 /* AVR */ = {
+			isa = PBXGroup;
+			children = (
+				44B1D3B61AF705F400F223E0 /* OLED */,
+				44B1D38F1AF7028B00F223E0 /* adc.cpp */,
+				44B1D3901AF7028B00F223E0 /* adc.h */,
+				44B1D3971AF7028B00F223E0 /* i2c.cpp */,
+				44B1D3981AF7028B00F223E0 /* i2c.h */,
+				44B1D39C1AF7028B00F223E0 /* pins.h */,
+				44B1D3A51AF7028B00F223E0 /* timers.cpp */,
+				44B1D3A61AF7028B00F223E0 /* timers.h */,
+			);
+			name = AVR;
+			sourceTree = "<group>";
+		};
+		44B1D3B41AF7057800F223E0 /* Marker */ = {
+			isa = PBXGroup;
+			children = (
+				44B1D3B51AF705B000F223E0 /* Tasks */,
+				44B1D3951AF7028B00F223E0 /* flags.h */,
+				44B1D38C1AF7028B00F223E0 /* marker.cpp */,
+				44B1D39B1AF7028B00F223E0 /* marker.h */,
+				44B1D39F1AF7028B00F223E0 /* settings.h */,
+				44B1D3A01AF7028B00F223E0 /* strings.h */,
+				44B1D3A31AF7028B00F223E0 /* Timer.cpp */,
+				44B1D3A41AF7028B00F223E0 /* Timer.h */,
+			);
+			name = Marker;
+			sourceTree = "<group>";
+		};
+		44B1D3B51AF705B000F223E0 /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				44B1D3911AF7028B00F223E0 /* BreechEyesTask.cpp */,
+				44B1D3921AF7028B00F223E0 /* BreechEyesTask.h */,
+				44B1D3991AF7028B00F223E0 /* IntervalLapse.cpp */,
+				44B1D39A1AF7028B00F223E0 /* IntervalLapse.h */,
+				44B1D39D1AF7028B00F223E0 /* PinState.cpp */,
+				44B1D39E1AF7028B00F223E0 /* PinState.h */,
+				44B1D3A11AF7028B00F223E0 /* Task.cpp */,
+				44B1D3A21AF7028B00F223E0 /* Task.h */,
+			);
+			name = Tasks;
+			sourceTree = "<group>";
+		};
+		44B1D3B61AF705F400F223E0 /* OLED */ = {
+			isa = PBXGroup;
+			children = (
+				44B1D3931AF7028B00F223E0 /* crius_oled.cpp */,
+				44B1D3941AF7028B00F223E0 /* crius_oled.h */,
+				44B1D3961AF7028B00F223E0 /* font.h */,
+			);
+			name = OLED;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

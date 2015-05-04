@@ -201,7 +201,8 @@ void drawString( int x, int y, unsigned char * string, FontType fontType )
 			runningX += charWidth;
 		}
 		
-		*string++;
+        string = string + 1;
+        //*string++;
 	}
 }
 

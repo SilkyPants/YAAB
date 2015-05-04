@@ -21,6 +21,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+
+#if defined F_CPU
+// We want to define the clock speed in the files, not preprocessor?
+#undef F_CPU
+#endif
+
+// Set this to clock speed
+#define F_CPU 16000000U
+
+///
+/// Need to define what processor we are using
+#ifndef __AVR_ATmega328P__
+#define __AVR_ATmega328P__
+
+//#ifndef __AVR_ATtiny85__
+//#define __AVR_ATtiny85__
+
+//#ifndef __AVR_ATtiny84__
+//#define __AVR_ATtiny84__
+#endif
+
 ///
 /// Whether to use the full Arduino libraries or not (allows serial loading/debug etc)
 //#define USE_ARDUINO
@@ -35,43 +56,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
-//#define KEEP_ALIVE_ACTIVE
+#define KEEP_ALIVE_ACTIVE
 
 ///
 /// Enable the use of the game timer
 #define GAME_TIMER
 
-#ifndef F_CPU
-// define F_CPU when it's not there
-// Set this to clock speed
-#define F_CPU 16000000U
-#endif
-
-///
-/// Need to define what processor we are using
-#ifndef __AVR_ATmega328P__
-#define __AVR_ATmega328P__
-
-//#ifndef __AVR_ATtiny85__
-//#define __AVR_ATtiny85__
-
-//#ifndef __AVR_ATtiny84__
-//#define __AVR_ATtiny84__
-#endif
-
 #if defined USE_ARDUINO
+
 #include "Arduino.h"
 
 ///
 /// Enable serial output
 #define SERIAL_DEBUG
+
 #else
+
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <stdio.h>
+
 #endif
-
-
 
 ///
 /// Some macros that make the code more readable

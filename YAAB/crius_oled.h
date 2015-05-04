@@ -44,34 +44,5 @@ void clear_display(void);
 void init_OLED(void);
 void displayBuffer();
 
-/*
-class crius_oled
-{
-//variables
-public:
-protected:
-private:
-
-//functions
-public:
-	crius_oled();
-	~crius_oled();
-	
-	void initDisplay();
-	
-	void drawPixel( uint16_t x, uint16_t y, bool drawPixel );
-	void drawChar( uint16_t x, uint16_t y, uint8_t character);
-	void drawString( uint16_t x, uint16_t y, uint8_t * string);
-	
-	void display();
-	void clear();
-	
-protected:
-private:
-  void ssd1306_command(uint8_t cmd);
-
-
-}; //crius_oled
-*/
 #endif //__CRIUS_OLED_H__
 

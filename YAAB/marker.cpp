@@ -280,7 +280,7 @@ static void pneumaticsCocked()
 static void cycleComplete()
 {
     // If we have any more shots to fire (burst) or we are in Auto mode with the trigger down
-    if(g_CycleValues.shotsToGo > 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
+    if(g_CycleValues.shotsToGo > 0 || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
     {
         // Fire another shot
         startCycle();
@@ -356,7 +356,7 @@ static void startCycle()
     g_ballShotCount++;
 
     // Start Pneumatics task
-    if(g_CurrentProfile->actionType != AT_Pump)
+    if(!is_bit_set(g_CurrentProfile->actionType, AT_Pump))
     {
         pneuDelayTask.Reset();
     }

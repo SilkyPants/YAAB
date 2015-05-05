@@ -18,6 +18,7 @@
 /* Begin PBXFileReference section */
 		379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface.cpp; sourceTree = "<group>"; };
 		379C6DF21AF7A7600079B1F1 /* UserInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInterface.h; sourceTree = "<group>"; };
+		379C6DF71AF8F76F0079B1F1 /* MenuScreens.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MenuScreens.h; sourceTree = "<group>"; };
 		44B1D3731AF7024F00F223E0 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		44B1D3791AF7024F00F223E0 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		44B1D38C1AF7028B00F223E0 /* marker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = marker.cpp; sourceTree = "<group>"; };
@@ -56,6 +57,7 @@
 				44B1D3A01AF7028B00F223E0 /* strings.h */,
 				379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */,
 				379C6DF21AF7A7600079B1F1 /* UserInterface.h */,
+				379C6DF71AF8F76F0079B1F1 /* MenuScreens.h */,
 			);
 			name = UI;
 			sourceTree = "<group>";

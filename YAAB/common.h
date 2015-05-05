@@ -56,7 +56,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
-#define KEEP_ALIVE_ACTIVE
+//#define KEEP_ALIVE_ACTIVE
 
 ///
 /// Enable the use of the game timer

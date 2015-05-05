@@ -40,11 +40,7 @@ void UI_Init()
 {
     init_OLED();
     
-    drawBatteryLevel( 100 );
-    
     drawString( 52,  4, headerString );
-    drawString(  5,  4, eyeStateString );
-    drawString(  3, 17, menuOptions );
 }
 
 void UI_SecondTick()
@@ -74,12 +70,6 @@ void UI_SecondTick()
     }
     
     drawChar(  5,  4, eyeStateString[eyeAnimIdx] );
-    
-    unsigned char buffer[16];
-    
-    sprintf((char*)buffer, "CURR EYE: %u", eyeCycleTask.GetCurrentEye());
-    
-    drawString(  3, 17, buffer );
 }
 
 void UI_Update()
@@ -87,6 +77,12 @@ void UI_Update()
     upPressed.Update();
     selectPressed.Update();
     downPressed.Update();
+    
+    unsigned char buffer[16];
+    
+    sprintf((char*)buffer, "CURR EYE: %u", eyeCycleTask.GetCurrentEye());
+    
+    drawString(  3, 17, buffer );
 }
 
 void UI_Draw()

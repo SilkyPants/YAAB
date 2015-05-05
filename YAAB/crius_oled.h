@@ -38,8 +38,9 @@ enum FontType
 
 void fillRect( int x, int y, int w, int h, bool fill = true );
 void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
+void drawChar( int x, int y, unsigned char character, FontType type = SMALL_FONT );
 void drawString( int x, int y, unsigned char * string, FontType type = SMALL_FONT );
-void drawBatteryLevel( uint8_t battPercent );
+
 void clear_display(void);
 void init_OLED(void);
 void displayBuffer();

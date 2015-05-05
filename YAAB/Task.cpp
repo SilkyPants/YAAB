@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Task::Task(TaskConditionMet conditionMet)
 {
     onConditionMet = conditionMet;
+    m_Enabled = false;
 }
 
 Task::~Task(void) 

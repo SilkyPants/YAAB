@@ -29,7 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "IntervalLapse.h"
 #include "PinState.h"
-#include "BreechEyesTask.h"
 
 #include "Timer.h"
 
@@ -59,7 +58,7 @@ volatile MarkerSettings g_Settings =
     10,                     // Trigger Debounce
     0,                      // Current Profile
     0,                      // Shots since Service?
-    { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
+    { 40, 60, 550, 240 },   // SON, PDEL, PON, POFF
     { 10, 100, 1000 }       // Eye Detect Time, Eye Ball Reflect, Eye Timeout
 };
 
@@ -147,7 +146,7 @@ Timer g_GameTimer(onGameLapsed);
 Timer g_AlarmTimer(onAlarmLapsed);
 #endif
 
-uint16_t eyeState = 1234;
+
 #if defined SERIAL_DEBUG
 uint16_t lastEyeState = 1000;
 #endif
@@ -205,7 +204,9 @@ void initMarker()
     pneuOnTask.SetIntervalTime(g_Settings.timings.pneuOn);
     pneuOffTask.SetIntervalTime(g_Settings.timings.pneuOff);
 
-    eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout, g_Settings.eyeSettings.detectionTime, g_Settings.eyeSettings.eyeBall);
+    eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout,
+                               g_Settings.eyeSettings.detectionTime,
+                               g_Settings.eyeSettings.eyeBall);
 
     // Kick off the initial tasks
     triggerChangeTask.Reset();
@@ -374,19 +375,7 @@ static void cycleComplete()
 /// Every Second Tick
 static void onSecondTick()
 {
-    static uint8_t battLevel = 100;
-    
-    if( battLevel <= 0 )
-    {
-        battLevel = 100;
-    }
-    else
-    {
-        battLevel -= 25;
-    }
-    
-    // TODO: Move these somewhere else
-    UI_UpdateBattery(battLevel);
+    UI_SecondTick();
 	
 #if defined SERIAL_DEBUG
     //Serial.println("Pull Count(/s): " + g_triggerPullCount);
@@ -440,8 +429,9 @@ void onTimerTick()
 /// ADC Conversion Complete
 void onADCReadComplete()
 {
-    // Read the value ADC for a value between 0-255
+    // Read the value ADC for a value between 0-255?
     //eyeCycleTask.SetCurrentEye(ADCH);
-    eyeState = ADC;
+    
+    eyeCycleTask.SetCurrentEye(ADC);
 }
 

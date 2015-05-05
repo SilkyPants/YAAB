@@ -21,7 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "BreechEyesTask.h"
 
-BreechEyesTask::BreechEyesTask(TaskConditionMet conditionsMet) : Task(conditionsMet) { }
+BreechEyesTask::BreechEyesTask(TaskConditionMet conditionsMet) : Task(conditionsMet)
+{
+    m_CurrentEye = 0;
+    m_EmptySeen = false;
+    m_BallSeen = false;
+}
 
 BreechEyesTask::~BreechEyesTask(void)
 {
@@ -70,7 +75,7 @@ bool BreechEyesTask::IsConditionMet()
     return ((m_EmptySeen && m_BallSeen) || m_TimeoutCount == 0) && m_Enabled;
 }
 
-void BreechEyesTask::SetTaskValues(uint16_t timeout, uint8_t detectTime, uint8_t ballDetect)
+void BreechEyesTask::SetTaskValues(uint16_t timeout, uint8_t detectTime, uint16_t ballDetect)
 {
     m_DetectCount = m_DetectTime = detectTime;
     m_BallDetect = ballDetect;
@@ -79,7 +84,7 @@ void BreechEyesTask::SetTaskValues(uint16_t timeout, uint8_t detectTime, uint8_t
     m_BallSeen = false;
 }
 
-void BreechEyesTask::SetCurrentEye(uint8_t currentEye)
+void BreechEyesTask::SetCurrentEye(uint16_t currentEye)
 {
     m_CurrentEye = currentEye;
 }

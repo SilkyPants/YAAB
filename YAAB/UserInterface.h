@@ -24,6 +24,6 @@
 #include "common.h"
 
 void UI_Init();
-void UI_UpdateBattery(uint8_t p_BattLevel);
+void UI_SecondTick();
 void UI_Update();
 void UI_Draw();

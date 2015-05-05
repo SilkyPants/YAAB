@@ -142,7 +142,7 @@ const unsigned char * GetFont( FontType font )
 	}
 }
 
-void drawChar( int x, int y, unsigned char character, const unsigned char * font )
+void drawCharInternal( int x, int y, unsigned char character, const unsigned char * font )
 {	
 	uint8_t startChar = pgm_read_byte_near(font + 2);
 	uint8_t charWidth = pgm_read_byte_near(font + 5);
@@ -172,6 +172,11 @@ void drawChar( int x, int y, unsigned char character, const unsigned char * font
 	}
 }
 
+void drawChar( int x, int y, unsigned char character, FontType fontType )
+{
+    drawCharInternal( x, y, character, GetFont( fontType ) );
+}
+
 void drawString( int x, int y, unsigned char * string, FontType fontType )
 {
 	const unsigned char * font = GetFont( fontType );
@@ -193,7 +198,7 @@ void drawString( int x, int y, unsigned char * string, FontType fontType )
 		}
 		else
 		{
-			drawChar( runningX, y, *string, font );
+			drawCharInternal( runningX, y, *string, font );
 			
 			runningX += charWidth;
 		}
@@ -268,35 +273,6 @@ void fillRect( int x, int y, int w, int h, bool fill )
 		{
 			drawPixel( i, j, fill );
 		}	
-	}
-}
-
-void drawBatteryLevel( uint8_t battPercent )
-{
-	fillRect( 112, 5, 11, 5, false );
-	
-	if( battPercent >= 25 )
-	{
-		drawLine( 121, 5, 121, 9 );
-		drawLine( 122, 5, 122, 9 );
-	}
-	
-	if( battPercent >= 50 )
-	{
-		drawLine( 118, 5, 118, 9 );
-		drawLine( 119, 5, 119, 9 );
-	}
-	
-	if( battPercent >= 75 )
-	{
-		drawLine( 115, 5, 115, 9 );
-		drawLine( 116, 5, 116, 9 );
-	}
-	
-	if( battPercent >= 100 )
-	{
-		drawLine( 112, 5, 112, 9 );
-		drawLine( 113, 5, 113, 9 );
 	}
 }
 

@@ -53,6 +53,7 @@
 		379C6DF01AF7A7260079B1F1 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				44B1D3A01AF7028B00F223E0 /* strings.h */,
 				379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */,
 				379C6DF21AF7A7600079B1F1 /* UserInterface.h */,
 			);
@@ -119,7 +120,6 @@
 				44B1D38C1AF7028B00F223E0 /* marker.cpp */,
 				44B1D39B1AF7028B00F223E0 /* marker.h */,
 				44B1D39F1AF7028B00F223E0 /* settings.h */,
-				44B1D3A01AF7028B00F223E0 /* strings.h */,
 				44B1D3A31AF7028B00F223E0 /* Timer.cpp */,
 				44B1D3A41AF7028B00F223E0 /* Timer.h */,
 			);

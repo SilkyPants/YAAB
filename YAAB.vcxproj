@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -11,18 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{910652EE-3298-46D5-8366-FF15C712421F}</ProjectGuid>
+    <ProjectGuid>{773287F4-141D-4F13-998D-177BA83C610C}</ProjectGuid>
     <RootNamespace>YAAB</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -36,16 +38,16 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Program Files (x86)\arduino\hardware\arduino\cores\arduino;C:\Program Files (x86)\arduino\hardware\arduino\variants\standard;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\avr\;c:\program files (x86)\arduino\hardware\tools\avr\avr\;c:\program files (x86)\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\;</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Program Files (x86)\arduino\hardware\arduino\cores\arduino;C:\Program Files (x86)\arduino\hardware\arduino\variants\standard;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\;c:\program files (x86)\arduino\hardware\tools\avr\avr\include\avr\;c:\program files (x86)\arduino\hardware\tools\avr\avr\;c:\program files (x86)\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\;</IncludePath>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>d:\arduino\hardware\arduino\avr\cores\arduino;d:\arduino\hardware\arduino\avr\variants\standard;D:\YAAB\YAAB;d:\arduino\libraries;d:\arduino\hardware\arduino\avr\libraries;C:\Program Files (x86)\Visual Micro\Visual Micro for Arduino\Micro Platforms\default\debuggers;D:\libraries;d:\arduino\hardware\tools\avr/avr/include/;d:\arduino\hardware\tools\avr//avr/include/avr/;d:\arduino\hardware\tools\avr/lib\gcc\avr\4.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>D:\YAAB\Visual Micro\.YAAB.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
+      <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;ARDUINO=163;ARDUINO_MAIN;__AVR__;__avr__;F_CPU=16000000L;__cplusplus;ARDUINO_ARCH_AVR;ARDUINO_AVR_UNO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -57,6 +59,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -65,32 +68,40 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="YAAB.ino" />
+    <ClInclude Include="Visual Micro\.YAAB.vsarduino.h" />
+    <ClInclude Include="YAAB\adc.h" />
+    <ClInclude Include="YAAB\BreechEyesTask.h" />
+    <ClInclude Include="YAAB\common.h" />
+    <ClInclude Include="YAAB\crius_oled.h" />
+    <ClInclude Include="YAAB\flags.h" />
+    <ClInclude Include="YAAB\font.h" />
+    <ClInclude Include="YAAB\i2c.h" />
+    <ClInclude Include="YAAB\IntervalLapse.h" />
+    <ClInclude Include="YAAB\marker.h" />
+    <ClInclude Include="YAAB\pins.h" />
+    <ClInclude Include="YAAB\PinState.h" />
+    <ClInclude Include="YAAB\settings.h" />
+    <ClInclude Include="YAAB\strings.h" />
+    <ClInclude Include="YAAB\Task.h" />
+    <ClInclude Include="YAAB\Timer.h" />
+    <ClInclude Include="YAAB\timers.h" />
+    <ClInclude Include="YAAB\UserInterface.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include=".YAAB.vsarduino.h" />
-    <ClInclude Include="adc.h" />
-    <ClInclude Include="BreechEyesTask.h" />
-    <ClInclude Include="common.h" />
-    <ClInclude Include="flags.h" />
-    <ClInclude Include="IntervalLapse.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="pins.h" />
-    <ClInclude Include="PinState.h" />
-    <ClInclude Include="settings.h" />
-    <ClInclude Include="Task.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="timers.h" />
+    <ClCompile Include="YAAB\adc.cpp" />
+    <ClCompile Include="YAAB\BreechEyesTask.cpp" />
+    <ClCompile Include="YAAB\crius_oled.cpp" />
+    <ClCompile Include="YAAB\i2c.cpp" />
+    <ClCompile Include="YAAB\IntervalLapse.cpp" />
+    <ClCompile Include="YAAB\marker.cpp" />
+    <ClCompile Include="YAAB\PinState.cpp" />
+    <ClCompile Include="YAAB\Task.cpp" />
+    <ClCompile Include="YAAB\Timer.cpp" />
+    <ClCompile Include="YAAB\timers.cpp" />
+    <ClCompile Include="YAAB\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="adc.cpp" />
-    <ClCompile Include="BreechEyesTask.cpp" />
-    <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="IntervalLapse.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="PinState.cpp" />
-    <ClCompile Include="Task.cpp" />
-    <ClCompile Include="timers.cpp" />
+    <None Include="YAAB\YAAB.ino" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -38,40 +38,12 @@ enum FontType
 
 void fillRect( int x, int y, int w, int h, bool fill = true );
 void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
+void drawChar( int x, int y, unsigned char character, FontType type = SMALL_FONT );
 void drawString( int x, int y, unsigned char * string, FontType type = SMALL_FONT );
-void drawBatteryLevel( uint8_t battPercent );
+
 void clear_display(void);
 void init_OLED(void);
 void displayBuffer();
 
-/*
-class crius_oled
-{
-//variables
-public:
-protected:
-private:
-
-//functions
-public:
-	crius_oled();
-	~crius_oled();
-	
-	void initDisplay();
-	
-	void drawPixel( uint16_t x, uint16_t y, bool drawPixel );
-	void drawChar( uint16_t x, uint16_t y, uint8_t character);
-	void drawString( uint16_t x, uint16_t y, uint8_t * string);
-	
-	void display();
-	void clear();
-	
-protected:
-private:
-  void ssd1306_command(uint8_t cmd);
-
-
-}; //crius_oled
-*/
 #endif //__CRIUS_OLED_H__
 

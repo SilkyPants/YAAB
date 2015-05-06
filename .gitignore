@@ -7,3 +7,7 @@
 /ipch/
 /Debug/
 *.atsuo
+YAAB/Builds
+*.?#*
+Release/
+YAAB/Visual Micro/

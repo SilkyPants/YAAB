@@ -29,16 +29,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "IntervalLapse.h"
 #include "PinState.h"
-#include "BreechEyesTask.h"
 
 #include "Timer.h"
 
-#include "crius_oled.h"
-
-unsigned char fill_string1[]="PUMP";
-unsigned char fill_string2[]="(";
-unsigned char fill_string3[]="@ SELECT FIRE MODE\n  SELECT BPS\n  TRAINING MODE\n  SHOW STATISTICS\n  SET GAME TIMER\n  SET GAME ALARM";
-uint8_t battLevel = 100;
+#include "UserInterface.h"
 
 ///
 /// Program Specific defines - for readability
@@ -64,7 +58,7 @@ volatile MarkerSettings g_Settings =
     10,                     // Trigger Debounce
     0,                      // Current Profile
     0,                      // Shots since Service?
-    { 40, 60, 550, 240 },   // Sear on, C On, C Delay, C Off
+    { 40, 60, 550, 240 },   // SON, PDEL, PON, POFF
     { 10, 100, 1000 }       // Eye Detect Time, Eye Ball Reflect, Eye Timeout
 };
 
@@ -119,6 +113,8 @@ uint8_t g_ballShotCount;
 /// End Other Setting Stuff!
 ///
 
+///
+/// Forward declare the functions
 static void triggerToggle();
 static void searDrop();
 static void pneumaticsCocking();
@@ -150,31 +146,13 @@ Timer g_GameTimer(onGameLapsed);
 Timer g_AlarmTimer(onAlarmLapsed);
 #endif
 
-uint16_t eyeState = 1234;
+
 #if defined SERIAL_DEBUG
 uint16_t lastEyeState = 1000;
 #endif
 
-#if !defined USE_ARDUINO
 ///
-///
-///
-int main(void)
-{	
-	initMarker();
-    
-	while (true) 
-    {
-		loopMarker();
-	}
-        
-	return 0;
-}
-#endif
-
-///
-///
-///
+/// Setup initial state
 void initMarker() 
 {
     // Setup pin direction
@@ -195,7 +173,6 @@ void initMarker()
     set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
     set_input(INPUT_PORT_REG, OK_BUTTON_PIN);
     set_input(INPUT_PORT_REG, DN_BUTTON_PIN);
-    
 
     // Enable internal pullups
     output_high(CYCLE_PORT, TRIGGER_PIN);
@@ -206,7 +183,6 @@ void initMarker()
 	
     output_high(EYE_PORT, IRED_PIN);
     
-
     // stop interrupts
     cli();
 
@@ -216,18 +192,23 @@ void initMarker()
     i2c_init();
 
     // Setup the tasks
+    // 1 second - in increments of 0.1ms
     secondTickTask.SetIntervalTime(10000, true);
 
+    // TODO: Get initial trigger state here?
     triggerChangeTask.SetDebounce(g_Settings.debounceTime);
 
+    // Cycle timings - might need to move these to be configurable
     searOnTask.SetIntervalTime(g_Settings.timings.searOn);
     pneuDelayTask.SetIntervalTime(g_Settings.timings.pneuDel);
     pneuOnTask.SetIntervalTime(g_Settings.timings.pneuOn);
     pneuOffTask.SetIntervalTime(g_Settings.timings.pneuOff);
 
-    eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout, g_Settings.eyeSettings.detectionTime, g_Settings.eyeSettings.eyeBall);
+    eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout,
+                               g_Settings.eyeSettings.detectionTime,
+                               g_Settings.eyeSettings.eyeBall);
 
-    // Kick off the tasks
+    // Kick off the initial tasks
     triggerChangeTask.Reset();
     secondTickTask.Reset();
     
@@ -239,22 +220,19 @@ void initMarker()
     // start interrupts
     sei();
 	
-    init_OLED();
+    UI_Init();
 
 	adc_start_read( 0 );
-    
-    drawBatteryLevel( battLevel );
-  
-	drawString( 52, 4, fill_string1 );
-	drawString( 5, 4, fill_string2 );
-	drawString( 3, 17, fill_string3 );
 }
 
+///
+/// Idle Loop
 void loopMarker()
 {
-	// Display the LCD
-	displayBuffer();
-	
+    UI_Update();
+    
+    UI_Draw();
+    
 #if defined SERIAL_DEBUG
     // Need to copy since it could change between now and then
     //uint8_t currEye = eyeCycleTask.GetCurrentEye();
@@ -269,45 +247,9 @@ void loopMarker()
 
 }
 
-static void searDrop()
-{
-    // Reactivate Sear
-    output_low(CYCLE_PORT, SEAR_PIN);
-}
-
-static void pneumaticsCocking()
-{
-    // Start cocking pneumatics
-    output_high(CYCLE_PORT, PNEU_PIN);
-
-    // Are we using eyes?
-    if(is_bit_set(g_CycleValues.flags, CF_Use_Eyes))
-        eyeCycleTask.Reset(); // Start testing eyes
-    else
-        pneuOnTask.Reset(); // Start pneumatics count down
-}
-
-static void pneumaticsCocked()
-{
-    // Marker is cocked, switch pneumatics off
-    output_low(CYCLE_PORT, PNEU_PIN);
-    pneuOffTask.Reset(); // wait for pneumatics to come to rest
-}
-
-static void cycleComplete()
-{
-    // If we have any more shots to fire (burst) or we are in Auto mode with the trigger down
-    if(g_CycleValues.shotsToGo > 0 || (g_CurrentProfile->actionType == AT_Auto && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed)))
-    {
-        // Fire another shot
-        startCycle();
-    }
-    else
-    {
-        // Ready for next shot
-        bit_clear(g_CycleValues.flags, CF_Marker_Firing);
-    }
-}
+/// -------------------------------------------------------------------------------
+/// Firing Cycle
+/// -------------------------------------------------------------------------------
 
 static void triggerToggle()
 {
@@ -331,18 +273,109 @@ static void triggerToggle()
     }
 }
 
+static void fireMarker()
+{
+    // Check we can fire
+    if(is_bit_set(g_CycleValues.flags, CF_Marker_Firing))
+        return;
+    
+    // Mark that we are firing
+    bit_set(g_CycleValues.flags, CF_Marker_Firing);
+    
+    // Determine how many shots to fire this 'cycle'
+    if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
+        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFirePress;
+    else
+        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFireRelease;
+    
+    startCycle();
+}
+
+// actually fire the marker
+static void startCycle()
+{
+    // Shot fired
+    if(g_CycleValues.shotsToGo)
+        g_CycleValues.shotsToGo--;
+    
+    // Increment shots fired
+    g_Settings.shotsSinceLastReset++;
+    g_ballShotCount++;
+    
+    // Start Pneumatics task
+    if(!is_bit_set(g_CurrentProfile->actionType, AT_Pump))
+    {
+        pneuDelayTask.Reset();
+    }
+    else
+    {
+        // TODO: Start eye task to look for complete cycle
+    }
+    
+    if(!is_bit_set(g_CycleValues.flags, CF_Training_Mode))
+    {
+        // Set Sear High (Release hammer)
+        output_high(CYCLE_PORT, SEAR_PIN);
+        // Restart sear task
+        searOnTask.Reset();
+    }
+}
+
+static void searDrop()
+{
+    // Reactivate Sear
+    output_low(CYCLE_PORT, SEAR_PIN);
+}
+
+static void pneumaticsCocking()
+{
+    // Start cocking pneumatics
+    output_high(CYCLE_PORT, PNEU_PIN);
+    
+    // Are we using eyes?
+    if(is_bit_set(g_CycleValues.flags, CF_Use_Eyes))
+        eyeCycleTask.Reset(); // Start testing eyes
+    else
+        pneuOnTask.Reset(); // Start pneumatics count down
+}
+
+static void pneumaticsCocked()
+{
+    // Marker is cocked, switch pneumatics off
+    output_low(CYCLE_PORT, PNEU_PIN);
+    pneuOffTask.Reset(); // wait for pneumatics to come to rest
+}
+
+static void cycleComplete()
+{
+    // If we have any more shots to fire (burst) or we are in Auto mode with the trigger down
+    bool restartCycle = g_CycleValues.shotsToGo > 0;
+    
+#if defined AUTO_ALLOWED
+    restartCycle = restartCycle || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed));
+#endif
+    
+    if(restartCycle)
+    {
+        // Fire another shot
+        startCycle();
+    }
+    else
+    {
+        // Ready for next shot
+        bit_clear(g_CycleValues.flags, CF_Marker_Firing);
+    }
+}
+
+/// -------------------------------------------------------------------------------
+/// Timer Ticks
+/// -------------------------------------------------------------------------------
+
+///
+/// Every Second Tick
 static void onSecondTick()
-{			
-	if( battLevel <= 0 )
-	{
-		battLevel = 100;
-	}
-	else
-	{
-		battLevel -= 25;
-	}
-	
-	drawBatteryLevel( battLevel );
+{
+    UI_SecondTick();
 	
 #if defined SERIAL_DEBUG
     //Serial.println("Pull Count(/s): " + g_triggerPullCount);
@@ -361,53 +394,23 @@ static void onSecondTick()
 #endif
 }
 
-// actually fire the marker
-static void startCycle()
+#if defined GAME_TIMER
+///
+/// Game Timer Lapsed Callback
+void onGameLapsed()
 {
-    // Shot fired
-    if(g_CycleValues.shotsToGo)
-      g_CycleValues.shotsToGo--;
-
-    // Increment shots fired
-    g_Settings.shotsSinceLastReset++;
-    g_ballShotCount++;
-
-    // Start Pneumatics task
-    if(g_CurrentProfile->actionType != AT_Pump)
-    {
-        pneuDelayTask.Reset();
-    }
-
-    if(!is_bit_set(g_CycleValues.flags, CF_Training_Mode))
-    {
-        // Set Sear High (Release hammer)
-        output_high(CYCLE_PORT, SEAR_PIN);
-        // Restart sear task
-        searOnTask.Reset();
-    }
-}
-
-static void fireMarker()
-{
-    // Check we can fire
-    if(is_bit_set(g_CycleValues.flags, CF_Marker_Firing))
-        return;
-
-    // Mark that we are firing
-    bit_set(g_CycleValues.flags, CF_Marker_Firing);
-
-    // Determine how many shots to fire this 'cycle'
-    if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
-        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFirePress;
-    else
-        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFireRelease;
-
-    startCycle();
 }
 
 ///
+/// Alarm Timer Lapsed Callback
+void onAlarmLapsed()
+{
+}
+#endif
+
+/// -------------------------------------------------------------------------------
 /// Interrupts
-///
+/// -------------------------------------------------------------------------------
 
 ///
 /// Timer Tick
@@ -426,22 +429,9 @@ void onTimerTick()
 /// ADC Conversion Complete
 void onADCReadComplete()
 {
-    // Read the value ADC for a value between 0-255
+    // Read the value ADC for a value between 0-255?
     //eyeCycleTask.SetCurrentEye(ADCH);
-    eyeState = ADC;
+    
+    eyeCycleTask.SetCurrentEye(ADC);
 }
-
-#if defined GAME_TIMER
-///
-/// Game Timer Lapsed Callback
-void onGameLapsed()
-{
-}
-
-///
-/// Alarm Timer Lapsed Callback
-void onAlarmLapsed()
-{
-}
-#endif
 

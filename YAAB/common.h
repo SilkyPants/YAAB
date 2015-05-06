@@ -21,31 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-///
-/// Whether to use the full Arduino libraries or not (allows serial loading/debug etc)
-//#define USE_ARDUINO
 
-///
-/// ADC Completes faster
-#define FASTER_ADC
+#if defined F_CPU
+// We want to define the clock speed in the files, not preprocessor?
+#undef F_CPU
+#endif
 
-///
-/// Enabled the ability to select and use full Automatic and Burst fire modes
-#define AUTO_ALLOWED
-
-///
-/// Used to blink an LED in the loop - to make sure the program is running
-//#define KEEP_ALIVE_ACTIVE
-
-///
-/// Enable the use of the game timer
-#define GAME_TIMER
-
-#ifndef F_CPU
-// define F_CPU when it's not there
 // Set this to clock speed
 #define F_CPU 16000000U
-#endif
 
 ///
 /// Need to define what processor we are using
@@ -59,19 +42,41 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define __AVR_ATtiny84__
 #endif
 
+///
+/// Whether to use the full Arduino libraries or not (allows serial loading/debug etc)
+//#define USE_ARDUINO
+
+///
+/// ADC Completes faster
+#define FASTER_ADC
+
+///
+/// Enabled the ability to select and use full Automatic and Burst fire modes
+//#define AUTO_ALLOWED
+
+///
+/// Used to blink an LED in the loop - to make sure the program is running
+//#define KEEP_ALIVE_ACTIVE
+
+///
+/// Enable the use of the game timer
+#define GAME_TIMER
+
 #if defined USE_ARDUINO
+
 #include "Arduino.h"
 
 ///
 /// Enable serial output
 #define SERIAL_DEBUG
+
 #else
-#include <avr\interrupt.h>
-#include <avr\io.h>
+
+#include <avr/interrupt.h>
+#include <avr/io.h>
 #include <stdio.h>
+
 #endif
-
-
 
 ///
 /// Some macros that make the code more readable
@@ -93,4 +98,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define output_high(port,pin) bit_set(port,pin)
 #define output_toggle(port,pin) bit_toggle(port,pin)
 #define input_value(port,pin) is_bit_set(port,pin)
-

@@ -13,6 +13,7 @@
 		379C6DF61AF7A7830079B1F1 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D3A31AF7028B00F223E0 /* Timer.cpp */; };
 		44B1D37A1AF7024F00F223E0 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D3791AF7024F00F223E0 /* Makefile */; };
 		44B1D3AB1AF7028B00F223E0 /* crius_oled.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D3931AF7028B00F223E0 /* crius_oled.cpp */; };
+		44FCA7BA1AF9E1E900426215 /* interrupts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44FCA7B81AF9E1E900426215 /* interrupts.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,8 @@
 		44B1D3A41AF7028B00F223E0 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		44B1D3A51AF7028B00F223E0 /* timers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timers.cpp; sourceTree = "<group>"; };
 		44B1D3A61AF7028B00F223E0 /* timers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timers.h; sourceTree = "<group>"; };
+		44FCA7B81AF9E1E900426215 /* interrupts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = interrupts.cpp; sourceTree = "<group>"; };
+		44FCA7B91AF9E1E900426215 /* interrupts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interrupts.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -110,6 +113,8 @@
 				44B1D39C1AF7028B00F223E0 /* pins.h */,
 				44B1D3A51AF7028B00F223E0 /* timers.cpp */,
 				44B1D3A61AF7028B00F223E0 /* timers.h */,
+				44FCA7B81AF9E1E900426215 /* interrupts.cpp */,
+				44FCA7B91AF9E1E900426215 /* interrupts.h */,
 			);
 			name = AVR;
 			sourceTree = "<group>";
@@ -278,6 +283,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44FCA7BA1AF9E1E900426215 /* interrupts.cpp in Sources */,
 				379C6DF31AF7A7600079B1F1 /* UserInterface.cpp in Sources */,
 				379C6DF51AF7A7830079B1F1 /* marker.cpp in Sources */,
 				44B1D37A1AF7024F00F223E0 /* Makefile in Sources */,

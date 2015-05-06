@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "adc.h"
-#include "marker.h"
+#include "interrupts.h"
 
 // ADC Completes faster
 #define FASTER_ADC

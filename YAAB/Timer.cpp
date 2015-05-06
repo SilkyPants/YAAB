@@ -21,13 +21,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "Timer.h"
 
-Timer::Timer(TimerCallback timerCallback)
+Timer::Timer(TimerCallback timerCallback, TimerCallback alarmCallback)
 {
     m_OnTimer = timerCallback;
+    m_OnAlarm = alarmCallback;
 
     m_SetHours = 0;
     m_SetMinutes = 5;
     m_SetSeconds = 0;
+    
+    m_AlarmHours = 0;
+    m_AlarmMinutes = 1;
+    m_AlarmSeconds = 0;
 
     Reset();
 }
@@ -41,8 +46,15 @@ void Timer::SetTimer(uint8_t hours, uint8_t mins, uint8_t secs)
     m_SetHours = hours;
     m_SetMinutes = mins;
     m_SetSeconds = secs;
-
+    
     Reset();
+}
+
+void Timer::SetAlarm(uint8_t hours, uint8_t mins, uint8_t secs)
+{
+    m_AlarmHours = hours;
+    m_AlarmMinutes = mins;
+    m_AlarmSeconds = secs;
 }
 
 void Timer::Reset() 
@@ -76,6 +88,10 @@ void Timer::SubtractSecond()
         m_OnTimer();
 
         Reset();
+    }
+    else if(m_Hours == m_AlarmHours && m_Minutes == m_AlarmMinutes && m_Seconds == m_AlarmSeconds && m_OnAlarm != 0)
+    {
+        m_OnAlarm();
     }
 }
 

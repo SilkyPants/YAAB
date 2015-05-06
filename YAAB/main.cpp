@@ -1,14 +1,16 @@
 
 #include "common.h"
+
 #include "marker.h"
 
 int main(void) {
     
-    initMarker();
-
-	while (1) {
-        loopMarker();
-	}
+    g_Marker.Init();
+    
+    while (1)
+    {
+        g_Marker.IdleLoop();
+    }
     
 	return 0; // never reached
 }

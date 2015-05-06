@@ -22,48 +22,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USE_ARDUINO
 
 #include "marker.h"
-#include "common.h"
-#include "settings.h"
 
 void setup() 
 {
-#if defined SERIAL_DEBUG
-    Serial.begin(9600);
-        
-    Serial.print("Size of EyeSettings: ");
-    Serial.println(sizeof(EyeSettings));
-        
-    Serial.print("Size of MarkerTiming: ");
-    Serial.println(sizeof(MarkerTiming));
-        
-    Serial.print("Size of MarkerSettings: ");
-    Serial.println(sizeof(MarkerSettings));
-        
-    Serial.print("Size of CycleValues: ");
-    Serial.println(sizeof(CycleValues));
-        
-    Serial.print("Size of MarkerProfile: ");
-    Serial.println(sizeof(MarkerProfile));
-        
-    Serial.print("Size of uint8_t: ");
-    Serial.println(sizeof(uint8_t));
-        
-    Serial.print("Size of uint16_t: ");
-    Serial.println(sizeof(uint16_t));
-        
-    Serial.print("Size of uint32_t: ");
-    Serial.println(sizeof(uint32_t));
-#endif
-
-    initMarker();
-
-    
-#if defined SERIAL_DEBUG
-    Serial.println("Setup complete");
-#endif
+    g_Marker.Init();
 }
 
 void loop()
 {  
-    loopMarker();
+    g_Marker.IdleLoop();
 }

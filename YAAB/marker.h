@@ -21,9 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "BreechEyesTask.h"
+#include "common.h"
 
 void initMarker();
 void loopMarker();
-void onADCReadComplete();
-void onTimerTick();
+
+class Marker
+{
+public:
+    void Init();
+    void IdleLoop();
+    
+    void TimerTick();
+    
+    void UpdateEye(uint16_t eyeValue);
+    
+private:
+};
+
+extern Marker g_Marker;

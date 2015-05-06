@@ -48,12 +48,22 @@ class Timer
     uint8_t m_Seconds;
     
     ///
+    /// Current time left on timer
+    uint8_t m_AlarmHours;
+    uint8_t m_AlarmMinutes;
+    uint8_t m_AlarmSeconds;
+    
+    ///
     /// Stored string buffer to make it easier to print to string
     char stringBuffer[9];
     
     ///
     /// Function pointer to call once timer has lapsed
     TimerCallback m_OnTimer;
+    
+    ///
+    /// Function pointer to call once alarm has lapsed
+    TimerCallback m_OnAlarm;
     
     ///
     /// Subtracts a minute from the timer
@@ -67,12 +77,16 @@ public:
     
     ///
     /// Constructor/Destructor
-    Timer(TimerCallback timerCallback);
+    Timer(TimerCallback timerCallback, TimerCallback alarmCallback);
     ~Timer(void);
     
     ///
     /// Set the initial timer
     void SetTimer(uint8_t hours, uint8_t mins, uint8_t secs);
+    
+    ///
+    /// Set the initial timer
+    void SetAlarm(uint8_t hours, uint8_t mins, uint8_t secs);
     
     ///
     /// Subtracts a second from the timer, and responsible for triggering Timer Callback

@@ -29,10 +29,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "IntervalLapse.h"
 #include "PinState.h"
+#include "BreechEyesTask.h"
 
 #include "Timer.h"
 
 #include "UserInterface.h"
+
+///
+/// Global marker object
+Marker g_Marker;
 
 ///
 /// Program Specific defines - for readability
@@ -124,10 +129,8 @@ static void onSecondTick();
 static void startCycle();
 static void fireMarker();
 
-#if defined GAME_TIMER
-void onGameLapsed(); 
+void onGameLapsed();
 void onAlarmLapsed();
-#endif
 
 PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN);
 
@@ -141,111 +144,7 @@ IntervalLapse secondTickTask(onSecondTick); // in increments of 0.1ms
 
 ///
 /// Game Timer
-#if defined GAME_TIMER
-Timer g_GameTimer(onGameLapsed);
-Timer g_AlarmTimer(onAlarmLapsed);
-#endif
-
-
-#if defined SERIAL_DEBUG
-uint16_t lastEyeState = 1000;
-#endif
-
-///
-/// Setup initial state
-void initMarker() 
-{
-    // Setup pin direction
-    set_input(CYCLE_PORT_REG, TRIGGER_PIN);
-    set_output(CYCLE_PORT_REG, SEAR_PIN);
-    set_output(CYCLE_PORT_REG, PNEU_PIN);
-
-    set_output(EYE_PORT_REG, IRED_PIN);
-    set_input(EYE_PORT_REG, EYE_PIN);
-
-#if defined KEEP_ALIVE_ACTIVE
-    // Set pins for Keep alive LED
-    // Just to prove the loop is ticking over
-    set_output(KEEP_ALIVE_PORT_REG, KEEP_ALIVE_PIN);
-    set_output(KEEP_ALIVE_PORT_REG, TRIGGER_PRESSED_PIN);
-#endif
-
-    set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
-    set_input(INPUT_PORT_REG, OK_BUTTON_PIN);
-    set_input(INPUT_PORT_REG, DN_BUTTON_PIN);
-
-    // Enable internal pullups
-    output_high(CYCLE_PORT, TRIGGER_PIN);
-    
-    output_high(INPUT_PORT, UP_BUTTON_PIN);
-    output_high(INPUT_PORT, OK_BUTTON_PIN);
-    output_high(INPUT_PORT, DN_BUTTON_PIN);
-	
-    output_high(EYE_PORT, IRED_PIN);
-    
-    // stop interrupts
-    cli();
-
-    // Init timers
-    timer_init();
-    adc_init();
-    i2c_init();
-
-    // Setup the tasks
-    // 1 second - in increments of 0.1ms
-    secondTickTask.SetIntervalTime(10000, true);
-
-    // TODO: Get initial trigger state here?
-    triggerChangeTask.SetDebounce(g_Settings.debounceTime);
-
-    // Cycle timings - might need to move these to be configurable
-    searOnTask.SetIntervalTime(g_Settings.timings.searOn);
-    pneuDelayTask.SetIntervalTime(g_Settings.timings.pneuDel);
-    pneuOnTask.SetIntervalTime(g_Settings.timings.pneuOn);
-    pneuOffTask.SetIntervalTime(g_Settings.timings.pneuOff);
-
-    eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout,
-                               g_Settings.eyeSettings.detectionTime,
-                               g_Settings.eyeSettings.eyeBall);
-
-    // Kick off the initial tasks
-    triggerChangeTask.Reset();
-    secondTickTask.Reset();
-    
-#if defined KEEP_ALIVE_ACTIVE
-    keepAliveTask.SetIntervalTime( KEEP_ALIVE_PULSE, true);
-    keepAliveTask.Reset();
-#endif
-
-    // start interrupts
-    sei();
-	
-    UI_Init();
-
-	adc_start_read( 0 );
-}
-
-///
-/// Idle Loop
-void loopMarker()
-{
-    UI_Update();
-    
-    UI_Draw();
-    
-#if defined SERIAL_DEBUG
-    // Need to copy since it could change between now and then
-    //uint8_t currEye = eyeCycleTask.GetCurrentEye();
-
-    if(lastEyeState != eyeState)
-    {
-        lastEyeState = eyeState;
-        Serial.print("Eye State: ");
-        Serial.println(lastEyeState, DEC);
-    }
-#endif
-
-}
+Timer g_GameTimer(onGameLapsed, onAlarmLapsed);
 
 /// -------------------------------------------------------------------------------
 /// Firing Cycle
@@ -386,7 +285,6 @@ static void onSecondTick()
 
 #if defined GAME_TIMER
     g_GameTimer.SubtractSecond();
-    g_AlarmTimer.SubtractSecond();
 #endif
     
 #if defined KEEP_ALIVE_ACTIVE
@@ -408,13 +306,92 @@ void onAlarmLapsed()
 }
 #endif
 
-/// -------------------------------------------------------------------------------
-/// Interrupts
-/// -------------------------------------------------------------------------------
 
 ///
-/// Timer Tick
-void onTimerTick()
+///
+///
+
+void Marker::Init()
+{
+    
+    // Setup pin direction
+    set_input(CYCLE_PORT_REG, TRIGGER_PIN);
+    set_output(CYCLE_PORT_REG, SEAR_PIN);
+    set_output(CYCLE_PORT_REG, PNEU_PIN);
+    
+    set_output(EYE_PORT_REG, IRED_PIN);
+    set_input(EYE_PORT_REG, EYE_PIN);
+    
+#if defined KEEP_ALIVE_ACTIVE
+    // Set pins for Keep alive LED
+    // Just to prove the loop is ticking over
+    set_output(KEEP_ALIVE_PORT_REG, KEEP_ALIVE_PIN);
+    set_output(KEEP_ALIVE_PORT_REG, TRIGGER_PRESSED_PIN);
+#endif
+    
+    set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
+    set_input(INPUT_PORT_REG, OK_BUTTON_PIN);
+    set_input(INPUT_PORT_REG, DN_BUTTON_PIN);
+    
+    // Enable internal pullups
+    output_high(CYCLE_PORT, TRIGGER_PIN);
+    
+    output_high(INPUT_PORT, UP_BUTTON_PIN);
+    output_high(INPUT_PORT, OK_BUTTON_PIN);
+    output_high(INPUT_PORT, DN_BUTTON_PIN);
+    
+    output_high(EYE_PORT, IRED_PIN);
+    
+    // stop interrupts
+    cli();
+    
+    // Init timers
+    timer_init();
+    adc_init();
+    i2c_init();
+    
+    // Setup the tasks
+    // 1 second - in increments of 0.1ms
+    secondTickTask.SetIntervalTime(10000, true);
+    
+    // TODO: Get initial trigger state here?
+    triggerChangeTask.SetDebounce(g_Settings.debounceTime);
+    
+    // Cycle timings - might need to move these to be configurable
+    searOnTask.SetIntervalTime(g_Settings.timings.searOn);
+    pneuDelayTask.SetIntervalTime(g_Settings.timings.pneuDel);
+    pneuOnTask.SetIntervalTime(g_Settings.timings.pneuOn);
+    pneuOffTask.SetIntervalTime(g_Settings.timings.pneuOff);
+    
+    eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout,
+                               g_Settings.eyeSettings.detectionTime,
+                               g_Settings.eyeSettings.eyeBall);
+    
+    // Kick off the initial tasks
+    triggerChangeTask.Reset();
+    secondTickTask.Reset();
+    
+#if defined KEEP_ALIVE_ACTIVE
+    keepAliveTask.SetIntervalTime( KEEP_ALIVE_PULSE, true);
+    keepAliveTask.Reset();
+#endif
+    
+    // start interrupts
+    sei();
+    
+    UI_Init();
+    
+    adc_start_read( 0 );
+}
+
+void Marker::IdleLoop()
+{
+    UI_Update();
+    
+    UI_Draw();
+}
+
+void Marker::TimerTick()
 {
     triggerChangeTask.Update();
     secondTickTask.Update();
@@ -425,13 +402,7 @@ void onTimerTick()
     eyeCycleTask.Update();
 }
 
-///
-/// ADC Conversion Complete
-void onADCReadComplete()
+void Marker::UpdateEye(uint16_t eyeValue)
 {
-    // Read the value ADC for a value between 0-255?
-    //eyeCycleTask.SetCurrentEye(ADCH);
-    
-    eyeCycleTask.SetCurrentEye(ADC);
+    eyeCycleTask.SetCurrentEye(eyeValue);
 }
-

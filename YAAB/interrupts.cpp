@@ -23,5 +23,5 @@ void onADCReadComplete()
     // Read the value ADC for a value between 0-255?
     //eyeCycleTask.SetCurrentEye(ADCH);
     
-    g_Marker.UpdateEye(ADCH);
+    g_Marker.UpdateEye(ADC);
 }

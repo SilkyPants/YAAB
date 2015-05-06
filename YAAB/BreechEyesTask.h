@@ -28,7 +28,7 @@ class BreechEyesTask : public Task
 private:
     uint8_t m_DetectCount;
     uint8_t m_DetectTime;
-    uint8_t m_CurrentEye;
+    uint16_t m_CurrentEye;
     uint16_t m_BallDetect;
     uint16_t m_Timeout;
     uint16_t m_TimeoutCount;
@@ -45,7 +45,7 @@ public:
 
     void SetTaskValues(uint16_t timeout, uint8_t detectTime, uint16_t ballDetect);
     void SetCurrentEye(uint16_t currentEye);
-    uint8_t GetCurrentEye() { return m_CurrentEye; };
+    uint16_t GetCurrentEye() { return m_CurrentEye; };
     void Reset();
 };
 

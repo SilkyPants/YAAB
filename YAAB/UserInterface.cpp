@@ -26,11 +26,13 @@ PinState selectPressed(SelectPressed, &INPUT_PIN_REG, OK_BUTTON_PIN, true);
 PinState downPressed(DownPressed, &INPUT_PIN_REG, DN_BUTTON_PIN, true);
 
 
-unsigned char headerString[]    =   "SEMI";
+const char headerString[]    =   "SEMI";
 unsigned char eyeStateString[]  =   "$&'(";
 unsigned char menuOptions[]     =   "@ SELECT FIRE MODE\n  SELECT BPS\n  TRAINING MODE\n  SHOW STATISTICS\n  SET GAME TIMER\n  SET GAME ALARM";
 
 void drawBatteryLevel( uint8_t battPercent );
+
+CRIUS_OLED g_Display;
 
 ///
 /// UI functions
@@ -38,9 +40,8 @@ void drawBatteryLevel( uint8_t battPercent );
 
 void UI_Init()
 {
-    init_OLED();
-    
-    drawString( 52,  4, headerString );
+	g_Display.Init();
+	g_Display.DrawString(52, 4, headerString);
 }
 
 void UI_SecondTick()
@@ -69,7 +70,7 @@ void UI_SecondTick()
         eyeAnimIdx++;
     }
     
-    drawChar(  5,  4, eyeStateString[eyeAnimIdx] );
+	g_Display.DrawChar(5, 4, eyeStateString[eyeAnimIdx]);
 }
 
 void UI_Update()
@@ -78,17 +79,17 @@ void UI_Update()
     selectPressed.Update();
     downPressed.Update();
     
-    unsigned char buffer[16];
+    char buffer[16];
     
-    sprintf((char*)buffer, "CURR EYE: %u", eyeCycleTask.GetCurrentEye());
+    sprintf(buffer, "CURR EYE: %u", eyeCycleTask.GetCurrentEye());
     
-    drawString(  3, 17, buffer );
+	g_Display.DrawString(3, 17, buffer);
 }
 
 void UI_Draw()
 {
     // Display the LCD
-    displayBuffer();
+	g_Display.DisplayBuffer();
 }
 
 ///
@@ -96,31 +97,31 @@ void UI_Draw()
 
 void drawBatteryLevel( uint8_t battPercent )
 {
-    fillRect( 112, 5, 11, 5, false );
-    
-    if( battPercent >= 25 )
-    {
-        drawLine( 121, 5, 121, 9 );
-        drawLine( 122, 5, 122, 9 );
-    }
-    
-    if( battPercent >= 50 )
-    {
-        drawLine( 118, 5, 118, 9 );
-        drawLine( 119, 5, 119, 9 );
-    }
-    
-    if( battPercent >= 75 )
-    {
-        drawLine( 115, 5, 115, 9 );
-        drawLine( 116, 5, 116, 9 );
-    }
-    
-    if( battPercent >= 100 )
-    {
-        drawLine( 112, 5, 112, 9 );
-        drawLine( 113, 5, 113, 9 );
-    }
+	g_Display.FillRect(112, 5, 11, 5, false);
+
+	if (battPercent >= 25)
+	{
+		g_Display.DrawLine(121, 5, 121, 9);
+		g_Display.DrawLine(122, 5, 122, 9);
+	}
+
+	if (battPercent >= 50)
+	{
+		g_Display.DrawLine(118, 5, 118, 9);
+		g_Display.DrawLine(119, 5, 119, 9);
+	}
+
+	if (battPercent >= 75)
+	{
+		g_Display.DrawLine(115, 5, 115, 9);
+		g_Display.DrawLine(116, 5, 116, 9);
+	}
+
+	if (battPercent >= 100)
+	{
+		g_Display.DrawLine(112, 5, 112, 9);
+		g_Display.DrawLine(113, 5, 113, 9);
+	}
 }
 
 ///

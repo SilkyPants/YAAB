@@ -30,13 +30,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /*
 Menu Headings
 */
-PROGMEM const unsigned char strFireMode_Semi[]		= "SEMI";
-PROGMEM const unsigned char strFireMode_Pump[]		= "PUMP";
-PROGMEM const unsigned char strFireMode_Auto[]		= "AUTO";
-PROGMEM const unsigned char strFireMode_Burst[]		= "BURST";
-PROGMEM const unsigned char strFireMode_Reactive[]	= "REACTIVE";
+PROGMEM const char strFireMode_Semi[]		= "SEMI";
+PROGMEM const char strFireMode_Pump[] 		= "PUMP";
+PROGMEM const char strFireMode_Auto[] 		= "AUTO";
+PROGMEM const char strFireMode_Burst[] 		= "BURST";
+PROGMEM const char strFireMode_Reactive[]	= "REACTIVE";
 
-const unsigned char * ModeHeaderStrings[] PROGMEM = {
+const char * const ModeHeaderStrings[] PROGMEM = {
 	strFireMode_Semi,
 	strFireMode_Pump,
 	strFireMode_Auto,
@@ -44,13 +44,13 @@ const unsigned char * ModeHeaderStrings[] PROGMEM = {
 	strFireMode_Reactive
 };
 
-PROGMEM const unsigned char strTraining_Semi[]		= "TRAINING [SEMI]";
-PROGMEM const unsigned char strTraining_Pump[]		= "TRAINING [PUMP]";
-PROGMEM const unsigned char strTraining_Auto[]		= "TRAINING [AUTO]";
-PROGMEM const unsigned char strTraining_Burst[]		= "TRAINING [BRST]";
-PROGMEM const unsigned char strTraining_Reactive[]	= "TRAINING [RCTV]";
+PROGMEM const char strTraining_Semi[]		= "TRAINING [SEMI]";
+PROGMEM const char strTraining_Pump[]		= "TRAINING [PUMP]";
+PROGMEM const char strTraining_Auto[]		= "TRAINING [AUTO]";
+PROGMEM const char strTraining_Burst[]		= "TRAINING [BRST]";
+PROGMEM const char strTraining_Reactive[]	= "TRAINING [RCTV]";
 
-const unsigned char * TrainingHeaderStrings[] PROGMEM = {
+const char * const TrainingHeaderStrings[] PROGMEM = {
 	strTraining_Semi,
 	strTraining_Pump,
 	strTraining_Auto,
@@ -58,16 +58,16 @@ const unsigned char * TrainingHeaderStrings[] PROGMEM = {
 	strTraining_Reactive
 };
 
-PROGMEM const unsigned char strMenu_Menu[]			= "MENU";
-PROGMEM const unsigned char strMenu_Sleep[]			= "TURN OFF";
-PROGMEM const unsigned char strMenu_RateOfFire[]	= "RATE OF FIRE";
-PROGMEM const unsigned char strMenu_FireModes[]		= "PROFILES";
-PROGMEM const unsigned char strMenu_Hardware[]		= "HARDWARE";
-PROGMEM const unsigned char strMenu_Timing[]		= "MARKER TIMING";
-PROGMEM const unsigned char strMenu_Filter[]		= "EYE SETTINGS";
-PROGMEM const unsigned char strMenu_GameScreen[]	= "GAME SCREEN";
-PROGMEM const unsigned char strMenu_Training[]		= "TRAINING";
-PROGMEM const unsigned char strMenu_Timers[]		= "GAME TIMERS";
+PROGMEM const char strMenu_Menu[]			= "MENU";
+PROGMEM const char strMenu_Sleep[]			= "TURN OFF";
+PROGMEM const char strMenu_RateOfFire[]	= "RATE OF FIRE";
+PROGMEM const char strMenu_FireModes[]		= "PROFILES";
+PROGMEM const char strMenu_Hardware[]		= "HARDWARE";
+PROGMEM const char strMenu_Timing[]		= "MARKER TIMING";
+PROGMEM const char strMenu_Filter[]		= "EYE SETTINGS";
+PROGMEM const char strMenu_GameScreen[]	= "GAME SCREEN";
+PROGMEM const char strMenu_Training[]		= "TRAINING";
+PROGMEM const char strMenu_Timers[]		= "GAME TIMERS";
 
 enum MenuStringsEnum
 {
@@ -83,7 +83,7 @@ enum MenuStringsEnum
 	MENU_TIMERS,
 };
 
-const unsigned char * MenuStrings[] PROGMEM = {
+const char * const MenuStrings[] PROGMEM = {
 	strMenu_Menu,
 	strMenu_Sleep,
 	strMenu_RateOfFire,

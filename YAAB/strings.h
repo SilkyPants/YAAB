@@ -30,17 +30,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /*
 Menu Headings
 */
-PROGMEM const unsigned char strFireMode_Pump[]		= "PUMP";
 PROGMEM const unsigned char strFireMode_Semi[]		= "SEMI";
+PROGMEM const unsigned char strFireMode_Pump[]		= "PUMP";
 PROGMEM const unsigned char strFireMode_Auto[]		= "AUTO";
 PROGMEM const unsigned char strFireMode_Burst[]		= "BURST";
 PROGMEM const unsigned char strFireMode_Reactive[]	= "REACTIVE";
 
-PROGMEM const unsigned char strTraining_Pump[]		= "TRAINING [PUMP]";
+const unsigned char * ModeHeaderStrings[] PROGMEM = {
+	strFireMode_Semi,
+	strFireMode_Pump,
+	strFireMode_Auto,
+	strFireMode_Burst,
+	strFireMode_Reactive
+};
+
 PROGMEM const unsigned char strTraining_Semi[]		= "TRAINING [SEMI]";
+PROGMEM const unsigned char strTraining_Pump[]		= "TRAINING [PUMP]";
 PROGMEM const unsigned char strTraining_Auto[]		= "TRAINING [AUTO]";
 PROGMEM const unsigned char strTraining_Burst[]		= "TRAINING [BRST]";
 PROGMEM const unsigned char strTraining_Reactive[]	= "TRAINING [RCTV]";
+
+const unsigned char * TrainingHeaderStrings[] PROGMEM = {
+	strTraining_Semi,
+	strTraining_Pump,
+	strTraining_Auto,
+	strTraining_Burst,
+	strTraining_Reactive
+};
 
 PROGMEM const unsigned char strMenu_Menu[]			= "MENU";
 PROGMEM const unsigned char strMenu_Sleep[]			= "TURN OFF";
@@ -53,5 +69,31 @@ PROGMEM const unsigned char strMenu_GameScreen[]	= "GAME SCREEN";
 PROGMEM const unsigned char strMenu_Training[]		= "TRAINING";
 PROGMEM const unsigned char strMenu_Timers[]		= "GAME TIMERS";
 
+enum MenuStringsEnum
+{
+	MENU_MENU,
+	MENU_SLEEP,
+	MENU_RATE_OF_FIRE,
+	MENU_FIRE_MODES,
+	MENU_HARDWARE,
+	MENU_TIMING,
+	MENU_FILTER,
+	MENU_GAME_SCREEN,
+	MENU_TRAINING,
+	MENU_TIMERS,
+};
+
+const unsigned char * MenuStrings[] PROGMEM = {
+	strMenu_Menu,
+	strMenu_Sleep,
+	strMenu_RateOfFire,
+	strMenu_FireModes,
+	strMenu_Hardware,
+	strMenu_Timing,
+	strMenu_Filter,
+	strMenu_GameScreen,
+	strMenu_Training,
+	strMenu_Timers
+};
 
 #endif /* STRINGS_H_ */

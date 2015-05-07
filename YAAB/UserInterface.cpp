@@ -26,7 +26,7 @@ PinState selectPressed(SelectPressed, &INPUT_PIN_REG, OK_BUTTON_PIN, true);
 PinState downPressed(DownPressed, &INPUT_PIN_REG, DN_BUTTON_PIN, true);
 
 
-unsigned char headerString[]    =   "SEMI";
+const char headerString[]    =   "SEMI";
 unsigned char eyeStateString[]  =   "$&'(";
 unsigned char menuOptions[]     =   "@ SELECT FIRE MODE\n  SELECT BPS\n  TRAINING MODE\n  SHOW STATISTICS\n  SET GAME TIMER\n  SET GAME ALARM";
 

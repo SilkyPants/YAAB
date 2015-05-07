@@ -118,7 +118,7 @@
 		<xsl:text>//---------------------------------------------------------------&#xa;</xsl:text>
 		
 		<!-- Make Header -->
-		<xsl:text>PROGMEM const unsigned char </xsl:text>
+		<xsl:text>PROGMEM const uint8_t </xsl:text>
 		<xsl:value-of select="groupname"/>
 		<xsl:text>[] = &#xa;{&#xa;</xsl:text>
 		<xsl:text>&#9;// Font Header &#xa;</xsl:text>

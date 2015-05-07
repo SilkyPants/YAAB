@@ -352,8 +352,6 @@ void Marker::Init()
     timer_init();
     adc_init();
     i2c_init();
-
-	//g_CurrentMode = (MarkerProfile*)pgm_read_ptr(&g_Modes[g_Settings.currentProfile]);
     
     memcpy_P(&g_CurrentMode, &g_Modes[g_Settings.currentProfile], sizeof(MarkerProfile));
     

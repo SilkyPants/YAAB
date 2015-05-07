@@ -98,3 +98,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define output_high(port,pin) bit_set(port,pin)
 #define output_toggle(port,pin) bit_toggle(port,pin)
 #define input_value(port,pin) is_bit_set(port,pin)
+
+// C++ Helpers - as not everything is defined in AVR
+extern "C" void __cxa_pure_virtual(void);

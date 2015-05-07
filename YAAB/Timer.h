@@ -55,7 +55,7 @@ class Timer
     
     ///
     /// Stored string buffer to make it easier to print to string
-    char stringBuffer[9];
+    //char stringBuffer[9];
     
     ///
     /// Function pointer to call once timer has lapsed
@@ -70,7 +70,7 @@ class Timer
     void SubtractMinute();
     
     ///
-    /// Subtracts an hour fron the timer
+    /// Subtracts an hour from the timer
     void SubtractHour();
 
 public:
@@ -103,7 +103,7 @@ public:
 
     ///
     /// Returns the timer left on the timer in HH:MM:SS format
-    const char* ToString();
+    void ToString(char * stringBuffer);
 };
 
 

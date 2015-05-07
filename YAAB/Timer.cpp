@@ -66,11 +66,9 @@ void Timer::Reset()
     m_Enabled = false; 
 }
 
-const char* Timer::ToString()
+void Timer::ToString(char * stringBuffer)
 {
     sprintf(stringBuffer, "%02d:%02d:%02d", m_Hours, m_Minutes, m_Seconds);
-
-    return stringBuffer;
 }
 
 void Timer::SubtractSecond()

@@ -29,8 +29,6 @@ PinState upPressed(UpPressed, &INPUT_PIN_REG, UP_BUTTON_PIN, true);
 PinState selectPressed(SelectPressed, &INPUT_PIN_REG, OK_BUTTON_PIN, true);
 PinState downPressed(DownPressed, &INPUT_PIN_REG, DN_BUTTON_PIN, true);
 
-unsigned char eyeStateString[]  =   "$&'(";
-
 void drawBatteryLevel( uint8_t battPercent );
 
 CRIUS_OLED g_Display;
@@ -76,7 +74,7 @@ void UI_SecondTick()
         eyeAnimIdx++;
     }
     
-	g_Display.DrawChar(5, 4, eyeStateString[eyeAnimIdx]);
+	g_Display.DrawChar(5, 4, char(38 + eyeAnimIdx));
 }
 
 void UI_Update()
@@ -87,7 +85,7 @@ void UI_Update()
     
     char buffer[16];
     
-    sprintf(buffer, "CURR EYE: %u", eyeCycleTask.GetCurrentEye());
+    sprintf(buffer, "CURR EYE: %04u", eyeCycleTask.GetCurrentEye());
     
 	g_Display.DrawString(3, 17, buffer);
 }

@@ -4,40 +4,53 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>6.2</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.CPP</ToolchainName>
-    <ProjectGuid>{07b459b4-8d76-4638-bc6d-a459ba2d616b}</ProjectGuid>
-    <avrdevice>atmega328p</avrdevice>
+    <ProjectGuid>{f7d0c78c-77ab-4a32-8c28-9b8f64c228a3}</ProjectGuid>
+    <avrdevice>ATmega328P</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
     <Language>CPP</Language>
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>YAAB_Arduino</AssemblyName>
+    <AssemblyName>CPPTest</AssemblyName>
     <Name>YAAB</Name>
-    <RootNamespace>YAAB_Arduino</RootNamespace>
+    <RootNamespace>CPPTest</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
-    <OverrideVtorValue>
-    </OverrideVtorValue>
-    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
     <RamSnippetAddress>0x20000000</RamSnippetAddress>
-    <CacheFlash>true</CacheFlash>
     <UncachedRange />
-    <BootSegment>0</BootSegment>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
-      <framework-data>
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.10.1" />
-  </dependencies>
-</framework-data>
+      <framework-data xmlns="">
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.11.0" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.simulator</avrtool>
+    <com_atmel_avrdbg_tool_simulator>
+      <ToolOptions xmlns="">
+        <InterfaceProperties>
+          <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
+        </InterfaceProperties>
+        <InterfaceName>
+        </InterfaceName>
+      </ToolOptions>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolNumber xmlns="">
+      </ToolNumber>
+      <ToolName xmlns="">Simulator</ToolName>
+    </com_atmel_avrdbg_tool_simulator>
     <preserveEEPROM>true</preserveEEPROM>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -51,151 +64,32 @@
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcc.compiler.symbols.DefSymbols>
           <ListValues>
-            <Value>__AVR_ATmega328P__</Value>
-            <Value>ARDUINO=101</Value>
-            <Value>ARDUINO_MAIN</Value>
-            <Value>F_CPU=16000000L</Value>
-            <Value>__AVR__</Value>
-            <Value>USE_ARDUINO</Value>
-            <Value>__cplusplus</Value>
+            <Value>NDEBUG</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
-        <avrgcc.compiler.directories.IncludePaths>
-          <ListValues>
-            <Value>E:\arduino\hardware\arduino\cores\arduino</Value>
-            <Value>E:\arduino\hardware\arduino\variants\standard</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS\utility</Value>
-            <Value>E:\arduino\libraries\EEPROM</Value>
-            <Value>E:\arduino\libraries\EEPROM\utility</Value>
-            <Value>E:\arduino\libraries\Esplora</Value>
-            <Value>E:\arduino\libraries\Esplora\utility</Value>
-            <Value>E:\arduino\libraries\Ethernet</Value>
-            <Value>E:\arduino\libraries\Ethernet\utility</Value>
-            <Value>E:\arduino\libraries\Firmata</Value>
-            <Value>E:\arduino\libraries\Firmata\utility</Value>
-            <Value>E:\arduino\libraries\GSM</Value>
-            <Value>E:\arduino\libraries\GSM\utility</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Control</Value>
-            <Value>E:\arduino\libraries\Robot_Control\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Motor</Value>
-            <Value>E:\arduino\libraries\Robot_Motor\utility</Value>
-            <Value>E:\arduino\libraries\SD</Value>
-            <Value>E:\arduino\libraries\SD\utility</Value>
-            <Value>E:\arduino\libraries\Servo</Value>
-            <Value>E:\arduino\libraries\Servo\utility</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial\utility</Value>
-            <Value>E:\arduino\libraries\SPI</Value>
-            <Value>E:\arduino\libraries\SPI\utility</Value>
-            <Value>E:\arduino\libraries\Stepper</Value>
-            <Value>E:\arduino\libraries\Stepper\utility</Value>
-            <Value>E:\arduino\libraries\TFT</Value>
-            <Value>E:\arduino\libraries\TFT\utility</Value>
-            <Value>E:\arduino\libraries\WiFi</Value>
-            <Value>E:\arduino\libraries\WiFi\utility</Value>
-            <Value>E:\arduino\libraries\Wire</Value>
-            <Value>E:\arduino\libraries\Wire\utility</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
-          </ListValues>
-        </avrgcc.compiler.directories.IncludePaths>
-        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
         <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -include=arduino.h</avrgcc.compiler.miscellaneous.OtherFlags>
         <avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcccpp.compiler.symbols.DefSymbols>
           <ListValues>
-            <Value>__AVR_ATmega328P__</Value>
-            <Value>ARDUINO=101</Value>
-            <Value>ARDUINO_MAIN</Value>
-            <Value>F_CPU=16000000L</Value>
-            <Value>__AVR__</Value>
-            <Value>USE_ARDUINO</Value>
-            <Value>__cplusplus</Value>
+            <Value>NDEBUG</Value>
           </ListValues>
         </avrgcccpp.compiler.symbols.DefSymbols>
-        <avrgcccpp.compiler.directories.IncludePaths>
-          <ListValues>
-            <Value>E:\arduino\hardware\arduino\cores\arduino</Value>
-            <Value>E:\arduino\hardware\arduino\variants\standard</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS\utility</Value>
-            <Value>E:\arduino\libraries\EEPROM</Value>
-            <Value>E:\arduino\libraries\EEPROM\utility</Value>
-            <Value>E:\arduino\libraries\Esplora</Value>
-            <Value>E:\arduino\libraries\Esplora\utility</Value>
-            <Value>E:\arduino\libraries\Ethernet</Value>
-            <Value>E:\arduino\libraries\Ethernet\utility</Value>
-            <Value>E:\arduino\libraries\Firmata</Value>
-            <Value>E:\arduino\libraries\Firmata\utility</Value>
-            <Value>E:\arduino\libraries\GSM</Value>
-            <Value>E:\arduino\libraries\GSM\utility</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Control</Value>
-            <Value>E:\arduino\libraries\Robot_Control\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Motor</Value>
-            <Value>E:\arduino\libraries\Robot_Motor\utility</Value>
-            <Value>E:\arduino\libraries\SD</Value>
-            <Value>E:\arduino\libraries\SD\utility</Value>
-            <Value>E:\arduino\libraries\Servo</Value>
-            <Value>E:\arduino\libraries\Servo\utility</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial\utility</Value>
-            <Value>E:\arduino\libraries\SPI</Value>
-            <Value>E:\arduino\libraries\SPI\utility</Value>
-            <Value>E:\arduino\libraries\Stepper</Value>
-            <Value>E:\arduino\libraries\Stepper\utility</Value>
-            <Value>E:\arduino\libraries\TFT</Value>
-            <Value>E:\arduino\libraries\TFT\utility</Value>
-            <Value>E:\arduino\libraries\WiFi</Value>
-            <Value>E:\arduino\libraries\WiFi\utility</Value>
-            <Value>E:\arduino\libraries\Wire</Value>
-            <Value>E:\arduino\libraries\Wire\utility</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
-            <Value>
-            </Value>
-          </ListValues>
-        </avrgcccpp.compiler.directories.IncludePaths>
-        <avrgcccpp.compiler.optimization.level>Optimize (-O1)</avrgcccpp.compiler.optimization.level>
+        <avrgcccpp.compiler.optimization.level>Optimize for size (-Os)</avrgcccpp.compiler.optimization.level>
         <avrgcccpp.compiler.optimization.PackStructureMembers>True</avrgcccpp.compiler.optimization.PackStructureMembers>
         <avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>
-        <avrgcccpp.compiler.optimization.DebugLevel>Default (-g2)</avrgcccpp.compiler.optimization.DebugLevel>
         <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
-        <avrgcccpp.compiler.miscellaneous.OtherFlags>-include=arduino.h</avrgcccpp.compiler.miscellaneous.OtherFlags>
+        <avrgcccpp.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcccpp.linker.libraries.Libraries>
         <avrgcccpp.linker.memorysettings.Comment>&lt;segmentname&gt;=&lt;address&gt;, for example  .boot=0xff</avrgcccpp.linker.memorysettings.Comment>
-        <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
       </AvrGccCpp>
     </ToolchainSettings>
-    <VisualMicroSettings>
-      <VisualMicroSettings xmlns="">
-        <VM_ADDITIONAL_PREPROC>USE_ARDUINO</VM_ADDITIONAL_PREPROC>
-      </VisualMicroSettings>
-    </VisualMicroSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <ToolchainSettings>
@@ -208,240 +102,134 @@
         <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcc.compiler.symbols.DefSymbols>
           <ListValues>
-            <Value>__AVR_ATmega328P__</Value>
-            <Value>ARDUINO=101</Value>
-            <Value>ARDUINO_MAIN</Value>
-            <Value>F_CPU=16000000L</Value>
-            <Value>__AVR__</Value>
-            <Value>USE_ARDUINO</Value>
-            <Value>__cplusplus</Value>
+            <Value>DEBUG</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
-        <avrgcc.compiler.directories.IncludePaths>
-          <ListValues>
-            <Value>E:\arduino\hardware\arduino\cores\arduino</Value>
-            <Value>E:\arduino\hardware\arduino\variants\standard</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS\utility</Value>
-            <Value>E:\arduino\libraries\EEPROM</Value>
-            <Value>E:\arduino\libraries\EEPROM\utility</Value>
-            <Value>E:\arduino\libraries\Esplora</Value>
-            <Value>E:\arduino\libraries\Esplora\utility</Value>
-            <Value>E:\arduino\libraries\Ethernet</Value>
-            <Value>E:\arduino\libraries\Ethernet\utility</Value>
-            <Value>E:\arduino\libraries\Firmata</Value>
-            <Value>E:\arduino\libraries\Firmata\utility</Value>
-            <Value>E:\arduino\libraries\GSM</Value>
-            <Value>E:\arduino\libraries\GSM\utility</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Control</Value>
-            <Value>E:\arduino\libraries\Robot_Control\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Motor</Value>
-            <Value>E:\arduino\libraries\Robot_Motor\utility</Value>
-            <Value>E:\arduino\libraries\SD</Value>
-            <Value>E:\arduino\libraries\SD\utility</Value>
-            <Value>E:\arduino\libraries\Servo</Value>
-            <Value>E:\arduino\libraries\Servo\utility</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial\utility</Value>
-            <Value>E:\arduino\libraries\SPI</Value>
-            <Value>E:\arduino\libraries\SPI\utility</Value>
-            <Value>E:\arduino\libraries\Stepper</Value>
-            <Value>E:\arduino\libraries\Stepper\utility</Value>
-            <Value>E:\arduino\libraries\TFT</Value>
-            <Value>E:\arduino\libraries\TFT\utility</Value>
-            <Value>E:\arduino\libraries\WiFi</Value>
-            <Value>E:\arduino\libraries\WiFi\utility</Value>
-            <Value>E:\arduino\libraries\Wire</Value>
-            <Value>E:\arduino\libraries\Wire\utility</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
-          </ListValues>
-        </avrgcc.compiler.directories.IncludePaths>
         <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
         <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
         <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
         <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
         <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -include=arduino.h</avrgcc.compiler.miscellaneous.OtherFlags>
         <avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultCharTypeUnsigned>
         <avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcccpp.compiler.general.ChangeDefaultBitFieldUnsigned>
         <avrgcccpp.compiler.symbols.DefSymbols>
           <ListValues>
-            <Value>__AVR_ATmega328P__</Value>
-            <Value>ARDUINO=101</Value>
-            <Value>ARDUINO_MAIN</Value>
-            <Value>F_CPU=16000000L</Value>
-            <Value>__AVR__</Value>
-            <Value>USE_ARDUINO</Value>
-            <Value>__cplusplus</Value>
+            <Value>DEBUG</Value>
           </ListValues>
         </avrgcccpp.compiler.symbols.DefSymbols>
-        <avrgcccpp.compiler.directories.IncludePaths>
-          <ListValues>
-            <Value>E:\arduino\hardware\arduino\cores\arduino</Value>
-            <Value>E:\arduino\hardware\arduino\variants\standard</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\AdafruitGFXLibrary\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\I2C\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\MicroLCD\utility</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS</Value>
-            <Value>C:\Users\Dan\Documents\Arduino\libraries\SSD1306_I2C_DSS\utility</Value>
-            <Value>E:\arduino\libraries\EEPROM</Value>
-            <Value>E:\arduino\libraries\EEPROM\utility</Value>
-            <Value>E:\arduino\libraries\Esplora</Value>
-            <Value>E:\arduino\libraries\Esplora\utility</Value>
-            <Value>E:\arduino\libraries\Ethernet</Value>
-            <Value>E:\arduino\libraries\Ethernet\utility</Value>
-            <Value>E:\arduino\libraries\Firmata</Value>
-            <Value>E:\arduino\libraries\Firmata\utility</Value>
-            <Value>E:\arduino\libraries\GSM</Value>
-            <Value>E:\arduino\libraries\GSM\utility</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal</Value>
-            <Value>E:\arduino\libraries\LiquidCrystal\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Control</Value>
-            <Value>E:\arduino\libraries\Robot_Control\utility</Value>
-            <Value>E:\arduino\libraries\Robot_Motor</Value>
-            <Value>E:\arduino\libraries\Robot_Motor\utility</Value>
-            <Value>E:\arduino\libraries\SD</Value>
-            <Value>E:\arduino\libraries\SD\utility</Value>
-            <Value>E:\arduino\libraries\Servo</Value>
-            <Value>E:\arduino\libraries\Servo\utility</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial</Value>
-            <Value>E:\arduino\libraries\SoftwareSerial\utility</Value>
-            <Value>E:\arduino\libraries\SPI</Value>
-            <Value>E:\arduino\libraries\SPI\utility</Value>
-            <Value>E:\arduino\libraries\Stepper</Value>
-            <Value>E:\arduino\libraries\Stepper\utility</Value>
-            <Value>E:\arduino\libraries\TFT</Value>
-            <Value>E:\arduino\libraries\TFT\utility</Value>
-            <Value>E:\arduino\libraries\WiFi</Value>
-            <Value>E:\arduino\libraries\WiFi\utility</Value>
-            <Value>E:\arduino\libraries\Wire</Value>
-            <Value>E:\arduino\libraries\Wire\utility</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\include\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\avr\</Value>
-            <Value>e:\arduino\hardware\tools\avr\lib\gcc\avr\4.3.2\include\</Value>
-            <Value>
-            </Value>
-          </ListValues>
-        </avrgcccpp.compiler.directories.IncludePaths>
         <avrgcccpp.compiler.optimization.level>Optimize (-O1)</avrgcccpp.compiler.optimization.level>
         <avrgcccpp.compiler.optimization.PackStructureMembers>True</avrgcccpp.compiler.optimization.PackStructureMembers>
         <avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcccpp.compiler.optimization.AllocateBytesNeededForEnum>
         <avrgcccpp.compiler.optimization.DebugLevel>Default (-g2)</avrgcccpp.compiler.optimization.DebugLevel>
         <avrgcccpp.compiler.warnings.AllWarnings>True</avrgcccpp.compiler.warnings.AllWarnings>
-        <avrgcccpp.compiler.miscellaneous.OtherFlags>-include=arduino.h</avrgcccpp.compiler.miscellaneous.OtherFlags>
+        <avrgcccpp.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcccpp.linker.libraries.Libraries>
         <avrgcccpp.linker.memorysettings.Comment>&lt;segmentname&gt;=&lt;address&gt;, for example  .boot=0xff</avrgcccpp.linker.memorysettings.Comment>
         <avrgcccpp.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcccpp.assembler.debugging.DebugLevel>
       </AvrGccCpp>
     </ToolchainSettings>
-    <VisualMicroSettings>
-      <VisualMicroSettings xmlns="">
-        <VM_ADDITIONAL_PREPROC>USE_ARDUINO</VM_ADDITIONAL_PREPROC>
-      </VisualMicroSettings>
-    </VisualMicroSettings>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="YAAB.ino">
-      <SubType>compile</SubType>
-    </None>
+    <Folder Include="YAAB" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Visual Micro\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="adc.cpp">
+    <Compile Include="YAAB\adc.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="adc.h">
+    <Compile Include="YAAB\adc.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="BreechEyesTask.cpp">
+    <Compile Include="YAAB\BreechEyesTask.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="BreechEyesTask.h">
+    <Compile Include="YAAB\BreechEyesTask.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="common.h">
+    <Compile Include="YAAB\common.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="crius_oled.cpp">
+    <Compile Include="YAAB\crius_oled.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="crius_oled.h">
+    <Compile Include="YAAB\crius_oled.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="flags.h">
+    <Compile Include="YAAB\flags.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="font.h">
+    <Compile Include="YAAB\font.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="i2c.cpp">
+    <Compile Include="YAAB\i2c.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="i2c.h">
+    <Compile Include="YAAB\i2c.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="IntervalLapse.cpp">
+    <Compile Include="YAAB\interrupts.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="IntervalLapse.h">
+    <Compile Include="YAAB\interrupts.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="marker.cpp">
+    <Compile Include="YAAB\IntervalLapse.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="marker.h">
+    <Compile Include="YAAB\IntervalLapse.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="pins.h">
+    <Compile Include="YAAB\main.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="PinState.cpp">
+    <Compile Include="YAAB\marker.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="PinState.h">
+    <Compile Include="YAAB\marker.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="settings.h">
+    <Compile Include="YAAB\MenuScreens.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="strings.h">
+    <Compile Include="YAAB\pins.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Task.cpp">
+    <Compile Include="YAAB\PinState.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Task.h">
+    <Compile Include="YAAB\PinState.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Timer.cpp">
+    <Compile Include="YAAB\settings.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Timer.h">
+    <Compile Include="YAAB\strings.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timers.cpp">
+    <Compile Include="YAAB\Task.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="timers.h">
+    <Compile Include="YAAB\Task.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Visual Micro\.YAAB.vsarduino.h">
+    <Compile Include="YAAB\Timer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\Timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\timers.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\timers.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

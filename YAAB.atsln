@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Atmel Studio Solution File, Format Version 11.00
-Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "YAAB", "YAAB.cppproj", "{07B459B4-8D76-4638-BC6D-A459BA2D616B}"
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "YAAB", "YAAB.cppproj", "{F7D0C78C-77AB-4A32-8C28-9B8F64C228A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Debug|AVR.ActiveCfg = Debug|AVR
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Debug|AVR.Build.0 = Debug|AVR
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Release|AVR.ActiveCfg = Release|AVR
-		{07B459B4-8D76-4638-BC6D-A459BA2D616B}.Release|AVR.Build.0 = Release|AVR
+		{F7D0C78C-77AB-4A32-8C28-9B8F64C228A3}.Debug|AVR.ActiveCfg = Debug|AVR
+		{F7D0C78C-77AB-4A32-8C28-9B8F64C228A3}.Debug|AVR.Build.0 = Debug|AVR
+		{F7D0C78C-77AB-4A32-8C28-9B8F64C228A3}.Release|AVR.ActiveCfg = Release|AVR
+		{F7D0C78C-77AB-4A32-8C28-9B8F64C228A3}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

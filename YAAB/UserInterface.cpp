@@ -14,8 +14,10 @@
 
 #include "PinState.h"
 #include "BreechEyesTask.h"
+#include "settings.h"	
 
 extern BreechEyesTask eyeCycleTask;
+extern const MarkerProfile* g_CurrentMode;
 
 static void UpPressed();
 static void SelectPressed();
@@ -41,7 +43,7 @@ CRIUS_OLED g_Display;
 void UI_Init()
 {
 	g_Display.Init();
-	g_Display.DrawString(52, 4, headerString);
+	g_Display.DrawString(52, 4, g_CurrentMode->profileName);
 }
 
 void UI_SecondTick()

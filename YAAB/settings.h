@@ -83,7 +83,7 @@ struct CycleValues // 2 bytes
 
 struct MarkerProfile // 16 bytes
 {
-    char profileName[13];             // Name for the profile
+    uint8_t profileNameIndex;         // Name for the profile
     uint8_t shotsToFirePress : 2;     // Burst fire on press (max 3)
     uint8_t shotsToFireRelease : 2;   // Burst fire on release (max 3)
     uint8_t actionType : 4;           // Pump, Semi, Auto

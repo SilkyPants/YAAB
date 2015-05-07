@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <avr/pgmspace.h>
+
 #include "marker.h"
 #include "common.h"
 #include "pins.h"
@@ -70,15 +72,16 @@ volatile MarkerSettings g_Settings =
 
 ///
 /// Marker Profiles
-/// Customisable by the user
-MarkerProfile g_Profiles[] = 
+/// Customisable by the user 
+
+PROGMEM const MarkerProfile g_Modes[] = 
 {
-    { "Semi Auto\0",    0x1, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
-    { "  Pump   \0",    0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
+    { 0,    0x1, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
+    { 1,    0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
 #if defined AUTO_ALLOWED
-    { "Full Auto\0",    0x0, 0x0, flag_set(AT_Auto), flag_set(TA_FireOnPress) },
-    { "  Burst  \0",    0x3, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
-    { "Reactive \0",    0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
+    { 2,    0x0, 0x0, flag_set(AT_Auto), flag_set(TA_FireOnPress) },
+    { 3,    0x3, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
+    { 4,    0x1, 0x3, flag_set(AT_Semi), flag_set(TA_FireOnPress) | flag_set(TA_FireOnRelease) },
 #endif
 };
 
@@ -86,8 +89,8 @@ MarkerProfile g_Profiles[] =
 /// End EEPROM stuff
 ///
 
-MarkerProfile* g_CurrentProfile = &g_Profiles[g_Settings.currentProfile];
-unsigned char g_NumProfiles = sizeof g_Profiles/sizeof(MarkerProfile);
+MarkerProfile g_CurrentMode;
+//unsigned char g_NumProfiles = sizeof g_Modes/sizeof(MarkerProfile);
 
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
@@ -161,12 +164,12 @@ static void triggerToggle()
     bit_toggle(g_CycleValues.flags, CF_Trigger_Pressed);
 
     // Do we want to fire?
-    if (is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnPress))
+    if (is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentMode.triggerAction, TA_FireOnPress))
     {
         g_triggerPullCount++;
         fireMarker();
     }
-    else if(!is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentProfile->triggerAction, TA_FireOnRelease))
+    else if(!is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed) && is_bit_set(g_CurrentMode.triggerAction, TA_FireOnRelease))
     {
         fireMarker();
     }
@@ -183,9 +186,9 @@ static void fireMarker()
     
     // Determine how many shots to fire this 'cycle'
     if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
-        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFirePress;
+        g_CycleValues.shotsToGo = g_CurrentMode.shotsToFirePress;
     else
-        g_CycleValues.shotsToGo = g_CurrentProfile->shotsToFireRelease;
+        g_CycleValues.shotsToGo = g_CurrentMode.shotsToFireRelease;
     
     startCycle();
 }
@@ -202,7 +205,7 @@ static void startCycle()
     g_ballShotCount++;
     
     // Start Pneumatics task
-    if(!is_bit_set(g_CurrentProfile->actionType, AT_Pump))
+    if(!is_bit_set(g_CurrentMode.actionType, AT_Pump))
     {
         pneuDelayTask.Reset();
     }
@@ -251,7 +254,7 @@ static void cycleComplete()
     bool restartCycle = g_CycleValues.shotsToGo > 0;
     
 #if defined AUTO_ALLOWED
-    restartCycle = restartCycle || (is_bit_set(g_CurrentProfile->actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed));
+    restartCycle = restartCycle || (is_bit_set(g_CurrentMode.actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed));
 #endif
     
     if(restartCycle)
@@ -349,6 +352,10 @@ void Marker::Init()
     timer_init();
     adc_init();
     i2c_init();
+
+	//g_CurrentMode = (MarkerProfile*)pgm_read_ptr(&g_Modes[g_Settings.currentProfile]);
+    
+    memcpy_P(&g_CurrentMode, &g_Modes[g_Settings.currentProfile], sizeof(MarkerProfile));
     
     // Setup the tasks
     // 1 second - in increments of 0.1ms

@@ -14,8 +14,12 @@
 
 #include "PinState.h"
 #include "BreechEyesTask.h"
+#include "settings.h"	
+
+#include "strings.h"
 
 extern BreechEyesTask eyeCycleTask;
+extern const MarkerProfile g_CurrentMode;
 
 static void UpPressed();
 static void SelectPressed();
@@ -25,10 +29,7 @@ PinState upPressed(UpPressed, &INPUT_PIN_REG, UP_BUTTON_PIN, true);
 PinState selectPressed(SelectPressed, &INPUT_PIN_REG, OK_BUTTON_PIN, true);
 PinState downPressed(DownPressed, &INPUT_PIN_REG, DN_BUTTON_PIN, true);
 
-
-const char headerString[]    =   "SEMI";
 unsigned char eyeStateString[]  =   "$&'(";
-unsigned char menuOptions[]     =   "@ SELECT FIRE MODE\n  SELECT BPS\n  TRAINING MODE\n  SHOW STATISTICS\n  SET GAME TIMER\n  SET GAME ALARM";
 
 void drawBatteryLevel( uint8_t battPercent );
 
@@ -41,7 +42,12 @@ CRIUS_OLED g_Display;
 void UI_Init()
 {
 	g_Display.Init();
-	g_Display.DrawString(52, 4, headerString);
+    
+    char buffer[13];
+    
+    strcpy_P(buffer, (PGM_P)pgm_read_word(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex])));
+    
+	g_Display.DrawString(52, 4, buffer);
 }
 
 void UI_SecondTick()

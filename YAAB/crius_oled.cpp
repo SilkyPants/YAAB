@@ -94,27 +94,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /// Drawing Functions
 
-void CRIUS_OLED::FillRect(int x, int y, int w, int h, bool fill)
+void CRIUS_OLED::FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool fill)
 {
-	for (int i = x; i < x + w; i++)
+	for (uint8_t i = x; i < x + w; i++)
 	{
-		for (int j = y; j < y + h; j++)
+		for (uint8_t j = y; j < y + h; j++)
 		{
 			DrawPixel(i, j, fill);
 		}
 	}
 }
 
-void CRIUS_OLED::Swap(int &r, int &s)
+void CRIUS_OLED::Swap(uint8_t &r, uint8_t &s)
 {
-	int pSwap = r;
+	uint8_t pSwap = r;
 	r = s;
 	s = pSwap;
 }
 
-void CRIUS_OLED::DrawLine(int x0, int y0, int x1, int y1)
+void CRIUS_OLED::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 {
-	int steep = abs(y1 - y0) > abs(x1 - x0);
+	uint8_t steep = abs(y1 - y0) > abs(x1 - x0);
 	if (steep)
 	{
 		Swap(x0, y0);
@@ -127,12 +127,12 @@ void CRIUS_OLED::DrawLine(int x0, int y0, int x1, int y1)
 		Swap(y0, y1);
 	}
 
-	int dx, dy;
+	uint8_t dx, dy;
 	dx = x1 - x0;
 	dy = abs(y1 - y0);
 
-	int err = dx / 2;
-	int ystep;
+	uint8_t err = dx / 2;
+	uint8_t ystep;
 
 	if (y0 < y1)
 	{
@@ -162,18 +162,18 @@ void CRIUS_OLED::DrawLine(int x0, int y0, int x1, int y1)
 	}
 }
 
-void CRIUS_OLED::DrawChar(int x, int y, const char character, FontType type)
+void CRIUS_OLED::DrawChar(uint8_t x, uint8_t y, const char character, FontType type)
 {
 	this->DrawCharInternal(x, y, character, GetFont(type));
 }
 
-void CRIUS_OLED::DrawString(int x, int y, const char * string, FontType type)
+void CRIUS_OLED::DrawString(uint8_t x, uint8_t y, const char * string, FontType type)
 {
 	const uint8_t * font = GetFont(type);
 
 	uint8_t charWidth = pgm_read_byte_near(font + 5);
 	uint8_t charHeight = pgm_read_byte_near(font + 4);
-	int runningX = x;
+	uint8_t runningX = x;
 
 	while (*string)
 	{
@@ -197,7 +197,7 @@ void CRIUS_OLED::DrawString(int x, int y, const char * string, FontType type)
 	}
 }
 
-void CRIUS_OLED::DrawPixel(int x, int y, bool draw)
+void CRIUS_OLED::DrawPixel(uint8_t x, uint8_t y, bool draw)
 {
 	if (x < 0 || x >= LCD_WIDTH || y < 0 || y >= LCD_HEIGHT)
 		return;
@@ -212,7 +212,7 @@ void CRIUS_OLED::DrawPixel(int x, int y, bool draw)
 		buffer[pageIdx] &= ~(1 << pixelIdx);
 }
 
-void CRIUS_OLED::DrawCharInternal(int x, int y, const char character, const uint8_t * font)
+void CRIUS_OLED::DrawCharInternal(uint8_t x, uint8_t y, const char character, const uint8_t * font)
 {
 	uint8_t startChar = pgm_read_byte_near(font + 2);
 	uint8_t charWidth = pgm_read_byte_near(font + 5);
@@ -323,7 +323,7 @@ void CRIUS_OLED::SendData(uint8_t data)
 	i2c_OLED_send_byte(OLED_address, data);
 }
 
-void CRIUS_OLED::SetXY(unsigned char row, unsigned char col)
+void CRIUS_OLED::SetXY(uint8_t row, uint8_t col)
 {
 	SendCommand(0xb0 + row);                //set page address
 	SendCommand(0x00 + (8 * col & 0x0f));       //set low col address

@@ -54,21 +54,21 @@ public:
 	void ClearDisplay();
 	void DisplayBuffer();
 
-	void FillRect(int x, int y, int w, int h, bool fill = true);
-	void DrawLine(int x0, int y0, int x1, int y1);
-	void DrawChar(int x, int y, const char character, FontType type = SMALL_FONT);
-	void DrawString(int x, int y, const char * string, FontType type = SMALL_FONT);
+	void FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool fill = true);
+	void DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
+	void DrawChar(uint8_t x, uint8_t y, const char character, FontType type = SMALL_FONT);
+	void DrawString(uint8_t x, uint8_t y, const char * string, FontType type = SMALL_FONT);
 
 private:
 	void SendCommand(uint8_t cmd);
 	void SendData(uint8_t data);
-	void SetXY(unsigned char row, unsigned char col);
+	void SetXY(uint8_t row, uint8_t col);
 
-	void DrawPixel(int x, int y, bool draw);
-	void DrawCharInternal(int x, int y, const char character, const uint8_t * font);
+	void DrawPixel(uint8_t x, uint8_t y, bool draw);
+	void DrawCharInternal(uint8_t x, uint8_t y, const char character, const uint8_t * font);
 	const uint8_t * GetFont(FontType font);
 	
-	void Swap(int &r, int &s);
+	void Swap(uint8_t &r, uint8_t &s);
 
 	uint8_t buffer[LCD_BUFFER_SIZE];
 };

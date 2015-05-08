@@ -14,10 +14,3 @@ int main(void) {
     
 	return 0; // never reached
 }
-
-///
-/// C++ Helpers
-
-void __cxa_pure_virtual(void)
-{
-}

@@ -21,8 +21,27 @@
 
 #pragma once
 
-struct MenuScreen
+#include "strings.h"
+
+enum ButtonPress
 {
-    char        title[16];
-    char        options[][16];
+	BUTTON_UP,
+	BUTTON_OK,
+	BUTTON_DN
+};
+
+class MenuScreen
+{
+public:
+
+	MenuScreen();
+	~MenuScreen() { /* nothing */ };
+
+	virtual void OnButtonPress(ButtonPress p_Button) = 0;
+	virtual void Update() = 0;
+
+private:
+	uint8_t m_HeaderIndex;
+
+	MenuScreen * m_pPrevScreen;
 };

@@ -27,6 +27,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef STRINGS_H_
 #define STRINGS_H_
 
+#define EYE_BALL_ANIM_START char(38) // "&"
+#define EYE_BALL_ANIM_END	char(41) // ")"
+#define EYE_DISABLED		"X"
+#define EYE_EMPTY			"E"
+#define EYE_BOLT			"B"
+
 /*
 Menu Headings
 */

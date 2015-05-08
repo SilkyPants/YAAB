@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 Silly Kat. All rights reserved.
 //
 
+#include <string.h>
+
 #include "UserInterface.h"
 
 #include "pins.h"
@@ -37,19 +39,26 @@ CRIUS_OLED g_Display;
 /// UI functions
 ///
 
+void UI_SetHeaderText(const char* const* string)
+{
+	char buffer[17];
+	
+	strcpy_P(buffer, (PGM_P)pgm_read_word(string));
+	uint8_t x = 64 - (strlen(buffer) * 3);
+	
+	g_Display.DrawString(x, 4, buffer);
+}
+
 void UI_Init()
 {
 	g_Display.Init();
-    
-    char buffer[13];
-    
-    strcpy_P(buffer, (PGM_P)pgm_read_word(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex])));
-    
-	g_Display.DrawString(52, 4, buffer);
+	
+	UI_SetHeaderText(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex]));
 }
 
 void UI_SecondTick()
 {
+	// TODO: Get Battery Level
     static uint8_t battLevel = 100;
     
     if( battLevel <= 0 )
@@ -63,18 +72,14 @@ void UI_SecondTick()
     
     drawBatteryLevel( battLevel );
     
-    static uint8_t eyeAnimIdx = 0;
+    static uint8_t eyeAnimIdx = EYE_BALL_ANIM_START;
     
-    if( eyeAnimIdx >= 3 )
+    if( eyeAnimIdx > EYE_BALL_ANIM_END )
     {
-        eyeAnimIdx = 0;
-    }
-    else
-    {
-        eyeAnimIdx++;
+        eyeAnimIdx = EYE_BALL_ANIM_START;
     }
     
-	g_Display.DrawChar(5, 4, char(38 + eyeAnimIdx));
+	g_Display.DrawChar(5, 4, char(eyeAnimIdx++));
 }
 
 void UI_Update()
@@ -84,10 +89,18 @@ void UI_Update()
     downPressed.Update();
     
     char buffer[16];
+	
+	long eye = eyeCycleTask.GetCurrentEye();
+	eye *= 100;
+	eye /= 1024;
     
-    sprintf(buffer, "CURR EYE: %04u", eyeCycleTask.GetCurrentEye());
+    sprintf(buffer, "%03ld", eye);
     
-	g_Display.DrawString(3, 17, buffer);
+	g_Display.DrawString(3, 17, buffer, BPS_FONT);
+	
+	sprintf(buffer, "CURR EYE: %04u", eyeCycleTask.GetCurrentEye());
+
+	g_Display.DrawString(3, 39, buffer);
 }
 
 void UI_Draw()

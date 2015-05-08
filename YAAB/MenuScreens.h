@@ -38,7 +38,7 @@ public:
 	~MenuScreen() { /* nothing */ };
 
 	virtual void OnButtonPress(ButtonPress p_Button) = 0;
-	virtual void Update() = 0;
+	virtual void Draw() = 0;
 
 private:
 	uint8_t m_HeaderIndex;

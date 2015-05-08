@@ -101,12 +101,14 @@
   <ItemGroup>
     <ClCompile Include="YAAB\adc.cpp" />
     <ClCompile Include="YAAB\BreechEyesTask.cpp" />
+    <ClCompile Include="YAAB\common.cpp" />
     <ClCompile Include="YAAB\crius_oled.cpp" />
     <ClCompile Include="YAAB\i2c.cpp" />
     <ClCompile Include="YAAB\interrupts.cpp" />
     <ClCompile Include="YAAB\IntervalLapse.cpp" />
     <ClCompile Include="YAAB\main.cpp" />
     <ClCompile Include="YAAB\marker.cpp" />
+    <ClCompile Include="YAAB\MenuScreen.cpp" />
     <ClCompile Include="YAAB\PinState.cpp" />
     <ClCompile Include="YAAB\Task.cpp" />
     <ClCompile Include="YAAB\Timer.cpp" />
@@ -114,9 +116,7 @@
     <ClCompile Include="YAAB\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="YAAB\YAAB.ino">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="YAAB\YAAB.ino" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

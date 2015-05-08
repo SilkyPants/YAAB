@@ -22,6 +22,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /// C++ Helpers
 
+#include "common.h"
+
 void __cxa_pure_virtual(void)
 {
 }

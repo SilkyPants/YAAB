@@ -12,8 +12,6 @@
 
 #include "pins.h"
 
-#include "crius_oled.h"
-
 #include "PinState.h"
 #include "BreechEyesTask.h"
 #include "settings.h"	
@@ -23,44 +21,33 @@
 extern BreechEyesTask eyeCycleTask;
 extern const MarkerProfile g_CurrentMode;
 
-static void UpPressed();
-static void SelectPressed();
-static void DownPressed();
-
-PinState upPressed(UpPressed, &INPUT_PIN_REG, UP_BUTTON_PIN, true);
-PinState selectPressed(SelectPressed, &INPUT_PIN_REG, OK_BUTTON_PIN, true);
-PinState downPressed(DownPressed, &INPUT_PIN_REG, DN_BUTTON_PIN, true);
-
-void drawBatteryLevel( uint8_t battPercent );
-
-CRIUS_OLED g_Display;
-
 ///
 /// UI functions
 ///
 
-void UI_SetHeaderText(const char* const* string)
+void UserInterface::SetHeaderText(const char* const* string)
 {
 	char buffer[17];
 	
 	strcpy_P(buffer, (PGM_P)pgm_read_word(string));
 	uint8_t x = 64 - (strlen(buffer) * 3);
 	
-	g_Display.DrawString(x, 4, buffer);
+	m_Display.DrawString(x, 4, buffer);
 }
 
-void UI_Init()
+void UserInterface::Init()
 {
-	g_Display.Init();
+	m_Display.Init();
+    
+    battLevel = 100;
+    eyeAnimIdx = EYE_BALL_ANIM_START;
 	
-	UI_SetHeaderText(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex]));
+	SetHeaderText(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex]));
 }
 
-void UI_SecondTick()
+void UserInterface::OnSecond()
 {
 	// TODO: Get Battery Level
-    static uint8_t battLevel = 100;
-    
     if( battLevel <= 0 )
     {
         battLevel = 100;
@@ -70,24 +57,18 @@ void UI_SecondTick()
         battLevel -= 25;
     }
     
-    drawBatteryLevel( battLevel );
-    
-    static uint8_t eyeAnimIdx = EYE_BALL_ANIM_START;
+    DrawBatteryLevel( battLevel );
     
     if( eyeAnimIdx > EYE_BALL_ANIM_END )
     {
         eyeAnimIdx = EYE_BALL_ANIM_START;
     }
     
-	g_Display.DrawChar(5, 4, char(eyeAnimIdx++));
+	m_Display.DrawChar(5, 4, char(eyeAnimIdx++));
 }
 
-void UI_Update()
+void UserInterface::Update()
 {
-    upPressed.Update();
-    selectPressed.Update();
-    downPressed.Update();
-    
     char buffer[16];
 	
 	long eye = eyeCycleTask.GetCurrentEye();
@@ -96,66 +77,49 @@ void UI_Update()
     
     sprintf(buffer, "%03ld", eye);
     
-	g_Display.DrawString(3, 17, buffer, BPS_FONT);
+	m_Display.DrawString(3, 17, buffer, BPS_FONT);
 	
 	sprintf(buffer, "CURR EYE: %04u", eyeCycleTask.GetCurrentEye());
 
-	g_Display.DrawString(3, 39, buffer);
-}
-
-void UI_Draw()
-{
-    // Display the LCD
-	g_Display.DisplayBuffer();
+	m_Display.DrawString(3, 39, buffer);
+    
+    Draw();
 }
 
 ///
 /// Drawing Functions
 
-void drawBatteryLevel( uint8_t battPercent )
+void UserInterface::Draw()
 {
-	g_Display.FillRect(112, 5, 11, 5, false);
+    // Display the LCD
+	m_Display.DisplayBuffer();
+}
+
+void UserInterface::DrawBatteryLevel( uint8_t battPercent )
+{
+	m_Display.FillRect(112, 5, 11, 5, false);
 
 	if (battPercent >= 25)
 	{
-		g_Display.DrawLine(121, 5, 121, 9);
-		g_Display.DrawLine(122, 5, 122, 9);
+		m_Display.DrawLine(121, 5, 121, 9);
+		m_Display.DrawLine(122, 5, 122, 9);
 	}
 
 	if (battPercent >= 50)
 	{
-		g_Display.DrawLine(118, 5, 118, 9);
-		g_Display.DrawLine(119, 5, 119, 9);
+		m_Display.DrawLine(118, 5, 118, 9);
+		m_Display.DrawLine(119, 5, 119, 9);
 	}
 
 	if (battPercent >= 75)
 	{
-		g_Display.DrawLine(115, 5, 115, 9);
-		g_Display.DrawLine(116, 5, 116, 9);
+		m_Display.DrawLine(115, 5, 115, 9);
+		m_Display.DrawLine(116, 5, 116, 9);
 	}
 
 	if (battPercent >= 100)
 	{
-		g_Display.DrawLine(112, 5, 112, 9);
-		g_Display.DrawLine(113, 5, 113, 9);
+		m_Display.DrawLine(112, 5, 112, 9);
+		m_Display.DrawLine(113, 5, 113, 9);
 	}
-}
-
-///
-/// Input functions
-///
-
-static void UpPressed()
-{
-    
-}
-
-static void SelectPressed()
-{
-    
-}
-
-static void DownPressed()
-{
-    
 }

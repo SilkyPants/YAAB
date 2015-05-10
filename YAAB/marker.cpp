@@ -277,7 +277,7 @@ static void cycleComplete()
 /// Every Second Tick
 static void onSecondTick()
 {
-    UI_SecondTick();
+    g_Marker.GetUI()->OnSecond();
 	
 #if defined SERIAL_DEBUG
     //Serial.println("Pull Count(/s): " + g_triggerPullCount);
@@ -384,16 +384,14 @@ void Marker::Init()
     // start interrupts
     sei();
     
-    UI_Init();
+    m_UI.Init();
     
     adc_start_read( 0 );
 }
 
 void Marker::IdleLoop()
 {
-    UI_Update();
-    
-    UI_Draw();
+    m_UI.Update();
 }
 
 void Marker::TimerTick()

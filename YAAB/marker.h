@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "common.h"
+#include "UserInterface.h"
 
 class Marker
 {
@@ -33,7 +34,10 @@ public:
     
     void UpdateEye(uint16_t eyeValue);
     
+    UserInterface * GetUI() { return &m_UI; }
+    
 private:
+    UserInterface m_UI;
 };
 
 extern Marker g_Marker;

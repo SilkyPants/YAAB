@@ -23,7 +23,36 @@
 
 #include "common.h"
 
-void UI_Init();
-void UI_SecondTick();
-void UI_Update();
-void UI_Draw();
+#include "crius_oled.h"
+
+enum MenuStates
+{
+    GameScreen,
+    MenuRoot,
+};
+
+class UserInterface
+{
+public:
+    void Init();
+    void OnSecond();
+    void Update();
+    void Draw();
+    
+private:
+    MenuStates m_CurrentState;
+    CRIUS_OLED m_Display;
+    
+    uint8_t battLevel;
+    uint8_t eyeAnimIdx;
+    
+    void SetState(MenuStates p_NewState);
+    void SetHeaderText(const char* const* string);
+    void DrawBatteryLevel(uint8_t battPercent);
+    
+    void GameScreen_OnEnter();
+    void GameScreen_Update();
+    void MenuRoot_OnEnter();
+    void MenuRoot_Update();
+    
+};

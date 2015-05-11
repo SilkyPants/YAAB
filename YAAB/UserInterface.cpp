@@ -66,14 +66,14 @@ void UserInterface::SetState(MenuStates p_NewState)
 {
     m_CurrentState = p_NewState;
     
+    // Clear display
+    m_Display.FillRect(19, 4,  89,  7, false); // Header area
+    m_Display.FillRect(3, 16, 122, 45, false); // Bottom section
+    
     switch (m_CurrentState) {
             CASE_ENTER_STATE(GameScreen)
             CASE_ENTER_STATE(MenuRoot)
     };
-    
-    // Clear display
-    m_Display.FillRect(19, 4,  89,  7, false); // Header area
-    m_Display.FillRect(3, 16, 122, 45, false); // Bottom section
 }
 
 void UserInterface::OnSecond()

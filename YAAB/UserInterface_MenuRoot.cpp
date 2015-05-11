@@ -35,6 +35,24 @@ void UserInterface::MenuRoot_OnEnter()
 
 void UserInterface::MenuRoot_Update()
 {
+    if (m_DnButton.GetButtonState() == UBS_Down) {
+        m_CurrentOption = m_CurrentOption < 5 ? m_CurrentOption + 1 : 5;
+    }
+    
+    
+    if (m_UpButton.GetButtonState() == UBS_Down) {
+        m_CurrentOption = m_CurrentOption > 0 ? m_CurrentOption - 1 : 0;
+    }
+    
+    if (m_OkButton.GetButtonState() == UBS_Down) {
+        if (m_CurrentOption == 5) {
+            SetState(GameScreen);
+            return;
+        }
+    }
+    
+    m_Display.FillRect(5, 16, 6, 45, false); // Bottom section
+    
     // Update cursor location
     uint8_t y = 16 + (7 * m_CurrentOption);
     m_Display.DrawString(5, y, CURSOR_CHARACTER);

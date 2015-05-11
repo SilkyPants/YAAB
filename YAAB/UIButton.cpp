@@ -22,7 +22,7 @@
 #include "UIButton.h"
 
 #define INPUT_DEBOUNCE 10
-#define INPUT_HELD 1000
+#define INPUT_HELD 10000
 
 void UIButton::Init(volatile uint8_t *pinPort, uint8_t pinBit)
 {

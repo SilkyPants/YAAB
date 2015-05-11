@@ -48,15 +48,19 @@ void UserInterface::GameScreen_Update()
 //    
     //    m_Display.DrawString(3, 39, buffer);
     
-    sprintf(buffer, "UP BTN: %d", m_UpButton.GetButtonState());
+//    sprintf(buffer, "UP BTN: %d", m_UpButton.GetButtonState());
+//    
+//    m_Display.DrawString(3, 17, buffer);
+//    
+//    sprintf(buffer, "OK BTN: %d", m_OkButton.GetButtonState());
+//    
+//    m_Display.DrawString(3, 24, buffer);
+//    
+//    sprintf(buffer, "DN BTN: %d", m_DnButton.GetButtonState());
+//    
+//    m_Display.DrawString(3, 31, buffer);
     
-    m_Display.DrawString(3, 17, buffer);
-    
-    sprintf(buffer, "OK BTN: %d", m_OkButton.GetButtonState());
-    
-    m_Display.DrawString(3, 24, buffer);
-    
-    sprintf(buffer, "DN BTN: %d", m_DnButton.GetButtonState());
-    
-    m_Display.DrawString(3, 31, buffer);
+    if (m_OkButton.GetButtonState() == UBS_Held) {
+        SetState(MenuRoot);
+    }
 }

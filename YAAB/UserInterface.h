@@ -22,13 +22,36 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "common.h"
+#include "pins.h"
 
+#include "strings.h"
 #include "crius_oled.h"
+
+#include "UIButton.h"
+
+///
+/// State Machine macros
+#define STATE_ENTER(state) state ##_OnEnter()
+#define STATE_UPDATE(state) state ##_Update()
+
+#define DECLARE_STATE(state) \
+void STATE_ENTER(state); \
+void STATE_UPDATE(state);
+
+#define CASE_ENTER_STATE(state) \
+case state: \
+STATE_ENTER(state); \
+break;
+
+#define CASE_UPDATE_STATE(state) \
+case state: \
+STATE_UPDATE(state); \
+break;
 
 enum MenuStates
 {
-    UI_GameScreen,
-    UI_MenuRoot,
+    GameScreen,
+    MenuRoot,
 };
 
 class UserInterface
@@ -37,6 +60,7 @@ public:
     void Init();
     void OnSecond();
     void Update();
+    void UpdateControls();
     void Draw();
     
 private:
@@ -45,14 +69,18 @@ private:
     
     uint8_t battLevel;
     uint8_t eyeAnimIdx;
+    uint8_t m_CurrentOption;
+    
+    UIButton m_UpButton;
+    UIButton m_OkButton;
+    UIButton m_DnButton;
     
     void SetState(MenuStates p_NewState);
     void SetHeaderText(const char* const* string);
+    void DrawString_P(uint8_t x, uint8_t y, const char* const* string);
     void DrawBatteryLevel(uint8_t battPercent);
     
-    void GameScreen_OnEnter();
-    void GameScreen_Update();
-    void MenuRoot_OnEnter();
-    void MenuRoot_Update();
+    DECLARE_STATE(GameScreen);
+    DECLARE_STATE(MenuRoot);
     
 };

@@ -21,12 +21,42 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "UserInterface.h"
 
+#include "settings.h"
+#include "BreechEyesTask.h"
+
+extern BreechEyesTask eyeCycleTask;
+extern MarkerProfile g_CurrentMode;
+
 void UserInterface::GameScreen_OnEnter()
 {
-
+    SetHeaderText(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex]));
 }
 
 void UserInterface::GameScreen_Update()
 {
-
+    char buffer[16];
+    
+//    long eye = eyeCycleTask.GetCurrentEye();
+//    eye *= 100;
+//    eye /= 1024;
+//    
+//    sprintf(buffer, "%03ld", eye);
+//    
+//    m_Display.DrawString(3, 17, buffer, BPS_FONT);
+//    
+//    sprintf(buffer, "CURR EYE: %04u", eyeCycleTask.GetCurrentEye());
+//    
+    //    m_Display.DrawString(3, 39, buffer);
+    
+    sprintf(buffer, "UP BTN: %d", m_UpButton.GetButtonState());
+    
+    m_Display.DrawString(3, 17, buffer);
+    
+    sprintf(buffer, "OK BTN: %d", m_OkButton.GetButtonState());
+    
+    m_Display.DrawString(3, 24, buffer);
+    
+    sprintf(buffer, "DN BTN: %d", m_DnButton.GetButtonState());
+    
+    m_Display.DrawString(3, 31, buffer);
 }

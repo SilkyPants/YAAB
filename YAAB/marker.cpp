@@ -403,6 +403,8 @@ void Marker::TimerTick()
     pneuOnTask.Update();
     pneuOffTask.Update();
     eyeCycleTask.Update();
+    
+    m_UI.UpdateControls();
 }
 
 void Marker::UpdateEye(uint16_t eyeValue)

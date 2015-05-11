@@ -33,6 +33,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EYE_EMPTY			"E"
 #define EYE_BOLT			"B"
 
+#define CURSOR_CHARACTER	"@"
+
 /*
 Menu Headings
 */
@@ -72,6 +74,7 @@ PROGMEM const char strMenu_Trigger[]		= "TRIGGER";
 PROGMEM const char strMenu_Button[]			= "BUTTON";
 PROGMEM const char strMenu_Enabled[]		= "ENABLED";
 PROGMEM const char strMenu_Disabled[]		= "DISABLED";
+PROGMEM const char strMenu_Back[]           = "BACK";
 
 ///
 /// Main Menu
@@ -133,8 +136,9 @@ enum MenuStringsEnum
 	MENU_OFF,
 	MENU_TRIGGER,
 	MENU_BUTTON,
-	MENU_ENABLED,
-	MENU_DISABLED,
+    MENU_ENABLED,
+    MENU_DISABLED,
+    MENU_BACK,
 	MENU_MENU,
 	MENU_SLEEP,
 	MENU_FIREMODES,
@@ -172,8 +176,9 @@ const char * const MenuStrings[] PROGMEM = {
 	strMenu_Off,
 	strMenu_Trigger,
 	strMenu_Button,
-	strMenu_Enabled,
-	strMenu_Disabled,
+    strMenu_Enabled,
+    strMenu_Disabled,
+    strMenu_Back,
 	strMenu_Menu,
 	strMenu_Sleep,
 	strMenu_FireModes,

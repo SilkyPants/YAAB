@@ -23,16 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "UserInterface.h"
 
-#include "pins.h"
-
 #include "PinState.h"
-#include "BreechEyesTask.h"
-#include "settings.h"	
-
-#include "strings.h"
-
-extern BreechEyesTask eyeCycleTask;
-extern MarkerProfile g_CurrentMode;
 
 ///
 /// UI functions
@@ -48,19 +39,41 @@ void UserInterface::SetHeaderText(const char* const* string)
 	m_Display.DrawString(x, 4, buffer);
 }
 
+void UserInterface::DrawString_P(uint8_t x, uint8_t y, const char* const* string)
+{
+    char buffer[23];
+    
+    strcpy_P(buffer, (PGM_P)pgm_read_word(string));
+    
+    m_Display.DrawString(x, y, buffer);
+}
+
 void UserInterface::Init()
 {
 	m_Display.Init();
     
+    m_UpButton.Init(&INPUT_PIN_REG, UP_BUTTON_PIN);
+    m_OkButton.Init(&INPUT_PIN_REG, OK_BUTTON_PIN);
+    m_DnButton.Init(&INPUT_PIN_REG, DN_BUTTON_PIN);
+    
     battLevel = 100;
     eyeAnimIdx = EYE_BALL_ANIM_START;
 
-	SetState(UI_GameScreen);
+	SetState(GameScreen);
 }
 
 void UserInterface::SetState(MenuStates p_NewState)
 {
-
+    m_CurrentState = p_NewState;
+    
+    switch (m_CurrentState) {
+            CASE_ENTER_STATE(GameScreen)
+            CASE_ENTER_STATE(MenuRoot)
+    };
+    
+    // Clear display
+    m_Display.FillRect(19, 4,  89,  7, false); // Header area
+    m_Display.FillRect(3, 16, 122, 45, false); // Bottom section
 }
 
 void UserInterface::OnSecond()
@@ -87,21 +100,20 @@ void UserInterface::OnSecond()
 
 void UserInterface::Update()
 {
-    char buffer[16];
-	
-	long eye = eyeCycleTask.GetCurrentEye();
-	eye *= 100;
-	eye /= 1024;
-    
-    sprintf(buffer, "%03ld", eye);
-    
-	m_Display.DrawString(3, 17, buffer, BPS_FONT);
-	
-	sprintf(buffer, "CURR EYE: %04u", eyeCycleTask.GetCurrentEye());
-
-	m_Display.DrawString(3, 39, buffer);
+    // Update the current state
+    switch (m_CurrentState) {
+            CASE_UPDATE_STATE(GameScreen)
+            CASE_UPDATE_STATE(MenuRoot)
+    };
     
     Draw();
+}
+
+void UserInterface::UpdateControls()
+{
+    m_UpButton.UpdateState();
+    m_OkButton.UpdateState();
+    m_DnButton.UpdateState();
 }
 
 ///

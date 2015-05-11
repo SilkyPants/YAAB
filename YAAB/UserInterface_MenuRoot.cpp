@@ -23,10 +23,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 void UserInterface::MenuRoot_OnEnter()
 {
-
+    SetHeaderText(&(MenuStrings[MENU_MENU]));
+    
+    DrawString_P(11, 16, &(MenuStrings[MENU_TIMERS]));
+    DrawString_P(11, 23, &(MenuStrings[MENU_DISPLAY]));
+    DrawString_P(11, 30, &(MenuStrings[MENU_TRAINING]));
+    DrawString_P(11, 37, &(MenuStrings[MENU_SETUP]));
+    DrawString_P(11, 44, &(MenuStrings[MENU_SLEEP]));
+    DrawString_P(11, 51, &(MenuStrings[MENU_BACK]));
 }
 
 void UserInterface::MenuRoot_Update()
 {
-
+    // Update cursor location
+    uint8_t y = 16 + (7 * m_CurrentOption);
+    m_Display.DrawString(5, y, CURSOR_CHARACTER);
 }

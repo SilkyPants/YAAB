@@ -19,34 +19,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "UserInterface.h"
 
-#include "task.h"
-
-class BreechEyesTask : public Task
+void UserInterface::GameScreen_OnEnter()
 {
-private:
-    uint8_t m_DetectCount;
-    uint8_t m_DetectTime;
-    uint16_t m_CurrentEye;
-    uint16_t m_BallDetect;
-    uint16_t m_Timeout;
-    uint16_t m_TimeoutCount;
-    bool m_EmptySeen;
-    bool m_BallSeen;
 
-    bool UpdateEye();
-    void UpdateInternal();
-    bool IsConditionMet();
+}
 
-public:
-    BreechEyesTask(TaskConditionMet conditionsMet);
-    ~BreechEyesTask(void);
+void UserInterface::GameScreen_Update()
+{
 
-    void SetTaskValues(uint16_t timeout, uint8_t detectTime, uint16_t ballDetect);
-    void SetCurrentEye(uint16_t currentEye);
-    uint16_t GetCurrentEye() { return m_CurrentEye; };
-    void Reset();
-};
-
-
+}

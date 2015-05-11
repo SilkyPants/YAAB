@@ -1,9 +1,9 @@
 /*
 YAAB - Yet Another Autococker Board
-Arduino based autococker board developed around the platform and ATMEL AVR 
+Arduino based autococker board developed around the platform and ATMEL AVR
 chips
 
-Copyright (C) 2013  Dan Silk
+Copyright (C) 2015  Dan Silk
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -41,10 +41,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#ifndef __AVR_ATtiny84__
 //#define __AVR_ATtiny84__
 #endif
-
-///
-/// Whether to use the full Arduino libraries or not (allows serial loading/debug etc)
-//#define USE_ARDUINO
 
 ///
 /// ADC Completes faster

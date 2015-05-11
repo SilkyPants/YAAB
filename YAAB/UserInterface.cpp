@@ -1,10 +1,23 @@
-//
-//  UserInterface.cpp
-//  YAAB
-//
-//  Created by Daniel Silk on 4/05/2015.
-//  Copyright (c) 2015 Silly Kat. All rights reserved.
-//
+/*
+YAAB - Yet Another Autococker Board
+Arduino based autococker board developed around the platform and ATMEL AVR
+chips
+
+Copyright (C) 2015  Dan Silk
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include <string.h>
 
@@ -19,7 +32,7 @@
 #include "strings.h"
 
 extern BreechEyesTask eyeCycleTask;
-extern const MarkerProfile g_CurrentMode;
+extern MarkerProfile g_CurrentMode;
 
 ///
 /// UI functions
@@ -41,8 +54,13 @@ void UserInterface::Init()
     
     battLevel = 100;
     eyeAnimIdx = EYE_BALL_ANIM_START;
-	
-	SetHeaderText(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex]));
+
+	SetState(UI_GameScreen);
+}
+
+void UserInterface::SetState(MenuStates p_NewState)
+{
+
 }
 
 void UserInterface::OnSecond()

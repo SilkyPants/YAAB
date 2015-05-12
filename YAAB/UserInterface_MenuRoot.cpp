@@ -23,6 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 void UserInterface::MenuRoot_OnEnter()
 {
+	m_Display.ClearDisplay();
+	
     SetHeaderText(&(MenuStrings[MENU_MENU]));
     
     DrawString_P(11, 16, &(MenuStrings[MENU_TIMERS]));
@@ -36,12 +38,12 @@ void UserInterface::MenuRoot_OnEnter()
 void UserInterface::MenuRoot_Update()
 {
 	if (m_DnButton.GetButtonState() == UBS_Down) {
-		ChangeOption(false, 5);
+		ChangeOption(false, 6);
     }
     
     
     if (m_UpButton.GetButtonState() == UBS_Down) {
-        ChangeOption(true, 5);
+        ChangeOption(true, 6);
     }
     
     if (m_OkButton.GetButtonState() == UBS_Down) {

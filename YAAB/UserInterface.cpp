@@ -73,6 +73,24 @@ void UserInterface::SetState(MenuStates p_NewState)
     switch (m_CurrentState) {
             CASE_ENTER_STATE(GameScreen)
             CASE_ENTER_STATE(MenuRoot)
+
+            CASE_ENTER_STATE(Profiles)
+            CASE_ENTER_STATE(Timers)
+            CASE_ENTER_STATE(Display)
+            CASE_ENTER_STATE(Training)
+            CASE_ENTER_STATE(Setup)
+
+            CASE_ENTER_STATE(SetGameTimer)
+            CASE_ENTER_STATE(SetAlarmTimer)
+
+            CASE_ENTER_STATE(DisplayGraphic)
+
+            CASE_ENTER_STATE(SetupEyes)
+            CASE_ENTER_STATE(SetupTimings)
+            CASE_ENTER_STATE(SetupModes)
+            CASE_ENTER_STATE(SetupPower)
+
+            CASE_ENTER_STATE(EyesBallValue)
     };
 }
 

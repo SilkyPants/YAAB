@@ -190,9 +190,6 @@
     <Compile Include="YAAB\marker.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="YAAB\MenuScreens.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="YAAB\pins.h">
       <SubType>compile</SubType>
     </Compile>
@@ -226,10 +223,61 @@
     <Compile Include="YAAB\timers.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="YAAB\UIButton.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UIButton.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="YAAB\UserInterface.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="YAAB\UserInterface.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_Display.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_DisplayGraphic.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_EyesBallValue.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_GameScreen.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_MenuRoot.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_Profiles.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_SetAlarmTimer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_SetGameTimer.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_Setup.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_SetupEyes.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_SetupModes.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_SetupPower.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_SetupTimings.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_Timers.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="YAAB\UserInterface_Training.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

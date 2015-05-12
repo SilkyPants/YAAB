@@ -86,9 +86,6 @@
     </ClInclude>
     <ClInclude Include="YAAB\IntervalLapse.h" />
     <ClInclude Include="YAAB\marker.h" />
-    <ClInclude Include="YAAB\MenuScreens.h">
-      <FileType>CppCode</FileType>
-    </ClInclude>
     <ClInclude Include="YAAB\pins.h" />
     <ClInclude Include="YAAB\PinState.h" />
     <ClInclude Include="YAAB\settings.h" />
@@ -96,6 +93,9 @@
     <ClInclude Include="YAAB\Task.h" />
     <ClInclude Include="YAAB\Timer.h" />
     <ClInclude Include="YAAB\timers.h" />
+    <ClInclude Include="YAAB\UIButton.h">
+      <FileType>CppCode</FileType>
+    </ClInclude>
     <ClInclude Include="YAAB\UserInterface.h" />
   </ItemGroup>
   <ItemGroup>
@@ -108,15 +108,32 @@
     <ClCompile Include="YAAB\IntervalLapse.cpp" />
     <ClCompile Include="YAAB\main.cpp" />
     <ClCompile Include="YAAB\marker.cpp" />
-    <ClCompile Include="YAAB\MenuScreen.cpp" />
     <ClCompile Include="YAAB\PinState.cpp" />
     <ClCompile Include="YAAB\Task.cpp" />
     <ClCompile Include="YAAB\Timer.cpp" />
     <ClCompile Include="YAAB\timers.cpp" />
+    <ClCompile Include="YAAB\UIButton.cpp" />
     <ClCompile Include="YAAB\UserInterface.cpp" />
+    <ClCompile Include="YAAB\UserInterface_Display.cpp" />
+    <ClCompile Include="YAAB\UserInterface_DisplayGraphic.cpp" />
+    <ClCompile Include="YAAB\UserInterface_EyesBallValue.cpp" />
+    <ClCompile Include="YAAB\UserInterface_GameScreen.cpp" />
+    <ClCompile Include="YAAB\UserInterface_MenuRoot.cpp" />
+    <ClCompile Include="YAAB\UserInterface_Profiles.cpp" />
+    <ClCompile Include="YAAB\UserInterface_SetAlarmTimer.cpp" />
+    <ClCompile Include="YAAB\UserInterface_SetGameTimer.cpp" />
+    <ClCompile Include="YAAB\UserInterface_Setup.cpp" />
+    <ClCompile Include="YAAB\UserInterface_SetupEyes.cpp" />
+    <ClCompile Include="YAAB\UserInterface_SetupModes.cpp" />
+    <ClCompile Include="YAAB\UserInterface_SetupPower.cpp" />
+    <ClCompile Include="YAAB\UserInterface_SetupTimings.cpp" />
+    <ClCompile Include="YAAB\UserInterface_Timers.cpp" />
+    <ClCompile Include="YAAB\UserInterface_Training.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="YAAB\YAAB.ino" />
+    <None Include="YAAB\YAAB.ino">
+      <FileType>CppCode</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

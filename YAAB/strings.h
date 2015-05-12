@@ -116,7 +116,7 @@ PROGMEM const char strMenu_Never[]			= "NEVER";
 
 ///
 /// Eyes
-PROGMEM const char strMenu_BallValue[]		= "BALL VALUE";
+PROGMEM const char strMenu_EyeSensitivity[] = "EYE SENSITIVITY";
 PROGMEM const char strMenu_BallTime[]		= "BALL TIME";
 PROGMEM const char strMenu_EmptyTime[]		= "EMPTY TIME";
 PROGMEM const char strMenu_TimeOut[]		= "TIMEOUT";
@@ -159,7 +159,7 @@ enum MenuStringsEnum
 	MENU_XMINUTES,
 	MENU_TIMEREND,
 	MENU_NEVER,
-	MENU_BALLVALUE,
+	MENU_EYESENSITIVITY,
 	MENU_BALLTIME,
 	MENU_EMPTYTIME,
 	MENU_TIMEOUT,
@@ -199,7 +199,7 @@ const char * const MenuStrings[] PROGMEM = {
 	strMenu_XMinutes,
 	strMenu_TimerEnd,
 	strMenu_Never,
-	strMenu_BallValue,
+	strMenu_EyeSensitivity,
 	strMenu_BallTime,
 	strMenu_EmptyTime,
 	strMenu_TimeOut,

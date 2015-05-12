@@ -81,16 +81,18 @@ void Timer::SubtractSecond()
     else
         m_Seconds--;
 
-    if(m_Hours == 0 && m_Minutes == 0 && m_Seconds == 0 && m_OnTimer != 0)
-    {
-        m_OnTimer();
+	if (m_Enabled) {
+		if (m_Hours == 0 && m_Minutes == 0 && m_Seconds == 0 && m_OnTimer != 0)
+		{
+			m_OnTimer();
 
-        Reset();
-    }
-    else if(m_Hours == m_AlarmHours && m_Minutes == m_AlarmMinutes && m_Seconds == m_AlarmSeconds && m_OnAlarm != 0)
-    {
-        m_OnAlarm();
-    }
+			Reset();
+		}
+		else if (m_Hours == m_AlarmHours && m_Minutes == m_AlarmMinutes && m_Seconds == m_AlarmSeconds && m_OnAlarm != 0)
+		{
+			m_OnAlarm();
+		}
+	}
 }
 
 void Timer::SubtractMinute()

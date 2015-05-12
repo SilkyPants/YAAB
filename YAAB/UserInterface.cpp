@@ -78,24 +78,28 @@ void UserInterface::SetState(MenuStates p_NewState)
 
 void UserInterface::OnSecond()
 {
-	// TODO: Get Battery Level
-    if( battLevel <= 0 )
-    {
-        battLevel = 100;
-    }
-    else
-    {
-        battLevel -= 25;
-    }
-    
-    DrawBatteryLevel( battLevel );
-    
-    if( eyeAnimIdx > EYE_BALL_ANIM_END )
-    {
-        eyeAnimIdx = EYE_BALL_ANIM_START;
-    }
-    
-	m_Display.DrawChar(5, 4, char(eyeAnimIdx++));
+	bool showingGraphic = true; // TODO: Make this a setting
+	if (!(m_CurrentState == GameScreen && showingGraphic))
+	{
+		// TODO: Get Battery Level
+		if (battLevel <= 0)
+		{
+			battLevel = 100;
+		}
+		else
+		{
+			battLevel -= 25;
+		}
+
+		DrawBatteryLevel(battLevel);
+
+		if (eyeAnimIdx > EYE_BALL_ANIM_END)
+		{
+			eyeAnimIdx = EYE_BALL_ANIM_START;
+		}
+
+		m_Display.DrawChar(5, 4, char(eyeAnimIdx++));
+	}
 }
 
 void UserInterface::Update()
@@ -103,7 +107,25 @@ void UserInterface::Update()
     // Update the current state
     switch (m_CurrentState) {
             CASE_UPDATE_STATE(GameScreen)
-            CASE_UPDATE_STATE(MenuRoot)
+			CASE_UPDATE_STATE(MenuRoot)
+
+			CASE_UPDATE_STATE(Profiles)
+			CASE_UPDATE_STATE(Timers)
+			CASE_UPDATE_STATE(Display)
+			CASE_UPDATE_STATE(Training)
+			CASE_UPDATE_STATE(Setup)
+
+			CASE_UPDATE_STATE(SetGameTimer)
+			CASE_UPDATE_STATE(SetAlarmTimer)
+
+			CASE_UPDATE_STATE(DisplayGraphic)
+
+			CASE_UPDATE_STATE(SetupEyes)
+			CASE_UPDATE_STATE(SetupTimings)
+			CASE_UPDATE_STATE(SetupModes)
+			CASE_UPDATE_STATE(SetupPower)
+
+			CASE_UPDATE_STATE(EyesBallValue)
     };
     
     Draw();
@@ -114,6 +136,40 @@ void UserInterface::UpdateControls()
     m_UpButton.UpdateState();
     m_OkButton.UpdateState();
     m_DnButton.UpdateState();
+}
+
+///
+/// Cursor functions
+
+void UserInterface::ChangeOption(bool up, uint8_t numOptions)
+{
+	// Remove last cursor position
+	ShowCursor(false);
+
+	if (up) {
+		if (m_CurrentOption == 0)
+			m_CurrentOption = numOptions - 1;
+		else
+			m_CurrentOption--;
+	}
+	else {
+		if (m_CurrentOption == numOptions - 1)
+			m_CurrentOption = 0;
+		else
+			m_CurrentOption++;
+	}
+
+	ShowCursor(true);
+}
+
+void UserInterface::ShowCursor(bool show)
+{
+	uint8_t y = 16 + (7 * m_CurrentOption);
+
+	if (show)
+		m_Display.DrawString(5, y, CURSOR_CHARACTER);
+	else
+		m_Display.DrawString(5, y, " ");
 }
 
 ///

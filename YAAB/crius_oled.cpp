@@ -258,6 +258,15 @@ const uint8_t * CRIUS_OLED::GetFont(FontType font)
 	}
 }
 
+void CRIUS_OLED::DrawGraphic(uint8_t graphicIndex)
+{
+	int index = graphicIndex * LCD_BUFFER_SIZE + 6;
+
+	memcpy_P(buffer, &Graphics[index], LCD_BUFFER_SIZE);
+
+	DisplayBuffer();
+}
+
 ///
 /// System
 

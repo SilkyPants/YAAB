@@ -53,11 +53,11 @@ public:
 	void Init();
 	void ClearDisplay();
 	void DisplayBuffer();
-
 	void FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool fill = true);
 	void DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 	void DrawChar(uint8_t x, uint8_t y, const char character, FontType type = SMALL_FONT);
 	void DrawString(uint8_t x, uint8_t y, const char * string, FontType type = SMALL_FONT);
+	void DrawGraphic(uint8_t graphicIndex);
 
 private:
 	void SendCommand(uint8_t cmd);

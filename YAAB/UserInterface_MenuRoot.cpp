@@ -35,13 +35,13 @@ void UserInterface::MenuRoot_OnEnter()
 
 void UserInterface::MenuRoot_Update()
 {
-    if (m_DnButton.GetButtonState() == UBS_Down) {
-        m_CurrentOption = m_CurrentOption < 5 ? m_CurrentOption + 1 : 5;
+	if (m_DnButton.GetButtonState() == UBS_Down) {
+		ChangeOption(false, 5);
     }
     
     
     if (m_UpButton.GetButtonState() == UBS_Down) {
-        m_CurrentOption = m_CurrentOption > 0 ? m_CurrentOption - 1 : 0;
+        ChangeOption(true, 5);
     }
     
     if (m_OkButton.GetButtonState() == UBS_Down) {

@@ -52,6 +52,32 @@ enum MenuStates
 {
     GameScreen,
     MenuRoot,
+
+	Profiles = 10,
+	Timers,
+	Display,
+	Training,
+	Setup,
+
+	SetGameTimer = 20,
+	SetAlarmTimer,
+
+	DisplayGraphic = 30,
+
+	// Training = 40,
+
+	SetupEyes = 50,
+	SetupTimings,
+	SetupModes,
+	SetupPower,
+
+	EyesBallValue = 60,
+};
+
+enum CursorDirection
+{
+	CUR_Up = -1,
+	CUR_Down = 1,
 };
 
 class UserInterface
@@ -68,19 +94,42 @@ private:
     CRIUS_OLED m_Display;
     
     uint8_t battLevel;
-    uint8_t eyeAnimIdx;
-    uint8_t m_CurrentOption;
+	uint8_t eyeAnimIdx;
+
+	uint8_t m_OptionOffset;
+	uint8_t m_CurrentOption;
     
     UIButton m_UpButton;
     UIButton m_OkButton;
-    UIButton m_DnButton;
+	UIButton m_DnButton;
+
+	void ChangeOption(bool up, uint8_t maxOptions);
+	void ShowCursor(bool show);
     
     void SetState(MenuStates p_NewState);
     void SetHeaderText(const char* const* string);
     void DrawString_P(uint8_t x, uint8_t y, const char* const* string);
     void DrawBatteryLevel(uint8_t battPercent);
     
-    DECLARE_STATE(GameScreen);
-    DECLARE_STATE(MenuRoot);
+	DECLARE_STATE(GameScreen)
+	DECLARE_STATE(MenuRoot)
+
+	DECLARE_STATE(Profiles)
+	DECLARE_STATE(Timers)
+	DECLARE_STATE(Display)
+	DECLARE_STATE(Training)
+	DECLARE_STATE(Setup)
+
+	DECLARE_STATE(SetGameTimer)
+	DECLARE_STATE(SetAlarmTimer)
+
+	DECLARE_STATE(DisplayGraphic)
+
+	DECLARE_STATE(SetupEyes)
+	DECLARE_STATE(SetupTimings)
+	DECLARE_STATE(SetupModes)
+	DECLARE_STATE(SetupPower)
+
+	DECLARE_STATE(EyesBallValue)
     
 };

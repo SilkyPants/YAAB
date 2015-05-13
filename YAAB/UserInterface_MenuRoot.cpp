@@ -33,6 +33,8 @@ void UserInterface::MenuRoot_OnEnter()
     DrawString_P(11, 37, &(MenuStrings[MENU_SETUP]));
     DrawString_P(11, 44, &(MenuStrings[MENU_SLEEP]));
     DrawString_P(11, 51, &(MenuStrings[MENU_BACK]));
+
+	ResetCursorAndShow(true);
 }
 
 void UserInterface::MenuRoot_Update()
@@ -47,15 +49,27 @@ void UserInterface::MenuRoot_Update()
     }
     
     if (m_OkButton.GetButtonState() == UBS_Down) {
-        if (m_CurrentOption == 5) {
-            SetState(GameScreen);
-            return;
+		switch (m_CurrentOption) {
+		case 0:
+			SetState(Timers);
+			break;
+		case 1:
+			SetState(Display);
+			break;
+		case 2:
+			SetState(Training);
+			break;
+		case 3:
+			SetState(Setup);
+			break;
+		case 4:
+			//SetState(GameScreen);
+			break;
+		case 5:
+			SetState(GameScreen);
+			break;
         }
+		
+		return;
     }
-    
-    m_Display.FillRect(5, 16, 6, 45, false); // Bottom section
-    
-    // Update cursor location
-    uint8_t y = 16 + (7 * m_CurrentOption);
-    m_Display.DrawString(5, y, CURSOR_CHARACTER);
 }

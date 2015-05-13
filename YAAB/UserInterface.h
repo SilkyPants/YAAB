@@ -113,6 +113,7 @@ private:
 
 	void ChangeOption(bool up, uint8_t maxOptions);
 	void ShowCursor(bool show);
+	void ResetCursorAndShow(bool show) { m_CurrentOption = 0; ShowCursor(show); }
     
     void SetState(MenuStates p_NewState);
     void SetHeaderText(const char* const* string);

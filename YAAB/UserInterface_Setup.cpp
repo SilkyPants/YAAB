@@ -23,9 +23,47 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 void UserInterface::Setup_OnEnter()
 {
-    SetHeaderText(&(MenuStrings[MENU_SETUP]));
+	SetHeaderText(&(MenuStrings[MENU_SETUP]));
+
+	DrawString_P(11, 16, &(MenuStrings[MENU_EYES]));
+	DrawString_P(11, 23, &(MenuStrings[MENU_MODES]));
+	DrawString_P(11, 30, &(MenuStrings[MENU_POWER]));
+	DrawString_P(11, 37, &(MenuStrings[MENU_TIMING]));
+	DrawString_P(11, 44, &(MenuStrings[MENU_BACK]));
+
+	ResetCursorAndShow(true);
 }
 
 void UserInterface::Setup_Update()
 {
+	if (m_DnButton.GetButtonState() == UBS_Down) {
+		ChangeOption(false, 5);
+	}
+
+
+	if (m_UpButton.GetButtonState() == UBS_Down) {
+		ChangeOption(true, 5);
+	}
+
+	if (m_OkButton.GetButtonState() == UBS_Down) {
+		switch (m_CurrentOption) {
+		case 0:
+			SetState(SetupEyes);
+			break;
+		case 1:
+			SetState(SetupModes);
+			break;
+		case 2:
+			SetState(SetupPower);
+			break;
+		case 3:
+			SetState(SetupTimings);
+			break;
+		case 4:
+			SetState(MenuRoot);
+			break;
+		}
+
+		return;
+	}
 }

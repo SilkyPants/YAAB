@@ -80,6 +80,14 @@ enum CursorDirection
 	CUR_Down = 1,
 };
 
+enum GameScreenModes
+{
+	GSM_Graphic,
+	GSM_Timer,
+	GSM_Stats,
+	GSM_Off
+};
+
 class UserInterface
 {
 public:

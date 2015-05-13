@@ -30,24 +30,54 @@ extern MarkerProfile g_CurrentMode;
 void UserInterface::GameScreen_OnEnter()
 {
     SetHeaderText(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex]));
+	
+	if (g_Settings.gameScreenType != GSM_Graphic) {
+		m_Display.ClearDisplay();
+	}
+	
+	switch (g_Settings.gameScreenType) {
+		case GSM_Graphic:
+			m_Display.DrawGraphic(g_Settings.graphicIndex);
+		break;
+		
+		case GSM_Stats:
+			// Draw Graph
+			m_Display.DrawLine( 18, 44,  18, 60);
+			m_Display.DrawLine( 18, 60, 109, 60);
+			m_Display.DrawLine(109, 44, 109, 60);
+
+			// Mark Lines
+			m_Display.DrawLine(16, 46, 17, 46);
+			m_Display.DrawLine(110, 46, 111, 46);
+			
+		break;
+		
+		case GSM_Timer:
+		break;
+		
+		case GSM_Off:
+		default:
+		break;
+	}
 }
 
 void UserInterface::GameScreen_Update()
 {
-	m_Display.DrawGraphic(0);
-	/*
-    char buffer[16];
-
-	// Draw Graph
-	m_Display.DrawLine( 18, 44,  18, 60);
-	m_Display.DrawLine( 18, 60, 109, 60);
-	m_Display.DrawLine(109, 44, 109, 60);
-
-	// Mark Lines
-	m_Display.DrawLine(16, 46, 17, 46);
-	m_Display.DrawLine(110, 46, 111, 46);
-	*/
-	
+	switch (g_Settings.gameScreenType) {
+		case GSM_Graphic:
+			m_Display.DrawGraphic(g_Settings.graphicIndex);
+		break;
+		
+		case GSM_Stats:
+		break;
+		
+		case GSM_Timer:
+		break;
+		
+		case GSM_Off:
+		default:
+		break;
+	}	
     
     if (m_OkButton.GetButtonState() == UBS_Held) {
         SetState(MenuRoot);

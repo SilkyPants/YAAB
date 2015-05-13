@@ -96,8 +96,7 @@ void UserInterface::SetState(MenuStates p_NewState)
 
 void UserInterface::OnSecond()
 {
-	bool showingGraphic = true; // TODO: Make this a setting
-	if (!(m_CurrentState == GameScreen && showingGraphic))
+	if (!(m_CurrentState == GameScreen && g_Settings.gameScreenType == GSM_Graphic))
 	{
 		// TODO: Get Battery Level
 		if (battLevel <= 0)

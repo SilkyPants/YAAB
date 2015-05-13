@@ -45,9 +45,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 +------------------------+-----------+-----------+-----------+   |
 | Eye Empty Detect (EMPD)|    0.1s   |    1.0s   |   19.9s   |---+
 +------------------------+-----------+-----------+-----------+
-| Game Timer             |  0:00:00  |  0:05:00  |  5:00:00  |
+| Game Timer             |  0:00:00  |  0:05:00  | 15:00:00  |
 +------------------------+-----------+-----------+-----------+
-| Alarm Timer            |  0:00:00  |  0:01:00  |  5:00:00  |
+| Alarm Timer            |  0:00:00  |  0:01:00  | 15:00:00  |
 +------------------------+-----------+-----------+-----------+
 */
 
@@ -68,8 +68,10 @@ struct MarkerTiming // 6 bytes
 
 struct MarkerSettings // 16 bytes
 {
-    uint8_t debounceTime;             // How long before saying the trigger is pressed/released
-    uint8_t currentProfile;           // The current profile in use
+	uint8_t debounceTime : 6;         // How long before saying the trigger is pressed/released
+	uint8_t gameScreenType : 2;       // What should be displayed on the game screen
+	uint8_t graphicIndex : 4;         // The graphic to use on main screen
+	uint8_t currentMode : 4;          // The current mode in use
     uint32_t shotsSinceLastReset;     // Shot counter
     MarkerTiming timings;             // Settings for the marker pneumatics cycle
     EyeSettings eyeSettings;          // Settings for the eyes

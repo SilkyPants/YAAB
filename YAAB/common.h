@@ -21,7 +21,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-
 #if defined F_CPU
 // We want to define the clock speed in the files, not preprocessor?
 #undef F_CPU
@@ -74,6 +73,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #endif
 
+#include "settings.h"
+
 ///
 /// Some macros that make the code more readable
 #define flag_set(flag) _BV(flag)
@@ -95,5 +96,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define output_toggle(port,pin) bit_toggle(port,pin)
 #define input_value(port,pin) is_bit_set(port,pin)
 
+///
+/// Program Specific defines - for readability
+#define bps_to_cycle_time(bps) 1000 / bps;
+
 // C++ Helpers - as not everything is defined in AVR
 extern "C" void __cxa_pure_virtual(void);
+extern MarkerSettings g_Settings;

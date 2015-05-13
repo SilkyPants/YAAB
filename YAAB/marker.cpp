@@ -41,10 +41,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /// Global marker object
 Marker g_Marker;
 
-///
-/// Program Specific defines - for readability
-#define bps_to_cycle_time(bps) 1000 / bps;
-
 /// Cycle Values
 /// Values specific to a marker cycle
 volatile CycleValues g_CycleValues = 
@@ -60,9 +56,11 @@ volatile CycleValues g_CycleValues =
 ///
 /// Marker Settings
 /// Things specific to the marker
-volatile MarkerSettings g_Settings = 
+MarkerSettings g_Settings = 
 {
     10,                     // Trigger Debounce
+    GSM_Graphic,              // Game Screen Mode
+    0,                      // Graphic Index
     0,                      // Current Profile
     0,                      // Shots since Service?
     { 40, 60, 550, 240 },   // SON, PDEL, PON, POFF
@@ -353,7 +351,7 @@ void Marker::Init()
     adc_init();
     i2c_init();
     
-    memcpy_P(&g_CurrentMode, &g_Modes[g_Settings.currentProfile], sizeof(MarkerProfile));
+    memcpy_P(&g_CurrentMode, &g_Modes[g_Settings.currentMode], sizeof(MarkerProfile));
     
     // Setup the tasks
     // 1 second - in increments of 0.1ms

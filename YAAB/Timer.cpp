@@ -26,13 +26,13 @@ Timer::Timer(TimerCallback timerCallback, TimerCallback alarmCallback)
     m_OnTimer = timerCallback;
     m_OnAlarm = alarmCallback;
 
-    m_SetHours = 0;
-    m_SetMinutes = 5;
-    m_SetSeconds = 0;
+    m_SetTime.hours = 0;
+    m_SetTime.minutes = 5;
+    m_SetTime.seconds = 0;
     
-    m_AlarmHours = 0;
-    m_AlarmMinutes = 1;
-    m_AlarmSeconds = 0;
+    m_Alarm.hours = 0;
+    m_Alarm.minutes = 1;
+    m_Alarm.seconds = 0;
 
     Reset();
 }
@@ -41,54 +41,48 @@ Timer::~Timer(void)
 {
 }
 
-void Timer::SetTimer(uint8_t hours, uint8_t mins, uint8_t secs)
+void Timer::SetTimer(TimeStruct timer)
 {
-    m_SetHours = hours;
-    m_SetMinutes = mins;
-    m_SetSeconds = secs;
-    
+    m_SetTime = timer;
+	
     Reset();
 }
 
-void Timer::SetAlarm(uint8_t hours, uint8_t mins, uint8_t secs)
+void Timer::SetAlarm(TimeStruct alarm)
 {
-    m_AlarmHours = hours;
-    m_AlarmMinutes = mins;
-    m_AlarmSeconds = secs;
+    m_Alarm = alarm;
 }
 
 void Timer::Reset() 
 {        
-    m_Hours = m_SetHours;
-    m_Minutes = m_SetMinutes;
-    m_Seconds = m_SetSeconds;
+    m_Timer = m_SetTime;
      
     m_Enabled = false; 
 }
 
 void Timer::ToString(char * stringBuffer)
 {
-    sprintf(stringBuffer, "%02d:%02d:%02d", m_Hours, m_Minutes, m_Seconds);
+    sprintf(stringBuffer, "%02d:%02d:%02d", m_Timer.hours, m_Timer.minutes, m_Timer.seconds);
 }
 
 void Timer::SubtractSecond()
 {
-    if(m_Seconds == 0)
+    if(m_Timer.seconds == 0)
     {
         SubtractMinute();
-        m_Seconds = 59;
+        m_Timer.seconds = 59;
     }
     else
-        m_Seconds--;
+        m_Timer.seconds--;
 
 	if (m_Enabled) {
-		if (m_Hours == 0 && m_Minutes == 0 && m_Seconds == 0 && m_OnTimer != 0)
+		if (m_Timer.hours == 0 && m_Timer.minutes == 0 && m_Timer.seconds == 0 && m_OnTimer != 0)
 		{
 			m_OnTimer();
 
 			Reset();
 		}
-		else if (m_Hours == m_AlarmHours && m_Minutes == m_AlarmMinutes && m_Seconds == m_AlarmSeconds && m_OnAlarm != 0)
+		else if (m_Timer.hours == m_Alarm.hours && m_Timer.minutes == m_Alarm.minutes && m_Timer.seconds == m_Alarm.seconds && m_OnAlarm != 0)
 		{
 			m_OnAlarm();
 		}
@@ -97,18 +91,18 @@ void Timer::SubtractSecond()
 
 void Timer::SubtractMinute()
 {
-    if(m_Minutes == 0)
+    if(m_Timer.minutes == 0)
     {
         SubtractHour();
-        m_Minutes = 59;
+        m_Timer.minutes = 59;
     }
     else
-        m_Minutes--;
+        m_Timer.minutes--;
 }
 
 void Timer::SubtractHour()
 {
-    if(m_Hours > 0)
-        m_Hours--;
+    if(m_Timer.hours > 0)
+        m_Timer.hours--;
 }
 

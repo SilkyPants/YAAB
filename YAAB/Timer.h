@@ -23,6 +23,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "common.h"
 
+#define MAX_TIMER_HOURS 15
+
+struct TimeStruct 
+{
+	uint16_t hours	 : 4;
+	uint16_t minutes : 6;
+	uint16_t seconds : 6;
+	
+	void Zero()
+	{
+		hours = 0;
+		minutes = 0;
+		seconds = 0;
+	}
+};
+
 ///
 /// Typedef for function pointer. This is used when a timer has lapsed.
 typedef void (*TimerCallback)();
@@ -37,21 +53,15 @@ class Timer
     
     ///
     /// The set time, this is used to reset the timer
-    uint8_t m_SetHours;
-    uint8_t m_SetMinutes;
-    uint8_t m_SetSeconds;
+    TimeStruct m_SetTime;
     
     ///
     /// Current time left on timer
-    uint8_t m_Hours;
-    uint8_t m_Minutes;
-    uint8_t m_Seconds;
+    TimeStruct m_Timer;
     
     ///
     /// Current time left on timer
-    uint8_t m_AlarmHours;
-    uint8_t m_AlarmMinutes;
-    uint8_t m_AlarmSeconds;
+    TimeStruct m_Alarm;
     
     ///
     /// Stored string buffer to make it easier to print to string
@@ -82,11 +92,11 @@ public:
     
     ///
     /// Set the initial timer
-    void SetTimer(uint8_t hours, uint8_t mins, uint8_t secs);
+    void SetTimer(TimeStruct timer);
     
     ///
     /// Set the initial timer
-    void SetAlarm(uint8_t hours, uint8_t mins, uint8_t secs);
+    void SetAlarm(TimeStruct alarm);
     
     ///
     /// Subtracts a second from the timer, and responsible for triggering Timer Callback

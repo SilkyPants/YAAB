@@ -205,6 +205,8 @@ void CRIUS_OLED::DrawPixel(uint8_t x, uint8_t y, bool draw)
 		buffer[pageIdx] |= 1 << pixelIdx;
 	else
 		buffer[pageIdx] &= ~(1 << pixelIdx);
+
+	m_IsDirty = true;
 }
 
 void CRIUS_OLED::DrawCharInternal(uint8_t x, uint8_t y, const char character, const uint8_t * font)
@@ -294,7 +296,7 @@ void CRIUS_OLED::Init()
 	_delay_ms(20);
 
 	SetXY(0, 0);
-
+	m_IsDirty = false;
 	ClearDisplay();
 
 	SendCommand(SSD1306_DISPLAYON);          //display on
@@ -311,6 +313,8 @@ void CRIUS_OLED::ClearDisplay()
 
 void CRIUS_OLED::DisplayBuffer()
 {
+	if (!m_IsDirty) return;
+
 	for (int idx = 0; idx < LCD_BUFFER_SIZE; idx++)
 	{
 		this->SendData(buffer[idx]);

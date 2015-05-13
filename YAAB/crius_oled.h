@@ -71,6 +71,7 @@ private:
 	void Swap(uint8_t &r, uint8_t &s);
 
 	uint8_t buffer[LCD_BUFFER_SIZE];
+	bool m_IsDirty;
 };
 
 #endif //__CRIUS_OLED_H__

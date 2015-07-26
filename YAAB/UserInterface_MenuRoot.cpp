@@ -23,50 +23,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 void UserInterface::MenuRoot_OnEnter()
 {
-	m_Display.ClearDisplay();
-	
     SetHeaderText(&(MenuStrings[MENU_MENU]));
     
-    DrawString_P(11, 16, &(MenuStrings[MENU_TIMERS]));
-    DrawString_P(11, 23, &(MenuStrings[MENU_DISPLAY]));
-    DrawString_P(11, 30, &(MenuStrings[MENU_TRAINING]));
-    DrawString_P(11, 37, &(MenuStrings[MENU_SETUP]));
-    DrawString_P(11, 44, &(MenuStrings[MENU_SLEEP]));
-    DrawString_P(11, 51, &(MenuStrings[MENU_BACK]));
+    CreateOption(&(MenuStrings[MENU_TIMERS]));
+    CreateOption(&(MenuStrings[MENU_DISPLAY]));
+    CreateOption(&(MenuStrings[MENU_TRAINING]));
+    CreateOption(&(MenuStrings[MENU_SETUP]));
+    CreateOption(&(MenuStrings[MENU_SLEEP]));
 
-	ResetCursorAndShow(true);
+	ShowCursor(true);
 }
 
 void UserInterface::MenuRoot_Update()
 {
-	if (m_DnButton.GetButtonState() == UBS_Down) {
-		ChangeOption(false, 6);
+	if (m_DnButton.IsDown()) {
+		ChangeOption(false);
     }
     
-    
-    if (m_UpButton.GetButtonState() == UBS_Down) {
-        ChangeOption(true, 6);
+    if (m_UpButton.IsDown()) {
+        ChangeOption(true);
     }
     
-    if (m_OkButton.GetButtonState() == UBS_Down) {
+    if (m_OkButton.IsDown()) {
 		switch (m_CurrentOption) {
-		case 0:
-			SetState(Timers);
-			break;
 		case 1:
-			SetState(Display);
+			PushState(Timers);
 			break;
 		case 2:
-			SetState(Training);
+			PushState(Display);
 			break;
 		case 3:
-			SetState(Setup);
+			PushState(Training);
 			break;
 		case 4:
-			//SetState(GameScreen);
+			PushState(Setup);
 			break;
 		case 5:
-			SetState(GameScreen);
+			//Sleep
 			break;
         }
 		

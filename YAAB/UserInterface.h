@@ -29,6 +29,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "UIButton.h"
 
+#define MAX_DEPTH 5
+
 ///
 /// State Machine macros
 #define STATE_ENTER(state) state ##_OnEnter()
@@ -98,25 +100,37 @@ public:
     void Draw();
     
 private:
-    MenuStates m_CurrentState;
+    //MenuStates m_CurrentState;
+    MenuStates m_States[MAX_DEPTH];
+    
+    
     CRIUS_OLED m_Display;
     
     uint8_t battLevel;
 	uint8_t eyeAnimIdx;
 
-	uint8_t m_OptionOffset;
+	uint8_t m_NumOptions;
 	uint8_t m_CurrentOption;
+    
+    uint8_t m_CurrentDepth;
     
     UIButton m_UpButton;
     UIButton m_OkButton;
 	UIButton m_DnButton;
-
-	void ChangeOption(bool up, uint8_t maxOptions);
-	void ShowCursor(bool show);
-	void ResetCursorAndShow(bool show) { m_CurrentOption = 0; ShowCursor(show); }
     
-    void SetState(MenuStates p_NewState);
+    MenuStates CurrentState() { return m_States[m_CurrentDepth]; }
+    MenuStates PreviousState() { return m_CurrentDepth > 0 ? m_States[m_CurrentDepth - 1] : GameScreen; }
+
+	void ChangeOption(bool up);
+	void ShowCursor(bool show);
+    
+    void PushState(MenuStates p_NewState);
+    void PopState();
+    
+    void EnterState();
     void SetHeaderText(const char* const* string);
+    void CreateOption(const char* const* string);
+    
     void DrawString_P(uint8_t x, uint8_t y, const char* const* string);
     void DrawBatteryLevel(uint8_t battPercent);
     

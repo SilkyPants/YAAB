@@ -25,6 +25,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "PinState.h"
 
+#define MENU_OPTIONS_OFFSET(option) 16 + (7 * option)
+
 ///
 /// UI functions
 ///
@@ -37,6 +39,11 @@ void UserInterface::SetHeaderText(const char* const* string)
 	uint8_t x = 64 - (strlen(buffer) * 3);
 	
 	m_Display.DrawString(x, 4, buffer);
+}
+
+void UserInterface::CreateOption(const char *const *string)
+{
+    DrawString_P(11, MENU_OPTIONS_OFFSET(m_NumOptions++), string);
 }
 
 void UserInterface::DrawString_P(uint8_t x, uint8_t y, const char* const* string)
@@ -58,19 +65,60 @@ void UserInterface::Init()
     
     battLevel = 100;
     eyeAnimIdx = EYE_BALL_ANIM_START;
-
-	SetState(GameScreen);
+    
+    m_CurrentOption = m_NumOptions = 0;
+    m_CurrentDepth = 0;
+    m_States[m_CurrentDepth] = GameScreen;
+    
+    EnterState();
 }
 
-void UserInterface::SetState(MenuStates p_NewState)
+void UserInterface::PushState(MenuStates p_NewState)
 {
-    m_CurrentState = p_NewState;
+    // If we are moving from the Game screen, clear everything
+    if (CurrentState() == GameScreen) {
+        
+        m_Display.ClearDisplay();
+    }
     
+    m_States[++m_CurrentDepth] = p_NewState;
+    
+    EnterState();
+}
+
+void UserInterface::PopState()
+{
+    m_CurrentDepth--;
+    
+    // If we are moving to the Game screen, clear everything
+    if (CurrentState() == GameScreen && g_Settings.gameScreenType != GSM_Graphic) {
+        
+        m_Display.ClearDisplay();
+    }
+    
+    EnterState();
+}
+
+void UserInterface::EnterState()
+{
     // Clear display
-    m_Display.FillRect(19, 4,  89,  7, false); // Header area
-    m_Display.FillRect(3, 16, 122, 45, false); // Bottom section
+    if (CurrentState() != GameScreen) {
+        m_Display.FillRect(19, 4,  89,  7, false); // Header area
+        m_Display.FillRect(3, 16, 122, 45, false); // Bottom section
+    }
     
-    switch (m_CurrentState) {
+    // Clear options
+    m_NumOptions = 0;
+    m_CurrentOption = 0;
+    
+    // Add option to go back a state
+    if (CurrentState() != GameScreen) {
+        CreateOption(&(MenuStrings[MENU_BACK]));
+        
+        ShowCursor(true);
+    }
+    
+    switch (CurrentState()) {
             CASE_ENTER_STATE(GameScreen)
             CASE_ENTER_STATE(MenuRoot)
 
@@ -96,7 +144,7 @@ void UserInterface::SetState(MenuStates p_NewState)
 
 void UserInterface::OnSecond()
 {
-	if (!(m_CurrentState == GameScreen && g_Settings.gameScreenType == GSM_Graphic))
+	if (!(CurrentState() == GameScreen && g_Settings.gameScreenType == GSM_Graphic))
 	{
 		// TODO: Get Battery Level
 		if (battLevel <= 0)
@@ -122,7 +170,7 @@ void UserInterface::OnSecond()
 void UserInterface::Update()
 {
     // Update the current state
-    switch (m_CurrentState) {
+    switch (CurrentState()) {
             CASE_UPDATE_STATE(GameScreen)
 			CASE_UPDATE_STATE(MenuRoot)
 
@@ -145,6 +193,15 @@ void UserInterface::Update()
 			CASE_UPDATE_STATE(EyesBallValue)
     };
     
+    // Common check to go back
+    if (CurrentState() != GameScreen) {
+        
+        if (m_OkButton.IsDown() && !m_OkButton.IsHeld() && m_CurrentOption == 0) {
+            
+            PopState();
+        }
+    }
+    
     Draw();
 }
 
@@ -158,19 +215,19 @@ void UserInterface::UpdateControls()
 ///
 /// Cursor functions
 
-void UserInterface::ChangeOption(bool up, uint8_t numOptions)
+void UserInterface::ChangeOption(bool up)
 {
 	// Remove last cursor position
 	ShowCursor(false);
 
 	if (up) {
 		if (m_CurrentOption == 0)
-			m_CurrentOption = numOptions - 1;
+			m_CurrentOption = m_NumOptions - 1;
 		else
 			m_CurrentOption--;
 	}
 	else {
-		if (m_CurrentOption == numOptions - 1)
+		if (m_CurrentOption == m_NumOptions - 1)
 			m_CurrentOption = 0;
 		else
 			m_CurrentOption++;
@@ -181,12 +238,10 @@ void UserInterface::ChangeOption(bool up, uint8_t numOptions)
 
 void UserInterface::ShowCursor(bool show)
 {
-	uint8_t y = 16 + (7 * m_CurrentOption);
-
 	if (show)
-		m_Display.DrawString(5, y, CURSOR_CHARACTER);
+		m_Display.DrawString(5, MENU_OPTIONS_OFFSET(m_CurrentOption), CURSOR_CHARACTER);
 	else
-		m_Display.DrawString(5, y, " ");
+		m_Display.DrawString(5, MENU_OPTIONS_OFFSET(m_CurrentOption), " ");
 }
 
 ///

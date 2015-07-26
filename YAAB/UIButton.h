@@ -25,9 +25,9 @@
 
 enum UIButtonStates
 {
-    UBS_Up,
-    UBS_Down,
-    UBS_Held
+    UBS_Up      = 1 << 0,
+    UBS_Down    = 1 << 1,
+    UBS_Held    = 1 << 2
 };
 
 class UIButton
@@ -37,6 +37,9 @@ public:
     
     void UpdateState();
     UIButtonStates GetButtonState() { return m_CurrentState; }
+    
+    bool IsDown() { return m_CurrentState != UBS_Up; }
+    bool IsHeld() { return m_CurrentState == UBS_Held; }
     
 private:
     volatile uint8_t* m_Port;

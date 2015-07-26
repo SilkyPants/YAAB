@@ -11,7 +11,7 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>56F02A9C1753768DCEE3ABC1A8E9CADBF19B0C43</key>
-		<string>https://github.com/SilkyPantsDan/YAAB.git</string>
+		<string>github.com:SilkyPantsDan/YAAB.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>YAAB.xcodeproj</string>
@@ -21,7 +21,7 @@
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/SilkyPantsDan/YAAB.git</string>
+	<string>github.com:SilkyPantsDan/YAAB.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>

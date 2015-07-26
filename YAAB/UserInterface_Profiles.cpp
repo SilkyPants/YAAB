@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 void UserInterface::Profiles_OnEnter()
 {
-    SetHeaderText(&(MenuStrings[MENU_MENU]));
+    SetHeaderText(&(MenuStrings[MENU_FIREMODES]));
 }
 
 void UserInterface::Profiles_Update()

@@ -25,42 +25,38 @@ void UserInterface::Setup_OnEnter()
 {
 	SetHeaderText(&(MenuStrings[MENU_SETUP]));
 
-	DrawString_P(11, 16, &(MenuStrings[MENU_EYES]));
-	DrawString_P(11, 23, &(MenuStrings[MENU_MODES]));
-	DrawString_P(11, 30, &(MenuStrings[MENU_POWER]));
-	DrawString_P(11, 37, &(MenuStrings[MENU_TIMING]));
-	DrawString_P(11, 44, &(MenuStrings[MENU_BACK]));
+	CreateOption(&(MenuStrings[MENU_EYES]));
+	CreateOption(&(MenuStrings[MENU_MODES]));
+	CreateOption(&(MenuStrings[MENU_POWER]));
+	CreateOption(&(MenuStrings[MENU_TIMING]));
 
-	ResetCursorAndShow(true);
+	ShowCursor(true);
 }
 
 void UserInterface::Setup_Update()
 {
 	if (m_DnButton.GetButtonState() == UBS_Down) {
-		ChangeOption(false, 5);
+		ChangeOption(false);
 	}
 
 
 	if (m_UpButton.GetButtonState() == UBS_Down) {
-		ChangeOption(true, 5);
+		ChangeOption(true);
 	}
 
 	if (m_OkButton.GetButtonState() == UBS_Down) {
 		switch (m_CurrentOption) {
-		case 0:
-			SetState(SetupEyes);
-			break;
 		case 1:
-			SetState(SetupModes);
+			PushState(SetupEyes);
 			break;
 		case 2:
-			SetState(SetupPower);
+			PushState(SetupModes);
 			break;
 		case 3:
-			SetState(SetupTimings);
+			PushState(SetupPower);
 			break;
 		case 4:
-			SetState(MenuRoot);
+			PushState(SetupTimings);
 			break;
 		}
 

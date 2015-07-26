@@ -65,7 +65,7 @@ void UserInterface::GameScreen_Update()
 {
 	switch (g_Settings.gameScreenType) {
 		case GSM_Graphic:
-			m_Display.DrawGraphic(g_Settings.graphicIndex);
+			//m_Display.DrawGraphic(g_Settings.graphicIndex);
 		break;
 		
 		case GSM_Stats:
@@ -79,7 +79,7 @@ void UserInterface::GameScreen_Update()
 		break;
 	}	
     
-    if (m_OkButton.GetButtonState() == UBS_Held) {
-        SetState(MenuRoot);
+    if (m_OkButton.IsHeld()) {
+        PushState(MenuRoot);
     }
 }

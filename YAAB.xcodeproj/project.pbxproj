@@ -18,8 +18,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface.cpp; sourceTree = "<group>"; };
-		379C6DF21AF7A7600079B1F1 /* UserInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInterface.h; sourceTree = "<group>"; };
+		371894311B63D37C00668699 /* UserInterface_Training.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Training.cpp; sourceTree = "<group>"; };
+		371894321B63D37C00668699 /* UserInterface_Timers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Timers.cpp; sourceTree = "<group>"; };
+		371894331B63D37C00668699 /* UserInterface_SetupTimings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupTimings.cpp; sourceTree = "<group>"; };
+		371894341B63D37C00668699 /* UserInterface_SetupPower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupPower.cpp; sourceTree = "<group>"; };
+		371894351B63D37C00668699 /* UserInterface_SetupModes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupModes.cpp; sourceTree = "<group>"; };
+		371894361B63D37C00668699 /* UserInterface_SetupEyes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupEyes.cpp; sourceTree = "<group>"; };
+		371894371B63D37C00668699 /* UserInterface_Setup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface_Setup.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		371894381B63D37C00668699 /* UserInterface_SetGameTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetGameTimer.cpp; sourceTree = "<group>"; };
+		371894391B63D37C00668699 /* UserInterface_SetAlarmTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetAlarmTimer.cpp; sourceTree = "<group>"; };
+		3718943A1B63D37C00668699 /* UserInterface_Profiles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Profiles.cpp; sourceTree = "<group>"; };
+		3718943B1B63D37C00668699 /* UserInterface_EyesBallValue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_EyesBallValue.cpp; sourceTree = "<group>"; };
+		3718943C1B63D37C00668699 /* UserInterface_DisplayGraphic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_DisplayGraphic.cpp; sourceTree = "<group>"; };
+		3718943D1B63D37C00668699 /* UserInterface_Display.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Display.cpp; sourceTree = "<group>"; };
+		379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		379C6DF21AF7A7600079B1F1 /* UserInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = UserInterface.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		379C6DF81AFCBC530079B1F1 /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = common.cpp; sourceTree = "<group>"; };
 		44B1D3731AF7024F00F223E0 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		44B1D3791AF7024F00F223E0 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -50,8 +63,8 @@
 		44B1D3A41AF7028B00F223E0 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
 		44B1D3A51AF7028B00F223E0 /* timers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timers.cpp; sourceTree = "<group>"; };
 		44B1D3A61AF7028B00F223E0 /* timers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timers.h; sourceTree = "<group>"; };
-		44F353A91B00397800732285 /* UserInterface_GameScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_GameScreen.cpp; sourceTree = "<group>"; };
-		44F353AA1B00397800732285 /* UserInterface_MenuRoot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_MenuRoot.cpp; sourceTree = "<group>"; };
+		44F353A91B00397800732285 /* UserInterface_GameScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface_GameScreen.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
+		44F353AA1B00397800732285 /* UserInterface_MenuRoot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface_MenuRoot.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
 		44F353B21B008DE300732285 /* UIButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIButton.cpp; sourceTree = "<group>"; };
 		44F353B31B008DE300732285 /* UIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButton.h; sourceTree = "<group>"; };
 		44FCA7B81AF9E1E900426215 /* interrupts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = interrupts.cpp; sourceTree = "<group>"; };
@@ -169,8 +182,21 @@
 		44F353AB1B00397D00732285 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				3718943D1B63D37C00668699 /* UserInterface_Display.cpp */,
+				3718943C1B63D37C00668699 /* UserInterface_DisplayGraphic.cpp */,
+				3718943B1B63D37C00668699 /* UserInterface_EyesBallValue.cpp */,
 				44F353A91B00397800732285 /* UserInterface_GameScreen.cpp */,
 				44F353AA1B00397800732285 /* UserInterface_MenuRoot.cpp */,
+				3718943A1B63D37C00668699 /* UserInterface_Profiles.cpp */,
+				371894391B63D37C00668699 /* UserInterface_SetAlarmTimer.cpp */,
+				371894381B63D37C00668699 /* UserInterface_SetGameTimer.cpp */,
+				371894371B63D37C00668699 /* UserInterface_Setup.cpp */,
+				371894361B63D37C00668699 /* UserInterface_SetupEyes.cpp */,
+				371894351B63D37C00668699 /* UserInterface_SetupModes.cpp */,
+				371894341B63D37C00668699 /* UserInterface_SetupPower.cpp */,
+				371894331B63D37C00668699 /* UserInterface_SetupTimings.cpp */,
+				371894321B63D37C00668699 /* UserInterface_Timers.cpp */,
+				371894311B63D37C00668699 /* UserInterface_Training.cpp */,
 			);
 			name = States;
 			sourceTree = "<group>";

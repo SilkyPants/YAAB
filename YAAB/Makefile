@@ -266,12 +266,12 @@ DEBUG_HOST = localhost
 
 # Define programs and commands.
 SHELL = sh
-CC = /usr/local/CrossPack-AVR/bin/avr-gcc
-OBJCOPY = /usr/local/CrossPack-AVR/bin/avr-objcopy
-OBJDUMP = /usr/local/CrossPack-AVR/bin/avr-objdump
-SIZE = /usr/local/CrossPack-AVR/bin/avr-size
-NM = /usr/local/CrossPack-AVR/bin/avr-nm
-AVRDUDE = /usr/local/CrossPack-AVR/bin/avrdude
+CC = `which avr-gcc`
+OBJCOPY = `which avr-objcopy`
+OBJDUMP = `which avr-objdump`
+SIZE = `which avr-size`
+NM = `which avr-nm`
+AVRDUDE = `which avrdude`
 REMOVE = rm -f
 COPY = cp
 WINSHELL = cmd

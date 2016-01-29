@@ -22,11 +22,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #include "common.h"
-#include "pins.h"
+
+#include "../AVR/pins.h"
+#include "../AVR/OLED/crius_oled.h"
 
 #include "strings.h"
-#include "crius_oled.h"
-
 #include "UIButton.h"
 
 #define MAX_DEPTH 5
@@ -98,42 +98,42 @@ public:
     void Update();
     void UpdateControls();
     void Draw();
-    
+
 private:
     //MenuStates m_CurrentState;
     MenuStates m_States[MAX_DEPTH];
-    
-    
+
+
     CRIUS_OLED m_Display;
-    
+
     uint8_t battLevel;
 	uint8_t eyeAnimIdx;
 
 	uint8_t m_NumOptions;
 	uint8_t m_CurrentOption;
-    
+
     uint8_t m_CurrentDepth;
-    
+
     UIButton m_UpButton;
     UIButton m_OkButton;
 	UIButton m_DnButton;
-    
+
     MenuStates CurrentState() { return m_States[m_CurrentDepth]; }
     MenuStates PreviousState() { return m_CurrentDepth > 0 ? m_States[m_CurrentDepth - 1] : GameScreen; }
 
 	void ChangeOption(bool up);
 	void ShowCursor(bool show);
-    
+
     void PushState(MenuStates p_NewState);
     void PopState();
-    
+
     void EnterState();
     void SetHeaderText(const char* const* string);
     void CreateOption(const char* const* string);
-    
+
     void DrawString_P(uint8_t x, uint8_t y, const char* const* string);
     void DrawBatteryLevel(uint8_t battPercent);
-    
+
 	DECLARE_STATE(GameScreen)
 	DECLARE_STATE(MenuRoot)
 
@@ -154,5 +154,5 @@ private:
 	DECLARE_STATE(SetupPower)
 
 	DECLARE_STATE(EyesBallValue)
-    
+
 };

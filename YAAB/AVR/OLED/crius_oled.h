@@ -23,11 +23,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __CRIUS_OLED_H__
 #define __CRIUS_OLED_H__
 
-#include "strings.h"
+#include "UI/strings.h"
 
 #define LCD_WIDTH 128
 #define LCD_HEIGHT 64
-#define LCD_BUFFER_SIZE ( ( LCD_WIDTH * LCD_HEIGHT ) / 8 ) 
+#define LCD_BUFFER_SIZE ( ( LCD_WIDTH * LCD_HEIGHT ) / 8 )
 
 enum FontType
 {
@@ -67,7 +67,7 @@ private:
 	void DrawPixel(uint8_t x, uint8_t y, bool draw);
 	void DrawCharInternal(uint8_t x, uint8_t y, const char character, const uint8_t * font);
 	const uint8_t * GetFont(FontType font);
-	
+
 	void Swap(uint8_t &r, uint8_t &s);
 
 	uint8_t buffer[LCD_BUFFER_SIZE];
@@ -75,4 +75,3 @@ private:
 };
 
 #endif //__CRIUS_OLED_H__
-

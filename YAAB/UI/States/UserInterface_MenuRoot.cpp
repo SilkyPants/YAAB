@@ -19,47 +19,50 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "UserInterface.h"
+#include "../UserInterface.h"
 
-void UserInterface::Setup_OnEnter()
+void UserInterface::MenuRoot_OnEnter()
 {
-	SetHeaderText(&(MenuStrings[MENU_SETUP]));
+    SetHeaderText(&(MenuStrings[MENU_MENU]));
 
-	CreateOption(&(MenuStrings[MENU_EYES]));
-	CreateOption(&(MenuStrings[MENU_MODES]));
-	CreateOption(&(MenuStrings[MENU_POWER]));
-	CreateOption(&(MenuStrings[MENU_TIMING]));
+    CreateOption(&(MenuStrings[MENU_TIMERS]));
+    CreateOption(&(MenuStrings[MENU_DISPLAY]));
+    CreateOption(&(MenuStrings[MENU_TRAINING]));
+    CreateOption(&(MenuStrings[MENU_SETUP]));
+    CreateOption(&(MenuStrings[MENU_SLEEP]));
 
 	ShowCursor(true);
 }
 
-void UserInterface::Setup_Update()
+void UserInterface::MenuRoot_Update()
 {
-	if (m_DnButton.GetButtonState() == UBS_Down) {
+	if (m_DnButton.IsDown()) {
 		ChangeOption(false);
-	}
+    }
 
+    if (m_UpButton.IsDown()) {
+        ChangeOption(true);
+    }
 
-	if (m_UpButton.GetButtonState() == UBS_Down) {
-		ChangeOption(true);
-	}
-
-	if (m_OkButton.GetButtonState() == UBS_Down) {
+    if (m_OkButton.IsDown()) {
 		switch (m_CurrentOption) {
 		case 1:
-			PushState(SetupEyes);
+			PushState(Timers);
 			break;
 		case 2:
-			PushState(SetupModes);
+			PushState(Display);
 			break;
 		case 3:
-			PushState(SetupPower);
+			PushState(Training);
 			break;
 		case 4:
-			PushState(SetupTimings);
+			PushState(Setup);
 			break;
-		}
+		case 5:
+			//Sleep
+			break;
+        }
 
 		return;
-	}
+    }
 }

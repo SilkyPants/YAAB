@@ -1,6 +1,6 @@
 /*
 YAAB - Yet Another Autococker Board
-Arduino based autococker board developed around the platform and ATMEL AVR 
+Arduino based autococker board developed around the platform and ATMEL AVR
 chips
 
 Copyright (C) 2015  Dan Silk
@@ -22,20 +22,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <avr/pgmspace.h>
 
 #include "marker.h"
-#include "common.h"
-#include "pins.h"
-#include "timers.h"
-#include "adc.h"
-#include "i2c.h"
+
+#include "../AVR/pins.h"
+#include "../AVR/timers.h"
+#include "../AVR/adc.h"
+#include "../AVR/i2c.h"
+
 #include "settings.h"
 
-#include "IntervalLapse.h"
-#include "PinState.h"
-#include "BreechEyesTask.h"
+#include "Tasks/IntervalLapse.h"
+#include "Tasks/PinState.h"
+#include "Tasks/BreechEyesTask.h"
 
 #include "Timer.h"
-
-#include "UserInterface.h"
 
 ///
 /// Global marker object
@@ -43,7 +42,7 @@ Marker g_Marker;
 
 /// Cycle Values
 /// Values specific to a marker cycle
-volatile CycleValues g_CycleValues = 
+volatile CycleValues g_CycleValues =
 {
     0,                  // Flags using in marker cycle (CycleFlags)
     0,                  // Shots to fire in 'cycle' (Burst)
@@ -56,7 +55,7 @@ volatile CycleValues g_CycleValues =
 ///
 /// Marker Settings
 /// Things specific to the marker
-MarkerSettings g_Settings = 
+MarkerSettings g_Settings =
 {
     10,                     // Trigger Debounce
     GSM_Graphic,              // Game Screen Mode
@@ -70,9 +69,9 @@ MarkerSettings g_Settings =
 
 ///
 /// Marker Profiles
-/// Customisable by the user 
+/// Customisable by the user
 
-PROGMEM const MarkerProfile g_Modes[] = 
+PROGMEM const MarkerProfile g_Modes[] =
 {
     { 0,    0x1, 0x0, flag_set(AT_Semi), flag_set(TA_FireOnPress) },
     { 1,    0x1, 0x0, flag_set(AT_Pump), flag_set(TA_FireOnPress) },
@@ -135,7 +134,7 @@ void onAlarmLapsed();
 
 PinChange triggerChangeTask(triggerToggle, &CYCLE_PIN_REG, TRIGGER_PIN);
 
-IntervalLapse searOnTask(searDrop); 
+IntervalLapse searOnTask(searDrop);
 IntervalLapse pneuDelayTask(pneumaticsCocking);
 IntervalLapse pneuOnTask(pneumaticsCocked);
 IntervalLapse pneuOffTask(cycleComplete);
@@ -157,7 +156,7 @@ static void triggerToggle()
     // Toggle Trigger LED
     output_toggle(KEEP_ALIVE_PORT, TRIGGER_PRESSED_PIN);
 #endif
-    
+
     // Toggle the trigger pressed flag
     bit_toggle(g_CycleValues.flags, CF_Trigger_Pressed);
 
@@ -178,16 +177,16 @@ static void fireMarker()
     // Check we can fire
     if(is_bit_set(g_CycleValues.flags, CF_Marker_Firing))
         return;
-    
+
     // Mark that we are firing
     bit_set(g_CycleValues.flags, CF_Marker_Firing);
-    
+
     // Determine how many shots to fire this 'cycle'
     if(is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed))
         g_CycleValues.shotsToGo = g_CurrentMode.shotsToFirePress;
     else
         g_CycleValues.shotsToGo = g_CurrentMode.shotsToFireRelease;
-    
+
     startCycle();
 }
 
@@ -197,11 +196,11 @@ static void startCycle()
     // Shot fired
     if(g_CycleValues.shotsToGo)
         g_CycleValues.shotsToGo--;
-    
+
     // Increment shots fired
     g_Settings.shotsSinceLastReset++;
     g_ballShotCount++;
-    
+
     // Start Pneumatics task
     if(!is_bit_set(g_CurrentMode.actionType, AT_Pump))
     {
@@ -211,7 +210,7 @@ static void startCycle()
     {
         // TODO: Start eye task to look for complete cycle
     }
-    
+
     if(!is_bit_set(g_CycleValues.flags, CF_Training_Mode))
     {
         // Set Sear High (Release hammer)
@@ -231,7 +230,7 @@ static void pneumaticsCocking()
 {
     // Start cocking pneumatics
     output_high(CYCLE_PORT, PNEU_PIN);
-    
+
     // Are we using eyes?
     if(is_bit_set(g_CycleValues.flags, CF_Use_Eyes))
         eyeCycleTask.Reset(); // Start testing eyes
@@ -250,11 +249,11 @@ static void cycleComplete()
 {
     // If we have any more shots to fire (burst) or we are in Auto mode with the trigger down
     bool restartCycle = g_CycleValues.shotsToGo > 0;
-    
+
 #if defined AUTO_ALLOWED
     restartCycle = restartCycle || (is_bit_set(g_CurrentMode.actionType, AT_Auto) && is_bit_set(g_CycleValues.flags, CF_Trigger_Pressed));
 #endif
-    
+
     if(restartCycle)
     {
         // Fire another shot
@@ -276,7 +275,7 @@ static void cycleComplete()
 static void onSecondTick()
 {
     g_Marker.GetUI()->OnSecond();
-	
+
 #if defined SERIAL_DEBUG
     //Serial.println("Pull Count(/s): " + g_triggerPullCount);
     //Serial.println("Current BPS: " + g_ballShotCount);
@@ -287,7 +286,7 @@ static void onSecondTick()
 #if defined GAME_TIMER
     g_GameTimer.SubtractSecond();
 #endif
-    
+
 #if defined KEEP_ALIVE_ACTIVE
     keepAliveTask.Update();
 #endif
@@ -314,76 +313,76 @@ void onAlarmLapsed()
 
 void Marker::Init()
 {
-    
+
     // Setup pin direction
     set_input(CYCLE_PORT_REG, TRIGGER_PIN);
     set_output(CYCLE_PORT_REG, SEAR_PIN);
     set_output(CYCLE_PORT_REG, PNEU_PIN);
-    
+
     set_output(EYE_PORT_REG, IRED_PIN);
     set_input(EYE_PORT_REG, EYE_PIN);
-    
+
 #if defined KEEP_ALIVE_ACTIVE
     // Set pins for Keep alive LED
     // Just to prove the loop is ticking over
     set_output(KEEP_ALIVE_PORT_REG, KEEP_ALIVE_PIN);
     set_output(KEEP_ALIVE_PORT_REG, TRIGGER_PRESSED_PIN);
 #endif
-    
+
     set_input(INPUT_PORT_REG, UP_BUTTON_PIN);
     set_input(INPUT_PORT_REG, OK_BUTTON_PIN);
     set_input(INPUT_PORT_REG, DN_BUTTON_PIN);
-    
+
     // Enable internal pullups
     output_high(CYCLE_PORT, TRIGGER_PIN);
-    
+
     output_high(INPUT_PORT, UP_BUTTON_PIN);
     output_high(INPUT_PORT, OK_BUTTON_PIN);
     output_high(INPUT_PORT, DN_BUTTON_PIN);
-    
+
     output_high(EYE_PORT, IRED_PIN);
-    
+
     // stop interrupts
     cli();
-    
+
     // Init timers
     timer_init();
     adc_init();
     i2c_init();
-    
+
     memcpy_P(&g_CurrentMode, &g_Modes[g_Settings.currentMode], sizeof(MarkerProfile));
-    
+
     // Setup the tasks
     // 1 second - in increments of 0.1ms
     secondTickTask.SetIntervalTime(10000, true);
-    
+
     // TODO: Get initial trigger state here?
     triggerChangeTask.SetDebounce(g_Settings.debounceTime);
-    
+
     // Cycle timings - might need to move these to be configurable
     searOnTask.SetIntervalTime(g_Settings.timings.searOn);
     pneuDelayTask.SetIntervalTime(g_Settings.timings.pneuDel);
     pneuOnTask.SetIntervalTime(g_Settings.timings.pneuOn);
     pneuOffTask.SetIntervalTime(g_Settings.timings.pneuOff);
-    
+
     eyeCycleTask.SetTaskValues(g_Settings.eyeSettings.eyeTimeout,
                                g_Settings.eyeSettings.detectionTime,
                                g_Settings.eyeSettings.eyeBall);
-    
+
     // Kick off the initial tasks
     triggerChangeTask.Reset();
     secondTickTask.Reset();
-    
+
 #if defined KEEP_ALIVE_ACTIVE
     keepAliveTask.SetIntervalTime( KEEP_ALIVE_PULSE, true);
     keepAliveTask.Reset();
 #endif
-    
+
     // start interrupts
     sei();
-    
+
     m_UI.Init();
-    
+
     adc_start_read( 0 );
 }
 
@@ -401,7 +400,7 @@ void Marker::TimerTick()
     pneuOnTask.Update();
     pneuOffTask.Update();
     eyeCycleTask.Update();
-    
+
     m_UI.UpdateControls();
 }
 

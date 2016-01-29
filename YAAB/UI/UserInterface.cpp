@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "UserInterface.h"
 
-#include "PinState.h"
+#include "../Marker/Tasks/PinState.h"
 
 #define MENU_OPTIONS_OFFSET(option) 16 + (7 * option)
 
@@ -34,10 +34,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 void UserInterface::SetHeaderText(const char* const* string)
 {
 	char buffer[17];
-	
+
 	strcpy_P(buffer, (PGM_P)pgm_read_word(string));
 	uint8_t x = 64 - (strlen(buffer) * 3);
-	
+
 	m_Display.DrawString(x, 4, buffer);
 }
 
@@ -49,27 +49,27 @@ void UserInterface::CreateOption(const char *const *string)
 void UserInterface::DrawString_P(uint8_t x, uint8_t y, const char* const* string)
 {
     char buffer[23];
-    
+
     strcpy_P(buffer, (PGM_P)pgm_read_word(string));
-    
+
     m_Display.DrawString(x, y, buffer);
 }
 
 void UserInterface::Init()
 {
 	m_Display.Init();
-    
+
     m_UpButton.Init(&INPUT_PIN_REG, UP_BUTTON_PIN);
     m_OkButton.Init(&INPUT_PIN_REG, OK_BUTTON_PIN);
     m_DnButton.Init(&INPUT_PIN_REG, DN_BUTTON_PIN);
-    
+
     battLevel = 100;
     eyeAnimIdx = EYE_BALL_ANIM_START;
-    
+
     m_CurrentOption = m_NumOptions = 0;
     m_CurrentDepth = 0;
     m_States[m_CurrentDepth] = GameScreen;
-    
+
     EnterState();
 }
 
@@ -77,25 +77,25 @@ void UserInterface::PushState(MenuStates p_NewState)
 {
     // If we are moving from the Game screen, clear everything
     if (CurrentState() == GameScreen) {
-        
+
         m_Display.ClearDisplay();
     }
-    
+
     m_States[++m_CurrentDepth] = p_NewState;
-    
+
     EnterState();
 }
 
 void UserInterface::PopState()
 {
     m_CurrentDepth--;
-    
+
     // If we are moving to the Game screen, clear everything
     if (CurrentState() == GameScreen && g_Settings.gameScreenType != GSM_Graphic) {
-        
+
         m_Display.ClearDisplay();
     }
-    
+
     EnterState();
 }
 
@@ -106,18 +106,18 @@ void UserInterface::EnterState()
         m_Display.FillRect(19, 4,  89,  7, false); // Header area
         m_Display.FillRect(3, 16, 122, 45, false); // Bottom section
     }
-    
+
     // Clear options
     m_NumOptions = 0;
     m_CurrentOption = 0;
-    
+
     // Add option to go back a state
     if (CurrentState() != GameScreen) {
         CreateOption(&(MenuStrings[MENU_BACK]));
-        
+
         ShowCursor(true);
     }
-    
+
     switch (CurrentState()) {
             CASE_ENTER_STATE(GameScreen)
             CASE_ENTER_STATE(MenuRoot)
@@ -192,16 +192,16 @@ void UserInterface::Update()
 
 			CASE_UPDATE_STATE(EyesBallValue)
     };
-    
+
     // Common check to go back
     if (CurrentState() != GameScreen) {
-        
+
         if (m_OkButton.IsDown() && !m_OkButton.IsHeld() && m_CurrentOption == 0) {
-            
+
             PopState();
         }
     }
-    
+
     Draw();
 }
 

@@ -19,13 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "UserInterface.h"
+#include "../UserInterface.h"
 
-void UserInterface::SetupModes_OnEnter()
+void UserInterface::Display_OnEnter()
 {
-    SetHeaderText(&(MenuStrings[MENU_MODES]));
+    SetHeaderText(&(MenuStrings[MENU_DISPLAY]));
 }
 
-void UserInterface::SetupModes_Update()
+void UserInterface::Display_Update()
 {
 }

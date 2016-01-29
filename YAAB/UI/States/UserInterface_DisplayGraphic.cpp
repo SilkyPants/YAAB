@@ -19,13 +19,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "UserInterface.h"
+#include "../UserInterface.h"
 
-void UserInterface::Timers_OnEnter()
+void UserInterface::DisplayGraphic_OnEnter()
 {
-    SetHeaderText(&(MenuStrings[MENU_TIMERS]));
 }
 
-void UserInterface::Timers_Update()
+void UserInterface::DisplayGraphic_Update()
 {
 }

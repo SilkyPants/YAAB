@@ -73,7 +73,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #endif
 
-#include "settings.h"
+#include "Marker/settings.h"
 
 ///
 /// Some macros that make the code more readable

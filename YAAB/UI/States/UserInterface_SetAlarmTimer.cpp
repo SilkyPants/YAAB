@@ -19,13 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "UserInterface.h"
+#include "../UserInterface.h"
 
-void UserInterface::SetupPower_OnEnter()
+void UserInterface::SetAlarmTimer_OnEnter()
 {
-    SetHeaderText(&(MenuStrings[MENU_POWER]));
+    SetHeaderText(&(MenuStrings[MENU_ALARMTIMER]));
 }
 
-void UserInterface::SetupPower_Update()
+void UserInterface::SetAlarmTimer_Update()
 {
 }

@@ -21,14 +21,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <stdlib.h>
 #include <avr/pgmspace.h>
-
-#include "common.h"
 #include <util/delay.h>
-#include "pins.h"
 
-#include "font.h"
-#include "i2c.h"
 #include "crius_oled.h"
+#include "font.h"
+#include "common.h"
+
+#include "../pins.h"
+#include "../i2c.h"
 
 #define OLED_address  0x3c
 

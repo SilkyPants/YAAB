@@ -19,13 +19,22 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "UserInterface.h"
+#include "interrupts.h"
+#include "Marker/marker.h"
 
-void UserInterface::Profiles_OnEnter()
+///
+/// Timer Tick
+void onTimerTick()
 {
-    SetHeaderText(&(MenuStrings[MENU_FIREMODES]));
+    g_Marker.TimerTick();
 }
 
-void UserInterface::Profiles_Update()
+///
+/// ADC Conversion Complete
+void onADCReadComplete()
 {
+    // Read the value ADC for a value between 0-255?
+    //eyeCycleTask.SetCurrentEye(ADCH);
+
+    g_Marker.UpdateEye(ADC);
 }

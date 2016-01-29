@@ -19,10 +19,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "UserInterface.h"
+#include "../UserInterface.h"
 
-#include "settings.h"
-#include "BreechEyesTask.h"
+#include "Marker/settings.h"
+#include "Marker/Tasks/BreechEyesTask.h"
 
 extern BreechEyesTask eyeCycleTask;
 extern MarkerProfile g_CurrentMode;
@@ -30,16 +30,16 @@ extern MarkerProfile g_CurrentMode;
 void UserInterface::GameScreen_OnEnter()
 {
     SetHeaderText(&(ModeHeaderStrings[g_CurrentMode.profileNameIndex]));
-	
+
 	if (g_Settings.gameScreenType != GSM_Graphic) {
 		m_Display.ClearDisplay();
 	}
-	
+
 	switch (g_Settings.gameScreenType) {
 		case GSM_Graphic:
 			m_Display.DrawGraphic(g_Settings.graphicIndex);
 		break;
-		
+
 		case GSM_Stats:
 			// Draw Graph
 			m_Display.DrawLine( 18, 44,  18, 60);
@@ -49,12 +49,12 @@ void UserInterface::GameScreen_OnEnter()
 			// Mark Lines
 			m_Display.DrawLine(16, 46, 17, 46);
 			m_Display.DrawLine(110, 46, 111, 46);
-			
+
 		break;
-		
+
 		case GSM_Timer:
 		break;
-		
+
 		case GSM_Off:
 		default:
 		break;
@@ -67,18 +67,18 @@ void UserInterface::GameScreen_Update()
 		case GSM_Graphic:
 			//m_Display.DrawGraphic(g_Settings.graphicIndex);
 		break;
-		
+
 		case GSM_Stats:
 		break;
-		
+
 		case GSM_Timer:
 		break;
-		
+
 		case GSM_Off:
 		default:
 		break;
-	}	
-    
+	}
+
     if (m_OkButton.IsHeld()) {
         PushState(MenuRoot);
     }

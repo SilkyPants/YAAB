@@ -331,9 +331,7 @@ lss: $(OBJDIR)/$(TARGET).lss
 sym: $(OBJDIR)/$(TARGET).sym
 
 $(OBJDIR):
-	@(foreach var,$(SRCDIRS),@mkdir -p $@/$(var))
-	#@mkdir -p $(SRCDIRS)
-	@echo $(SRCDIRS)
+	@(for var in $(SRCDIRS); do @mkdir -p $@/$(var) done;)
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -497,7 +495,6 @@ clean_list :
 	$(REMOVE) $(OBJDIR)/$(SRC:.cpp=.s)
 	$(REMOVE) $(OBJDIR)/$(SRC:.cpp=.d)
 	$(REMOVE) $(OBJDIR)/.dep/*
-	@rm -R $(OBJDIR)
 
 
 

@@ -269,12 +269,12 @@ DEBUG_HOST = localhost
 
 # Define programs and commands.
 SHELL = sh
-CC = `which avr-gcc`
-OBJCOPY = `which avr-objcopy`
-OBJDUMP = `which avr-objdump`
-SIZE = `which avr-size`
-NM = `which avr-nm`
-AVRDUDE = `which avrdude`
+CC = $(shell which avr-gcc)
+OBJCOPY = $(shell which avr-objcopy)
+OBJDUMP = $(shell which avr-objdump)
+SIZE = $(shell which avr-size)
+NM = $(shell which avr-nm)
+AVRDUDE = $(shell which avrdude)
 REMOVE = rm -f
 COPY = cp
 WINSHELL = cmd

@@ -66,7 +66,9 @@ TARGET = main
 # List C source files here. (C dependencies are automatically generated.)
 
 SRC = $(wildcard *.cpp  **/*.cpp **/**/*.cpp)
+
 SRCDIRS = $(sort $(dir $(SRC)))
+
 
 OBJDIR = Builds
 # List Assembler source files here.
@@ -330,8 +332,12 @@ eep: $(OBJDIR)/$(TARGET).eep
 lss: $(OBJDIR)/$(TARGET).lss
 sym: $(OBJDIR)/$(TARGET).sym
 
+# Create all the object folders
 $(OBJDIR):
-	@(for var in $(SRCDIRS); do @mkdir -p $@/$(var) done;)
+	@(for var in $(SRCDIRS) ; do \
+		echo "Creating folder " $@/$$var ; \
+		mkdir -p $@/$$var ; \
+	done)
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on

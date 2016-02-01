@@ -128,8 +128,8 @@ CINCS =
 CFLAGS = -g$(DEBUG)
 CFLAGS += $(CDEFS) $(CINCS)
 CFLAGS += -O$(OPT)
-CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
-CFLAGS += -Wall -Wstrict-prototypes
+CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fno-use-cxa-atexit
+CFLAGS += -Wall
 CFLAGS += -Wa,-adhlns=$(addprefix $(OBJDIR)/,$(<:.cpp=.lst))
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)

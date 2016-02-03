@@ -285,6 +285,7 @@ WINSHELL = cmd
 MSG_ERRORS_NONE = Errors: none
 MSG_BEGIN = -------- begin --------
 MSG_END = --------  end  --------
+MSG_BREAK = -----------------------
 MSG_SIZE_BEFORE = Size before:
 MSG_SIZE_AFTER = Size after:
 MSG_COFF = Converting to AVR COFF:
@@ -322,9 +323,9 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
 # Default target.
-all: begin gccversion sizebefore clean build program sizeafter end
+all: begin utilinfo gccversion sizebefore clean build program sizeafter end
 
-build: $(OBJDIR) elf hex eep lss sym
+build: utilinfo $(OBJDIR) elf hex eep lss sym
 
 elf: $(OBJDIR)/$(TARGET).elf
 hex: $(OBJDIR)/$(TARGET).hex
@@ -345,6 +346,16 @@ $(OBJDIR):
 begin:
 	@echo
 	@echo $(MSG_BEGIN)
+
+utilinfo:
+	@echo $(MSG_BREAK)
+	@echo "AVR-GCC: " $(CC)
+	@echo "AVR-OBJCOPY: " $(OBJCOPY)
+	@echo "AVR-OBJDUMP: " $(OBJDUMP)
+	@echo "AVR-SIZE: " $(SIZE)
+	@echo "AVR-NM: " $(NM)
+	@echo "AVRDUDE: " $(AVRDUDE)
+	@echo $(MSG_BREAK)
 
 end:
 	@echo $(MSG_END)

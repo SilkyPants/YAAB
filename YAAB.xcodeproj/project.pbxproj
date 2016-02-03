@@ -234,7 +234,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PATH = "$(PATH):$(PROJECT_DIR)";
+				PATH = "$(PATH):$(PROJECT_DIR):/usr/local/CrossPack-AVR/bin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -277,7 +277,7 @@
 					"/usr/local/CrossPack-AVR-20131216/avr/include",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PATH = "$(PATH):$(PROJECT_DIR)";
+				PATH = "$(PATH):$(PROJECT_DIR):/usr/local/CrossPack-AVR/bin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

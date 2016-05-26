@@ -21,8 +21,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "../UserInterface.h"
 
-#include "Marker/settings.h"
-#include "Marker/Tasks/BreechEyesTask.h"
+#include "../../Marker/settings.h"
+#include "../../Marker/Tasks/BreechEyesTask.h"
 
 extern BreechEyesTask eyeCycleTask;
 extern MarkerProfile g_CurrentMode;

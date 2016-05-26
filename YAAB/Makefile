@@ -91,7 +91,7 @@ OPT = s
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
 #     AVR Studio 4.10 requires dwarf-2.
 #     AVR [Extended] COFF format requires stabs, plus an avr-objcopy run.
-DEBUG = stabs
+DEBUG =
 
 
 # List any extra directories to look for include files here.
@@ -106,7 +106,7 @@ EXTRAINCDIRS =
 #     gnu89 = c89 plus GCC extensions
 #     c99   = ISO C99 standard (not yet fully implemented)
 #     gnu99 = c99 plus GCC extensions
-CSTANDARD = -std=gnu99
+CSTANDARD = -std=gnu++11
 
 
 # Place -D or -U options here
@@ -128,13 +128,14 @@ CINCS =
 CFLAGS = -g$(DEBUG)
 CFLAGS += $(CDEFS) $(CINCS)
 CFLAGS += -O$(OPT)
-CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fno-use-cxa-atexit
+#CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fno-use-cxa-atexit
+CFLAGS += -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics
 CFLAGS += -Wall
 CFLAGS += -Wa,-adhlns=$(addprefix $(OBJDIR)/,$(<:.cpp=.lst))
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
-CFLAGS += -gstabs
-CFLAGS += -gstrict-dwarf
+#CFLAGS += -gstabs
+#CFLAGS += -gstrict-dwarf
 
 #---------------- Assembler Options ----------------
 #  -Wa,...:   tell GCC to pass this to the assembler.

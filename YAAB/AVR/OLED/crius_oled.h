@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef __CRIUS_OLED_H__
 #define __CRIUS_OLED_H__
 
-#include "UI/strings.h"
+#include "../../UI/strings.h"
 
 #define LCD_WIDTH 128
 #define LCD_HEIGHT 64

@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "common.h"
+#include "../common.h"
 
 enum UIButtonStates
 {

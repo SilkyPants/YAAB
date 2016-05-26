@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "interrupts.h"
-#include "Marker/marker.h"
+#include "../Marker/marker.h"
 
 ///
 /// Timer Tick

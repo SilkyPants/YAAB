@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#include "common.h"
+#include "../common.h"
 
 #if defined(__AVR_ATtiny84__)
 

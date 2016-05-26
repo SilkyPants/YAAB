@@ -22,7 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <avr/pgmspace.h>
 
-#include "common.h"
+#include "../common.h"
 
 #ifndef STRINGS_H_
 #define STRINGS_H_

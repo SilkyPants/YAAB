@@ -19,7 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "common.h"
+#include "../common.h"
 
 //static uint32_t neutralizeTime = 0;
 static int16_t  i2c_errors_count = 0;

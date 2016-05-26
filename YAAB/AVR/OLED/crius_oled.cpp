@@ -25,7 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "crius_oled.h"
 #include "font.h"
-#include "common.h"
+#include "../../common.h"
 
 #include "../pins.h"
 #include "../i2c.h"

@@ -61,6 +61,7 @@ MarkerSettings g_Settings =
     GSM_Graphic,              // Game Screen Mode
     0,                      // Graphic Index
     0,                      // Current Profile
+    0,                      // Tounament Lock
     0,                      // Shots since Service?
     { 40, 60, 550, 240 },   // SON, PDEL, PON, POFF
     { 10, 100, 1000 }       // Eye Detect Time, Eye Ball Reflect, Eye Timeout

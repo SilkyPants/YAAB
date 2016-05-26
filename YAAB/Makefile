@@ -131,7 +131,7 @@ CFLAGS = -g$(DEBUG)
 CFLAGS += $(CDEFS) $(CINCS)
 CFLAGS += -O$(OPT)
 #CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fno-use-cxa-atexit
-CFLAGS += -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics
+CFLAGS += -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -fno-use-cxa-atexit
 CFLAGS += -Wall
 CFLAGS += -Wa,-adhlns=$(addprefix $(OBJDIR)/,$(<:.cpp=.lst))
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))

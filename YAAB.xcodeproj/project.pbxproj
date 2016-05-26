@@ -252,6 +252,7 @@
 		44B1D37E1AF7024F00F223E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AVRDUDE_PORT = FROM_XCODE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -259,6 +260,7 @@
 		44B1D37F1AF7024F00F223E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AVRDUDE_PORT = FROM_XCODE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

@@ -53,7 +53,9 @@ F_CPU = 16000000
 AVRDUDE_PROGRAMMER = arduino
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = /dev/cu.usbmodem*    # programmer connected to serial device
+#AVRDUDE_PORT = /dev/cu.usbmodem*    # programmer connected to serial device
+# programmer connected to serial device
+AVRDUDE_PORT = $(shell bash -c 'read -p "Enter programmer device (e.g. /dev/ttyUSB0): " progDevice; echo $$progDevice')   
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex

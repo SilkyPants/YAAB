@@ -70,8 +70,9 @@ struct MarkerSettings // 16 bytes
 {
 	uint8_t debounceTime : 6;         // How long before saying the trigger is pressed/released
 	uint8_t gameScreenType : 2;       // What should be displayed on the game screen
-	uint8_t graphicIndex : 4;         // The graphic to use on main screen
-	uint8_t currentMode : 4;          // The current mode in use
+    uint8_t graphicIndex : 4;         // The graphic to use on main screen
+    uint8_t currentMode : 3;          // The current mode in use
+    uint8_t lockSettings : 1;         // Indicates if the settings are locked or not (Tournament Lock)
     uint32_t shotsSinceLastReset;     // Shot counter
     MarkerTiming timings;             // Settings for the marker pneumatics cycle
     EyeSettings eyeSettings;          // Settings for the eyes

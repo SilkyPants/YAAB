@@ -93,10 +93,9 @@ MarkerProfile g_CurrentMode;
 ///
 /// Used to blink an LED in the loop - to make sure the program is running
 #if defined KEEP_ALIVE_ACTIVE
-#define KEEP_ALIVE_PIN 5        // Pin 13
-#define TRIGGER_PRESSED_PIN 4   // Pin 12
-#define KEEP_ALIVE_PORT PORTB
-#define KEEP_ALIVE_PORT_REG DDRB
+#define KEEP_ALIVE_PIN 5        // Pin 5
+#define KEEP_ALIVE_PORT PORTD
+#define KEEP_ALIVE_PORT_REG DDRD
 #define KEEP_ALIVE_PULSE 1      // Because we put this in the second tick function
 
 void keepAliveToggle()

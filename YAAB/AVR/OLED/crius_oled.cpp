@@ -270,9 +270,9 @@ void CRIUS_OLED::DrawGraphic(uint8_t graphicIndex)
 void CRIUS_OLED::Init()
 {
 
-	set_output(CYCLE_PORT_REG, 4);
+	set_output(OLED_PORT_REG, OLED_PWR_PIN);
 	_delay_ms(20);
-	output_high(CYCLE_PORT, 4);
+	output_high(OLED_PORT, OLED_PWR_PIN);
 
 	_delay_ms(50);
 

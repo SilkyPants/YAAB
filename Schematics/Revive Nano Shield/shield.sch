@@ -3180,11 +3180,9 @@ http://www.xganon.com</description>
 <part name="D4" library="SparkFun" deviceset="DIODE" device="PTH"/>
 <part name="Q3" library="SparkFun" deviceset="MOSFET-NCHANNEL" device="PTH2" value=""/>
 <part name="ALIVE" library="SparkFun" deviceset="LED" device="3MM"/>
-<part name="R1" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W"/>
+<part name="R1" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="150"/>
 <part name="GND2" library="SparkFun" deviceset="GND" device=""/>
 <part name="R2" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="150"/>
-<part name="R4" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="10"/>
-<part name="R7" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="36"/>
 <part name="GND5" library="SparkFun" deviceset="GND" device=""/>
 <part name="SEAR" library="SparkFun" deviceset="M02" device="PTH"/>
 <part name="5WAY" library="SparkFun" deviceset="M02" device="PTH"/>
@@ -3195,6 +3193,9 @@ http://www.xganon.com</description>
 <part name="GND6" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND7" library="SparkFun" deviceset="GND" device=""/>
 <part name="BATT1" library="SparkFun" deviceset="M02" device="PTH"/>
+<part name="R4" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="10k"/>
+<part name="R9" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="10k"/>
+<part name="GND1" library="SparkFun" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -3226,8 +3227,6 @@ http://www.xganon.com</description>
 <instance part="R1" gate="G$1" x="121.92" y="154.94"/>
 <instance part="GND2" gate="1" x="147.32" y="154.94" rot="R90"/>
 <instance part="R2" gate="G$1" x="195.58" y="154.94" rot="R180"/>
-<instance part="R4" gate="G$1" x="228.6" y="177.8" rot="R180"/>
-<instance part="R7" gate="G$1" x="233.68" y="58.42"/>
 <instance part="GND5" gate="1" x="205.74" y="121.92" rot="R270"/>
 <instance part="SEAR" gate="G$1" x="223.52" y="172.72" rot="R180"/>
 <instance part="5WAY" gate="G$1" x="238.76" y="73.66" rot="R270"/>
@@ -3238,6 +3237,9 @@ http://www.xganon.com</description>
 <instance part="GND6" gate="1" x="147.32" y="88.9" rot="R90"/>
 <instance part="GND7" gate="1" x="86.36" y="91.44" rot="R180"/>
 <instance part="BATT1" gate="G$1" x="78.74" y="81.28"/>
+<instance part="R4" gate="G$1" x="22.86" y="114.3" rot="R180"/>
+<instance part="R9" gate="G$1" x="40.64" y="114.3" rot="R180"/>
+<instance part="GND1" gate="1" x="53.34" y="114.3" rot="R90"/>
 </instances>
 <busses>
 </busses>
@@ -3246,14 +3248,15 @@ http://www.xganon.com</description>
 <segment>
 <wire x1="213.36" y1="172.72" x2="215.9" y2="172.72" width="0.1524" layer="91"/>
 <wire x1="198.12" y1="177.8" x2="213.36" y2="177.8" width="0.1524" layer="91"/>
-<wire x1="213.36" y1="177.8" x2="223.52" y2="177.8" width="0.1524" layer="91"/>
 <wire x1="213.36" y1="172.72" x2="213.36" y2="177.8" width="0.1524" layer="91"/>
-<junction x="213.36" y="177.8"/>
 <label x="198.12" y="177.8" size="1.778" layer="95"/>
 <pinref part="D4" gate="G$1" pin="C"/>
 <junction x="213.36" y="172.72"/>
-<pinref part="R4" gate="G$1" pin="2"/>
 <pinref part="SEAR" gate="G$1" pin="1"/>
+<pinref part="C1" gate="G$1" pin="+"/>
+<wire x1="236.22" y1="167.64" x2="236.22" y2="177.8" width="0.1524" layer="91"/>
+<wire x1="236.22" y1="177.8" x2="213.36" y2="177.8" width="0.1524" layer="91"/>
+<junction x="213.36" y="177.8"/>
 </segment>
 <segment>
 <pinref part="U$5" gate="G$1" pin="RAW"/>
@@ -3263,6 +3266,11 @@ http://www.xganon.com</description>
 <label x="99.06" y="73.66" size="1.778" layer="95" rot="R90"/>
 <wire x1="99.06" y1="81.28" x2="99.06" y2="76.2" width="0.1524" layer="91"/>
 <junction x="99.06" y="81.28"/>
+</segment>
+<segment>
+<pinref part="R4" gate="G$1" pin="2"/>
+<wire x1="17.78" y1="114.3" x2="10.16" y2="114.3" width="0.1524" layer="91"/>
+<label x="10.16" y="114.3" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -3352,6 +3360,11 @@ http://www.xganon.com</description>
 <junction x="86.36" y="83.82"/>
 <wire x1="86.36" y1="83.82" x2="86.36" y2="88.9" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="R9" gate="G$1" pin="1"/>
+<pinref part="GND1" gate="1" pin="GND"/>
+<wire x1="50.8" y1="114.3" x2="45.72" y2="114.3" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="5V" class="0">
 <segment>
@@ -3360,14 +3373,13 @@ http://www.xganon.com</description>
 <pinref part="SENSOR" gate="G$1" pin="4"/>
 </segment>
 <segment>
-<pinref part="I2C" gate="G$1" pin="2"/>
-<wire x1="22.86" y1="58.42" x2="33.02" y2="58.42" width="0.1524" layer="91"/>
-<label x="33.02" y="58.42" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="R7" gate="G$1" pin="1"/>
-<wire x1="228.6" y1="58.42" x2="223.52" y2="58.42" width="0.1524" layer="91"/>
 <label x="223.52" y="58.42" size="1.778" layer="95"/>
+<pinref part="D3" gate="G$1" pin="C"/>
+<wire x1="238.76" y1="63.5" x2="238.76" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="5WAY" gate="G$1" pin="1"/>
+<wire x1="238.76" y1="63.5" x2="238.76" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="238.76" y1="58.42" x2="223.52" y2="58.42" width="0.1524" layer="91"/>
+<junction x="238.76" y="63.5"/>
 </segment>
 <segment>
 <pinref part="U$5" gate="G$1" pin="5.5V"/>
@@ -3386,9 +3398,9 @@ http://www.xganon.com</description>
 <junction x="226.06" y="121.92"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="G$1" pin="D5"/>
-<wire x1="137.16" y1="99.06" x2="144.78" y2="99.06" width="0.1524" layer="91"/>
-<label x="144.78" y="99.06" size="1.778" layer="95"/>
+<pinref part="U$5" gate="G$1" pin="D2"/>
+<wire x1="137.16" y1="91.44" x2="144.78" y2="91.44" width="0.1524" layer="91"/>
+<label x="144.78" y="91.44" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="5WAY" class="0">
@@ -3398,9 +3410,9 @@ http://www.xganon.com</description>
 <pinref part="R8" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="G$1" pin="D6"/>
-<wire x1="137.16" y1="101.6" x2="144.78" y2="101.6" width="0.1524" layer="91"/>
-<label x="144.78" y="101.6" size="1.778" layer="95"/>
+<pinref part="U$5" gate="G$1" pin="D3"/>
+<wire x1="137.16" y1="93.98" x2="144.78" y2="93.98" width="0.1524" layer="91"/>
+<label x="144.78" y="93.98" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SEAR" class="0">
@@ -3413,9 +3425,9 @@ http://www.xganon.com</description>
 <wire x1="190.5" y1="154.94" x2="182.88" y2="154.94" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="G$1" pin="D7"/>
-<wire x1="137.16" y1="104.14" x2="144.78" y2="104.14" width="0.1524" layer="91"/>
-<label x="144.78" y="104.14" size="1.778" layer="95"/>
+<pinref part="U$5" gate="G$1" pin="D4"/>
+<wire x1="137.16" y1="96.52" x2="144.78" y2="96.52" width="0.1524" layer="91"/>
+<label x="144.78" y="96.52" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="IRED" class="0">
@@ -3467,9 +3479,9 @@ http://www.xganon.com</description>
 <junction x="124.46" y="27.94"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="G$1" pin="D8"/>
-<wire x1="137.16" y1="106.68" x2="144.78" y2="106.68" width="0.1524" layer="91"/>
-<label x="144.78" y="106.68" size="1.778" layer="95"/>
+<pinref part="U$5" gate="G$1" pin="D10"/>
+<wire x1="137.16" y1="111.76" x2="144.78" y2="111.76" width="0.1524" layer="91"/>
+<label x="144.78" y="111.76" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SEL_BTN" class="0">
@@ -3482,9 +3494,9 @@ http://www.xganon.com</description>
 <junction x="83.82" y="27.94"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="G$1" pin="D9"/>
-<wire x1="137.16" y1="109.22" x2="144.78" y2="109.22" width="0.1524" layer="91"/>
-<label x="144.78" y="109.22" size="1.778" layer="95"/>
+<pinref part="U$5" gate="G$1" pin="D11"/>
+<wire x1="137.16" y1="114.3" x2="144.78" y2="114.3" width="0.1524" layer="91"/>
+<label x="144.78" y="114.3" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="DWN_BTN" class="0">
@@ -3497,9 +3509,9 @@ http://www.xganon.com</description>
 <junction x="43.18" y="27.94"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="G$1" pin="D10"/>
-<wire x1="137.16" y1="111.76" x2="144.78" y2="111.76" width="0.1524" layer="91"/>
-<label x="144.78" y="111.76" size="1.778" layer="95"/>
+<pinref part="U$5" gate="G$1" pin="D12"/>
+<wire x1="137.16" y1="116.84" x2="144.78" y2="116.84" width="0.1524" layer="91"/>
+<label x="144.78" y="116.84" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$7" class="0">
@@ -3535,9 +3547,9 @@ http://www.xganon.com</description>
 <label x="111.76" y="154.94" size="1.778" layer="95" rot="R180"/>
 </segment>
 <segment>
-<pinref part="U$5" gate="G$1" pin="D13"/>
-<wire x1="104.14" y1="116.84" x2="93.98" y2="116.84" width="0.1524" layer="91"/>
-<label x="93.98" y="116.84" size="1.778" layer="95" rot="R180"/>
+<pinref part="U$5" gate="G$1" pin="D5"/>
+<wire x1="137.16" y1="99.06" x2="144.78" y2="99.06" width="0.1524" layer="91"/>
+<label x="144.78" y="99.06" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$3" class="0">
@@ -3549,20 +3561,7 @@ http://www.xganon.com</description>
 </net>
 <net name="N$4" class="0">
 <segment>
-<pinref part="R4" gate="G$1" pin="1"/>
 <wire x1="233.68" y1="177.8" x2="236.22" y2="177.8" width="0.1524" layer="91"/>
-<wire x1="236.22" y1="177.8" x2="236.22" y2="167.64" width="0.1524" layer="91"/>
-<pinref part="C1" gate="G$1" pin="+"/>
-</segment>
-</net>
-<net name="N$5" class="0">
-<segment>
-<pinref part="R7" gate="G$1" pin="2"/>
-<pinref part="D3" gate="G$1" pin="C"/>
-<wire x1="238.76" y1="58.42" x2="238.76" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="238.76" y1="63.5" x2="238.76" y2="66.04" width="0.1524" layer="91"/>
-<junction x="238.76" y="63.5"/>
-<pinref part="5WAY" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$6" class="0">
@@ -3593,6 +3592,34 @@ http://www.xganon.com</description>
 <pinref part="U$5" gate="G$1" pin="A5"/>
 <wire x1="104.14" y1="96.52" x2="93.98" y2="96.52" width="0.1524" layer="91"/>
 <label x="93.98" y="96.52" size="1.778" layer="95" rot="R180"/>
+</segment>
+</net>
+<net name="OLED_PWR" class="0">
+<segment>
+<pinref part="I2C" gate="G$1" pin="2"/>
+<wire x1="22.86" y1="58.42" x2="33.02" y2="58.42" width="0.1524" layer="91"/>
+<label x="33.02" y="58.42" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="D13"/>
+<wire x1="104.14" y1="116.84" x2="93.98" y2="116.84" width="0.1524" layer="91"/>
+<label x="93.98" y="116.84" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="BATT_STATUS" class="0">
+<segment>
+<pinref part="R4" gate="G$1" pin="1"/>
+<pinref part="R9" gate="G$1" pin="2"/>
+<wire x1="35.56" y1="114.3" x2="33.02" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="114.3" x2="27.94" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="114.3" x2="33.02" y2="121.92" width="0.1524" layer="91"/>
+<junction x="33.02" y="114.3"/>
+<label x="33.02" y="121.92" size="1.778" layer="95" rot="R180"/>
+</segment>
+<segment>
+<pinref part="U$5" gate="G$1" pin="A1"/>
+<wire x1="104.14" y1="106.68" x2="93.98" y2="106.68" width="0.1524" layer="91"/>
+<label x="93.98" y="106.68" size="1.778" layer="95" rot="R180"/>
 </segment>
 </net>
 </nets>

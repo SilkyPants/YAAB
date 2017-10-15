@@ -27,7 +27,7 @@
 # make program = Download the hex file to the device, using avrdude.
 #                Please customize the avrdude settings below first!
 #
-# make debug = Start either simulavr or avarice as specified for debugging, 
+# make debug = Start either simulavr or avarice as specified for debugging,
 #              with avr-gdb or avr-insight as the front end for debugging.
 #
 # make filename.s = Just compile filename.c into the assembler code only.
@@ -44,8 +44,8 @@ MCU = atmega328p
 
 
 # Processor frequency.
-#     This will define a symbol, F_CPU, in all source code files equal to the 
-#     processor frequency. You can then use this symbol in your source code to 
+#     This will define a symbol, F_CPU, in all source code files equal to the
+#     processor frequency. You can then use this symbol in your source code to
 #     calculate timings. Do NOT tack on a 'UL' at the end, this will be done
 #     automatically to create a 32-bit value in your source code.
 F_CPU = 16000000
@@ -53,7 +53,9 @@ F_CPU = 16000000
 AVRDUDE_PROGRAMMER = arduino
 
 # com1 = serial port. Use lpt1 to connect to parallel port.
-AVRDUDE_PORT = /dev/cu.usbmodem*    # programmer connected to serial device
+#AVRDUDE_PORT = /dev/cu.usbmodem*    # programmer connected to serial device
+# programmer connected to serial device
+AVRDUDE_PORT ?= $(shell bash -c 'read -p "Enter programmer device (e.g. /dev/ttyUSB0): " progDevice; echo $$progDevice')
 
 # Output format. (can be srec, ihex, binary)
 FORMAT = ihex
@@ -65,7 +67,10 @@ TARGET = main
 
 # List C source files here. (C dependencies are automatically generated.)
 
-SRC = $(wildcard *.cpp)
+SRC = $(wildcard *.cpp  **/*.cpp **/**/*.cpp)
+
+SRCDIRS = $(sort $(dir $(SRC)))
+
 
 OBJDIR = Builds
 # List Assembler source files here.
@@ -75,10 +80,10 @@ OBJDIR = Builds
 #     Even though the DOS/Win* filesystem matches both .s and .S the same,
 #     it will preserve the spelling of the filenames, and gcc itself does
 #     care about how the name is spelled on its command-line.
-ASRC = 
+ASRC =
 
 
-# Optimization level, can be [0, 1, 2, 3, s]. 
+# Optimization level, can be [0, 1, 2, 3, s].
 #     0 = turn off optimization. s = optimize for size.
 #     (Note: 3 is not always the best optimization level. See avr-libc FAQ.)
 OPT = s
@@ -88,14 +93,14 @@ OPT = s
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
 #     AVR Studio 4.10 requires dwarf-2.
 #     AVR [Extended] COFF format requires stabs, plus an avr-objcopy run.
-DEBUG = stabs
+DEBUG =
 
 
 # List any extra directories to look for include files here.
 #     Each directory must be seperated by a space.
 #     Use forward slashes for directory separators.
 #     For a directory that has spaces, enclose it in quotes.
-EXTRAINCDIRS = 
+EXTRAINCDIRS =
 
 
 # Compiler flag to set the C Standard level.
@@ -103,7 +108,7 @@ EXTRAINCDIRS =
 #     gnu89 = c89 plus GCC extensions
 #     c99   = ISO C99 standard (not yet fully implemented)
 #     gnu99 = c99 plus GCC extensions
-CSTANDARD = -std=gnu99
+CSTANDARD = -std=gnu++11
 
 
 # Place -D or -U options here
@@ -125,13 +130,14 @@ CINCS =
 CFLAGS = -g$(DEBUG)
 CFLAGS += $(CDEFS) $(CINCS)
 CFLAGS += -O$(OPT)
-CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
-CFLAGS += -Wall -Wstrict-prototypes
+#CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -fno-use-cxa-atexit
+CFLAGS += -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -fno-use-cxa-atexit
+CFLAGS += -Wall
 CFLAGS += -Wa,-adhlns=$(addprefix $(OBJDIR)/,$(<:.cpp=.lst))
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
-CFLAGS += -gstabs
-CFLAGS += -gstrict-dwarf
+#CFLAGS += -gstabs
+#CFLAGS += -gstrict-dwarf
 
 #---------------- Assembler Options ----------------
 #  -Wa,...:   tell GCC to pass this to the assembler.
@@ -140,7 +146,7 @@ CFLAGS += -gstrict-dwarf
 #             for use in COFF files, additional information about filenames
 #             and function names needs to be present in the assembler source
 #             files -- see avr-libc docs [FIXME: not yet described there]
-#  -listing-cont-lines: Sets the maximum number of continuation lines of hex 
+#  -listing-cont-lines: Sets the maximum number of continuation lines of hex
 #       dump that will be displayed for a given single line of source input.
 ASFLAGS = -Wa,-adhlns=$(addprefix $(OBJDIR)/,$(<:.S=.lst)),-gstabs,--listing-cont-lines=100
 
@@ -153,7 +159,7 @@ PRINTF_LIB_MIN = -Wl,-u,vfprintf -lprintf_min
 PRINTF_LIB_FLOAT = -Wl,-u,vfprintf -lprintf_flt
 
 # If this is left blank, then it will use the Standard printf version.
-PRINTF_LIB = 
+PRINTF_LIB =
 #PRINTF_LIB = $(PRINTF_LIB_MIN)
 #PRINTF_LIB = $(PRINTF_LIB_FLOAT)
 
@@ -165,7 +171,7 @@ SCANF_LIB_MIN = -Wl,-u,vfscanf -lscanf_min
 SCANF_LIB_FLOAT = -Wl,-u,vfscanf -lscanf_flt
 
 # If this is left blank, then it will use the Standard scanf version.
-SCANF_LIB = 
+SCANF_LIB =
 #SCANF_LIB = $(SCANF_LIB_MIN)
 #SCANF_LIB = $(SCANF_LIB_FLOAT)
 
@@ -200,7 +206,7 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 
 #---------------- Programming Options (avrdude) ----------------
 
-# Programming hardware: alf avr910 avrisp bascom bsd 
+# Programming hardware: alf avr910 avrisp bascom bsd
 # dt006 pavr picoweb pony-stk200 sp12 stk200 stk500
 #
 # Type: avrdude -c ?
@@ -221,11 +227,11 @@ AVRDUDE_WRITE_FLASH = -U flash:w:$(OBJDIR)/$(TARGET).hex
 #AVRDUDE_NO_VERIFY = -V
 
 # Increase verbosity level.  Please use this when submitting bug
-# reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude> 
+# reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude>
 # to submit bug reports.
-#AVRDUDE_VERBOSE = -v -v
+AVRDUDE_VERBOSE = -v
 
-AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
+AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER) -b 57600 -D
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
 AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
 AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
@@ -255,7 +261,7 @@ JTAG_DEV = /dev/com1
 DEBUG_PORT = 4242
 
 # Debugging host used to communicate between GDB / avarice / simulavr, normally
-#     just set to localhost unless doing some sort of crazy debugging when 
+#     just set to localhost unless doing some sort of crazy debugging when
 #     avarice is running on a different computer.
 DEBUG_HOST = localhost
 
@@ -266,12 +272,12 @@ DEBUG_HOST = localhost
 
 # Define programs and commands.
 SHELL = sh
-CC = `which avr-gcc`
-OBJCOPY = `which avr-objcopy`
-OBJDUMP = `which avr-objdump`
-SIZE = `which avr-size`
-NM = `which avr-nm`
-AVRDUDE = `which avrdude`
+CC = $(shell which avr-gcc)
+OBJCOPY = $(shell which avr-objcopy)
+OBJDUMP = $(shell which avr-objdump)
+SIZE = $(shell which avr-size)
+NM = $(shell which avr-nm)
+AVRDUDE = $(shell which avrdude)
 REMOVE = rm -f
 COPY = cp
 WINSHELL = cmd
@@ -282,7 +288,8 @@ WINSHELL = cmd
 MSG_ERRORS_NONE = Errors: none
 MSG_BEGIN = -------- begin --------
 MSG_END = --------  end  --------
-MSG_SIZE_BEFORE = Size before: 
+MSG_BREAK = -----------------------
+MSG_SIZE_BEFORE = Size before:
 MSG_SIZE_AFTER = Size after:
 MSG_COFF = Converting to AVR COFF:
 MSG_EXTENDED_COFF = Converting to AVR Extended COFF:
@@ -319,18 +326,22 @@ ALL_ASFLAGS = -mmcu=$(MCU) -I. -x assembler-with-cpp $(ASFLAGS)
 
 
 # Default target.
-all: begin gccversion sizebefore clean build program sizeafter end
+all: begin utilinfo gccversion sizebefore clean build program sizeafter end
 
-build: $(OBJDIR) elf hex eep lss sym
+build: utilinfo $(OBJDIR) elf hex eep lss sym
 
 elf: $(OBJDIR)/$(TARGET).elf
 hex: $(OBJDIR)/$(TARGET).hex
 eep: $(OBJDIR)/$(TARGET).eep
-lss: $(OBJDIR)/$(TARGET).lss 
+lss: $(OBJDIR)/$(TARGET).lss
 sym: $(OBJDIR)/$(TARGET).sym
 
+# Create all the object folders
 $(OBJDIR):
-	@mkdir -p $@
+	@(for var in $(SRCDIRS) ; do \
+		echo "Creating folder " $@/$$var ; \
+		mkdir -p $@/$$var ; \
+	done)
 
 # Eye candy.
 # AVR Studio 3.x does not check make's exit code but relies on
@@ -338,6 +349,16 @@ $(OBJDIR):
 begin:
 	@echo
 	@echo $(MSG_BEGIN)
+
+utilinfo:
+	@echo $(MSG_BREAK)
+	@echo "AVR-GCC: " $(CC)
+	@echo "AVR-OBJCOPY: " $(OBJCOPY)
+	@echo "AVR-OBJDUMP: " $(OBJDUMP)
+	@echo "AVR-SIZE: " $(SIZE)
+	@echo "AVR-NM: " $(NM)
+	@echo "AVRDUDE: " $(AVRDUDE)
+	@echo $(MSG_BREAK)
 
 end:
 	@echo $(MSG_END)
@@ -359,19 +380,19 @@ sizeafter:
 
 
 # Display compiler version information.
-gccversion : 
+gccversion :
 	@$(CC) --version
 
 
 
-# Program the device.  
+# Program the device.
 program: $(OBJDIR)/$(TARGET).hex $(OBJDIR)/$(TARGET).eep
 	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
 
 # Generate avr-gdb config/init file which does the following:
-#     define the reset signal, load the target file, connect to target, and set 
+#     define the reset signal, load the target file, connect to target, and set
 #     a breakpoint at main().
-gdb-config: 
+gdb-config:
 	@$(REMOVE) $(GDBINIT_FILE)
 	@echo define reset >> $(GDBINIT_FILE)
 	@echo SIGNAL SIGHUP >> $(GDBINIT_FILE)
@@ -380,7 +401,7 @@ gdb-config:
 	@echo target remote $(DEBUG_HOST):$(DEBUG_PORT)  >> $(GDBINIT_FILE)
 ifeq ($(DEBUG_BACKEND),simulavr)
 	@echo load  >> $(GDBINIT_FILE)
-endif	
+endif
 	@echo break main >> $(GDBINIT_FILE)
 
 debug: gdb-config $(OBJDIR)/$(TARGET).elf
@@ -402,7 +423,7 @@ COFFCONVERT=$(OBJCOPY) --debugging \
 --change-section-address .data-0x800000 \
 --change-section-address .bss-0x800000 \
 --change-section-address .noinit-0x800000 \
---change-section-address .eeprom-0x810000 
+--change-section-address .eeprom-0x810000
 
 
 coff: $(OBJDIR)/$(TARGET).elf
@@ -457,7 +478,7 @@ $(OBJDIR)/%.elf: $(OBJ)
 $(OBJDIR)/%.o : %.cpp
 	@echo
 	@echo $(MSG_COMPILING) $<
-	$(CC) -c $(ALL_CFLAGS) "$(abspath $<)" -o $@ 
+	$(CC) -c $(ALL_CFLAGS) "$(abspath $<)" -o $@
 
 
 # Compile: create assembler files from C source files.
@@ -473,7 +494,7 @@ $(OBJDIR)/%.o : %.S
 
 # Create preprocessed source for use in sending a bug report.
 $(OBJDIR)/%.i : %.cpp
-	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@ 
+	$(CC) -E -mmcu=$(MCU) -I. $(CFLAGS) $< -o $@
 
 
 # Target: clean project.
@@ -505,4 +526,3 @@ clean_list :
 .PHONY : all begin finish end sizebefore sizeafter gccversion \
 build elf hex eep lss sym coff extcoff \
 clean clean_list program debug gdb-config
-

@@ -21,16 +21,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "common.h"
 
-#include "marker.h"
+#include "Marker/marker.h"
 
 int main(void) {
-    
+
     g_Marker.Init();
-    
+
     while (1)
     {
         g_Marker.IdleLoop();
     }
-    
+
 	return 0; // never reached
 }

@@ -6,89 +6,16 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		379C6DF31AF7A7600079B1F1 /* UserInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */; };
-		379C6DF41AF7A7790079B1F1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D38D1AF7028B00F223E0 /* main.cpp */; };
-		379C6DF51AF7A7830079B1F1 /* marker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D38C1AF7028B00F223E0 /* marker.cpp */; };
-		379C6DF61AF7A7830079B1F1 /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D3A31AF7028B00F223E0 /* Timer.cpp */; };
-		44B1D37A1AF7024F00F223E0 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D3791AF7024F00F223E0 /* Makefile */; };
-		44B1D3AB1AF7028B00F223E0 /* crius_oled.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44B1D3931AF7028B00F223E0 /* crius_oled.cpp */; };
-		44F353B41B008DE300732285 /* UIButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44F353B21B008DE300732285 /* UIButton.cpp */; };
-		44FCA7BA1AF9E1E900426215 /* interrupts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 44FCA7B81AF9E1E900426215 /* interrupts.cpp */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
-		371894311B63D37C00668699 /* UserInterface_Training.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Training.cpp; sourceTree = "<group>"; };
-		371894321B63D37C00668699 /* UserInterface_Timers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Timers.cpp; sourceTree = "<group>"; };
-		371894331B63D37C00668699 /* UserInterface_SetupTimings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupTimings.cpp; sourceTree = "<group>"; };
-		371894341B63D37C00668699 /* UserInterface_SetupPower.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupPower.cpp; sourceTree = "<group>"; };
-		371894351B63D37C00668699 /* UserInterface_SetupModes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupModes.cpp; sourceTree = "<group>"; };
-		371894361B63D37C00668699 /* UserInterface_SetupEyes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetupEyes.cpp; sourceTree = "<group>"; };
-		371894371B63D37C00668699 /* UserInterface_Setup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface_Setup.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		371894381B63D37C00668699 /* UserInterface_SetGameTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetGameTimer.cpp; sourceTree = "<group>"; };
-		371894391B63D37C00668699 /* UserInterface_SetAlarmTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_SetAlarmTimer.cpp; sourceTree = "<group>"; };
-		3718943A1B63D37C00668699 /* UserInterface_Profiles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Profiles.cpp; sourceTree = "<group>"; };
-		3718943B1B63D37C00668699 /* UserInterface_EyesBallValue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_EyesBallValue.cpp; sourceTree = "<group>"; };
-		3718943C1B63D37C00668699 /* UserInterface_DisplayGraphic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_DisplayGraphic.cpp; sourceTree = "<group>"; };
-		3718943D1B63D37C00668699 /* UserInterface_Display.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UserInterface_Display.cpp; sourceTree = "<group>"; };
-		379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		379C6DF21AF7A7600079B1F1 /* UserInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = UserInterface.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		379C6DF81AFCBC530079B1F1 /* common.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = common.cpp; sourceTree = "<group>"; };
 		44B1D3731AF7024F00F223E0 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
-		44B1D3791AF7024F00F223E0 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
-		44B1D38C1AF7028B00F223E0 /* marker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = marker.cpp; sourceTree = "<group>"; };
-		44B1D38D1AF7028B00F223E0 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		44B1D38E1AF7028B00F223E0 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
-		44B1D38F1AF7028B00F223E0 /* adc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = adc.cpp; sourceTree = "<group>"; };
-		44B1D3901AF7028B00F223E0 /* adc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adc.h; sourceTree = "<group>"; };
-		44B1D3911AF7028B00F223E0 /* BreechEyesTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BreechEyesTask.cpp; sourceTree = "<group>"; };
-		44B1D3921AF7028B00F223E0 /* BreechEyesTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BreechEyesTask.h; sourceTree = "<group>"; };
-		44B1D3931AF7028B00F223E0 /* crius_oled.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = crius_oled.cpp; sourceTree = "<group>"; };
-		44B1D3941AF7028B00F223E0 /* crius_oled.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crius_oled.h; sourceTree = "<group>"; };
-		44B1D3951AF7028B00F223E0 /* flags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flags.h; sourceTree = "<group>"; };
-		44B1D3961AF7028B00F223E0 /* font.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = font.h; sourceTree = "<group>"; };
-		44B1D3971AF7028B00F223E0 /* i2c.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = i2c.cpp; sourceTree = "<group>"; };
-		44B1D3981AF7028B00F223E0 /* i2c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = i2c.h; sourceTree = "<group>"; };
-		44B1D3991AF7028B00F223E0 /* IntervalLapse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IntervalLapse.cpp; sourceTree = "<group>"; };
-		44B1D39A1AF7028B00F223E0 /* IntervalLapse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntervalLapse.h; sourceTree = "<group>"; };
-		44B1D39B1AF7028B00F223E0 /* marker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = marker.h; sourceTree = "<group>"; };
-		44B1D39C1AF7028B00F223E0 /* pins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pins.h; sourceTree = "<group>"; };
-		44B1D39D1AF7028B00F223E0 /* PinState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PinState.cpp; sourceTree = "<group>"; };
-		44B1D39E1AF7028B00F223E0 /* PinState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PinState.h; sourceTree = "<group>"; };
-		44B1D39F1AF7028B00F223E0 /* settings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = settings.h; sourceTree = "<group>"; };
-		44B1D3A01AF7028B00F223E0 /* strings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strings.h; sourceTree = "<group>"; };
-		44B1D3A11AF7028B00F223E0 /* Task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Task.cpp; sourceTree = "<group>"; };
-		44B1D3A21AF7028B00F223E0 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
-		44B1D3A31AF7028B00F223E0 /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
-		44B1D3A41AF7028B00F223E0 /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timer.h; sourceTree = "<group>"; };
-		44B1D3A51AF7028B00F223E0 /* timers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = timers.cpp; sourceTree = "<group>"; };
-		44B1D3A61AF7028B00F223E0 /* timers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = timers.h; sourceTree = "<group>"; };
-		44F353A91B00397800732285 /* UserInterface_GameScreen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface_GameScreen.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		44F353AA1B00397800732285 /* UserInterface_MenuRoot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 0; path = UserInterface_MenuRoot.cpp; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.cpp; };
-		44F353B21B008DE300732285 /* UIButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UIButton.cpp; sourceTree = "<group>"; };
-		44F353B31B008DE300732285 /* UIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIButton.h; sourceTree = "<group>"; };
-		44FCA7B81AF9E1E900426215 /* interrupts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = interrupts.cpp; sourceTree = "<group>"; };
-		44FCA7B91AF9E1E900426215 /* interrupts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = interrupts.h; sourceTree = "<group>"; };
+		44E35CE61C61A28500B1818B /* YAAB */ = {isa = PBXFileReference; lastKnownFileType = folder; path = YAAB; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
-		379C6DF01AF7A7260079B1F1 /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				44F353AB1B00397D00732285 /* States */,
-				44B1D3A01AF7028B00F223E0 /* strings.h */,
-				379C6DF11AF7A7600079B1F1 /* UserInterface.cpp */,
-				379C6DF21AF7A7600079B1F1 /* UserInterface.h */,
-				44F353B21B008DE300732285 /* UIButton.cpp */,
-				44F353B31B008DE300732285 /* UIButton.h */,
-			);
-			name = UI;
-			sourceTree = "<group>";
-		};
 		44B1D3681AF7024F00F223E0 = {
 			isa = PBXGroup;
 			children = (
-				44B1D3751AF7024F00F223E0 /* YAAB */,
+				44E35CE61C61A28500B1818B /* YAAB */,
 				44B1D3741AF7024F00F223E0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -99,106 +26,6 @@
 				44B1D3731AF7024F00F223E0 /* Index */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		44B1D3751AF7024F00F223E0 /* YAAB */ = {
-			isa = PBXGroup;
-			children = (
-				379C6DF81AFCBC530079B1F1 /* common.cpp */,
-				44B1D3781AF7024F00F223E0 /* Makefiles */,
-				44B1D3B31AF7055200F223E0 /* AVR */,
-				44B1D3B41AF7057800F223E0 /* Marker */,
-				379C6DF01AF7A7260079B1F1 /* UI */,
-				44B1D38E1AF7028B00F223E0 /* common.h */,
-				44B1D38D1AF7028B00F223E0 /* main.cpp */,
-			);
-			path = YAAB;
-			sourceTree = "<group>";
-		};
-		44B1D3781AF7024F00F223E0 /* Makefiles */ = {
-			isa = PBXGroup;
-			children = (
-				44B1D3791AF7024F00F223E0 /* Makefile */,
-			);
-			name = Makefiles;
-			sourceTree = "<group>";
-		};
-		44B1D3B31AF7055200F223E0 /* AVR */ = {
-			isa = PBXGroup;
-			children = (
-				44B1D3B61AF705F400F223E0 /* OLED */,
-				44B1D38F1AF7028B00F223E0 /* adc.cpp */,
-				44B1D3901AF7028B00F223E0 /* adc.h */,
-				44B1D3971AF7028B00F223E0 /* i2c.cpp */,
-				44B1D3981AF7028B00F223E0 /* i2c.h */,
-				44B1D39C1AF7028B00F223E0 /* pins.h */,
-				44B1D3A51AF7028B00F223E0 /* timers.cpp */,
-				44B1D3A61AF7028B00F223E0 /* timers.h */,
-				44FCA7B81AF9E1E900426215 /* interrupts.cpp */,
-				44FCA7B91AF9E1E900426215 /* interrupts.h */,
-			);
-			name = AVR;
-			sourceTree = "<group>";
-		};
-		44B1D3B41AF7057800F223E0 /* Marker */ = {
-			isa = PBXGroup;
-			children = (
-				44B1D3B51AF705B000F223E0 /* Tasks */,
-				44B1D3951AF7028B00F223E0 /* flags.h */,
-				44B1D38C1AF7028B00F223E0 /* marker.cpp */,
-				44B1D39B1AF7028B00F223E0 /* marker.h */,
-				44B1D39F1AF7028B00F223E0 /* settings.h */,
-				44B1D3A31AF7028B00F223E0 /* Timer.cpp */,
-				44B1D3A41AF7028B00F223E0 /* Timer.h */,
-			);
-			name = Marker;
-			sourceTree = "<group>";
-		};
-		44B1D3B51AF705B000F223E0 /* Tasks */ = {
-			isa = PBXGroup;
-			children = (
-				44B1D3911AF7028B00F223E0 /* BreechEyesTask.cpp */,
-				44B1D3921AF7028B00F223E0 /* BreechEyesTask.h */,
-				44B1D3991AF7028B00F223E0 /* IntervalLapse.cpp */,
-				44B1D39A1AF7028B00F223E0 /* IntervalLapse.h */,
-				44B1D39D1AF7028B00F223E0 /* PinState.cpp */,
-				44B1D39E1AF7028B00F223E0 /* PinState.h */,
-				44B1D3A11AF7028B00F223E0 /* Task.cpp */,
-				44B1D3A21AF7028B00F223E0 /* Task.h */,
-			);
-			name = Tasks;
-			sourceTree = "<group>";
-		};
-		44B1D3B61AF705F400F223E0 /* OLED */ = {
-			isa = PBXGroup;
-			children = (
-				44B1D3931AF7028B00F223E0 /* crius_oled.cpp */,
-				44B1D3941AF7028B00F223E0 /* crius_oled.h */,
-				44B1D3961AF7028B00F223E0 /* font.h */,
-			);
-			name = OLED;
-			sourceTree = "<group>";
-		};
-		44F353AB1B00397D00732285 /* States */ = {
-			isa = PBXGroup;
-			children = (
-				3718943D1B63D37C00668699 /* UserInterface_Display.cpp */,
-				3718943C1B63D37C00668699 /* UserInterface_DisplayGraphic.cpp */,
-				3718943B1B63D37C00668699 /* UserInterface_EyesBallValue.cpp */,
-				44F353A91B00397800732285 /* UserInterface_GameScreen.cpp */,
-				44F353AA1B00397800732285 /* UserInterface_MenuRoot.cpp */,
-				3718943A1B63D37C00668699 /* UserInterface_Profiles.cpp */,
-				371894391B63D37C00668699 /* UserInterface_SetAlarmTimer.cpp */,
-				371894381B63D37C00668699 /* UserInterface_SetGameTimer.cpp */,
-				371894371B63D37C00668699 /* UserInterface_Setup.cpp */,
-				371894361B63D37C00668699 /* UserInterface_SetupEyes.cpp */,
-				371894351B63D37C00668699 /* UserInterface_SetupModes.cpp */,
-				371894341B63D37C00668699 /* UserInterface_SetupPower.cpp */,
-				371894331B63D37C00668699 /* UserInterface_SetupTimings.cpp */,
-				371894321B63D37C00668699 /* UserInterface_Timers.cpp */,
-				371894311B63D37C00668699 /* UserInterface_Training.cpp */,
-			);
-			name = States;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -326,14 +153,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				44FCA7BA1AF9E1E900426215 /* interrupts.cpp in Sources */,
-				379C6DF31AF7A7600079B1F1 /* UserInterface.cpp in Sources */,
-				379C6DF51AF7A7830079B1F1 /* marker.cpp in Sources */,
-				44B1D37A1AF7024F00F223E0 /* Makefile in Sources */,
-				379C6DF61AF7A7830079B1F1 /* Timer.cpp in Sources */,
-				379C6DF41AF7A7790079B1F1 /* main.cpp in Sources */,
-				44B1D3AB1AF7028B00F223E0 /* crius_oled.cpp in Sources */,
-				44F353B41B008DE300732285 /* UIButton.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,7 +201,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PATH = "$(PATH):$(PROJECT_DIR)";
+				PATH = "$(PATH):$(PROJECT_DIR):/usr/local/CrossPack-AVR/bin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -425,7 +244,7 @@
 					"/usr/local/CrossPack-AVR-20131216/avr/include",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PATH = "$(PATH):$(PROJECT_DIR)";
+				PATH = "$(PATH):$(PROJECT_DIR):/usr/local/CrossPack-AVR/bin";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -433,6 +252,7 @@
 		44B1D37E1AF7024F00F223E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AVRDUDE_PORT = FROM_XCODE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -440,6 +260,7 @@
 		44B1D37F1AF7024F00F223E0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				AVRDUDE_PORT = FROM_XCODE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

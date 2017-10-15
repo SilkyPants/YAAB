@@ -319,6 +319,8 @@ void CRIUS_OLED::DisplayBuffer()
 	{
 		this->SendData(buffer[idx]);
 	}
+
+	m_IsDirty = false;
 }
 
 void CRIUS_OLED::SendCommand(uint8_t cmd)

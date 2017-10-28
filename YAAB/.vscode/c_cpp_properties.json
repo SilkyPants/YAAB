@@ -5,14 +5,18 @@
             "includePath": [
                 "/usr/include",
                 "/usr/local/include",
+                "/usr/local/CrossPack-AVR/avr/include",
+                "/usr/local/CrossPack-AVR/lib/gcc/avr/4.8.1/include",
                 "${workspaceRoot}"
             ],
-            "defines": [],
+            "defines": ["__AVR_ATmega328P__"],
             "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
                     "/usr/include",
                     "/usr/local/include",
+                    "/usr/local/CrossPack-AVR/avr/include",
+                    "/usr/local/CrossPack-AVR/lib/gcc/avr/4.8.1/include",
                     "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
@@ -30,7 +34,7 @@
                 "/usr/lib/gcc/avr/4.9.2/include",
                 "${workspaceRoot}"
             ],
-            "defines": [],
+            "defines": ["__AVR_ATmega328P__"],
             "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [

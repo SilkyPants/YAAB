@@ -2,16 +2,12 @@ int led = 13;                                        // the pin where you will p
 int sensorpin = A3;                           // the analog pin where you put your sensorLED
 int ledPin = 5;
 
-const long interval = 500;
-int ledState = LOW;             // ledState used to set the LED
-
 void setup() {
   pinMode(led, OUTPUT);
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, HIGH);
   Serial.begin(9600);   
 }
-
 
 void loop() { 
 

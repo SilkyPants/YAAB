@@ -20,10 +20,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-#ifndef __CRIUS_OLED_H__
-#define __CRIUS_OLED_H__
-
-#include "../../UI/strings.h"
+#ifndef __SSD1306_OLED_H__
+#define __SSD1306_OLED_H__
 
 #define LCD_WIDTH 128
 #define LCD_HEIGHT 64
@@ -36,21 +34,17 @@ enum FontType
 	BPS_FONT
 };
 
-/*
-void fillRect( int x, int y, int w, int h, bool fill = true );
-void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
-void drawChar( int x, int y, unsigned char character, FontType type = SMALL_FONT );
-void drawString( int x, int y, unsigned char * string, FontType type = SMALL_FONT );
-
-void clear_display(void);
-void init_OLED(void);
-void displayBuffer();
-*/
-
-class CRIUS_OLED
+class SSD1306_OLED
 {
 public:
-	void Init();
+
+	enum InterfaceType
+	{
+		I2C,
+		SPI_4WIRE
+	};
+
+	void Init(InterfaceType interface);
 	void ClearDisplay();
 	void DisplayBuffer();
 	void FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool fill = true);
@@ -72,6 +66,7 @@ private:
 
 	uint8_t buffer[LCD_BUFFER_SIZE];
 	bool m_IsDirty;
+	InterfaceType m_interface;
 };
 
-#endif //__CRIUS_OLED_H__
+#endif //__SSD1306_OLED_H__

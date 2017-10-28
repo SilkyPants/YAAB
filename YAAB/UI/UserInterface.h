@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "../common.h"
 
 #include "../AVR/pins.h"
-#include "../AVR/OLED/crius_oled.h"
+#include "../AVR/OLED/ssd1306_oled.h"
 
 #include "strings.h"
 #include "UIButton.h"
@@ -104,7 +104,7 @@ private:
     MenuStates m_States[MAX_DEPTH];
 
 
-    CRIUS_OLED m_Display;
+    SSD1306_OLED m_Display;
 
     uint8_t battLevel;
 	uint8_t eyeAnimIdx;

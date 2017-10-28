@@ -79,7 +79,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // On Port B (3, 4)
 #define EYE_PIN 3
 #define IRED_PIN 4
-#define OLED_PWR_PIN 5
+
+#define OLED_PWR_PIN 5 // I2C
+
+#define OLED_DC_PIN 2
+#define OLED_RST_PIN 4
 
 #elif defined( __AVR_ATmega328__ ) || defined( __AVR_ATmega328P__ )
 
@@ -96,7 +100,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UP_BUTTON_PIN 2	// Arduino Pin 10
 #define OK_BUTTON_PIN 3	// Arduino Pin 11
 #define DN_BUTTON_PIN 4	// Arduino Pin 12
-#define OLED_PWR_PIN  5 // Arduino Pin 13
+
+#define OLED_PWR_PIN  5 // Arduino Pin 13 - I2C
+
+#define OLED_DC_PIN 2   // Arduino Pin 10
+#define OLED_RST_PIN 4  // Arduino Pin 12
 
 #endif
 

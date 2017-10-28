@@ -23,14 +23,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
-#include "crius_oled.h"
+#include "ssd1306_oled.h"
 #include "font.h"
-#include "../../common.h"
 
 #include "../pins.h"
-#include "../i2c.h"
 
-#define OLED_address  0x3c
+#include "../i2c.h"
+#include "../spi.h"
+
+#define OLED_I2C_ADDRESS  0x3c
 
 #define SSD1306_SETCONTRAST		0x81
 #define SSD1306_CONTRASTDULL	0x01
@@ -89,7 +90,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /// Drawing Functions
 
-void CRIUS_OLED::FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool fill)
+void SSD1306_OLED::FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool fill)
 {
 	for (uint8_t i = x; i < x + w; i++)
 	{
@@ -100,14 +101,14 @@ void CRIUS_OLED::FillRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h, bool fill)
 	}
 }
 
-void CRIUS_OLED::Swap(uint8_t &r, uint8_t &s)
+void SSD1306_OLED::Swap(uint8_t &r, uint8_t &s)
 {
 	uint8_t pSwap = r;
 	r = s;
 	s = pSwap;
 }
 
-void CRIUS_OLED::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
+void SSD1306_OLED::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 {
 	uint8_t steep = abs(y1 - y0) > abs(x1 - x0);
 	if (steep)
@@ -157,12 +158,12 @@ void CRIUS_OLED::DrawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1)
 	}
 }
 
-void CRIUS_OLED::DrawChar(uint8_t x, uint8_t y, const char character, FontType type)
+void SSD1306_OLED::DrawChar(uint8_t x, uint8_t y, const char character, FontType type)
 {
 	this->DrawCharInternal(x, y, character, GetFont(type));
 }
 
-void CRIUS_OLED::DrawString(uint8_t x, uint8_t y, const char * string, FontType type)
+void SSD1306_OLED::DrawString(uint8_t x, uint8_t y, const char * string, FontType type)
 {
 	const uint8_t * font = GetFont(type);
 
@@ -192,7 +193,7 @@ void CRIUS_OLED::DrawString(uint8_t x, uint8_t y, const char * string, FontType 
 	}
 }
 
-void CRIUS_OLED::DrawPixel(uint8_t x, uint8_t y, bool draw)
+void SSD1306_OLED::DrawPixel(uint8_t x, uint8_t y, bool draw)
 {
 	if (x < 0 || x >= LCD_WIDTH || y < 0 || y >= LCD_HEIGHT)
 		return;
@@ -209,7 +210,7 @@ void CRIUS_OLED::DrawPixel(uint8_t x, uint8_t y, bool draw)
 	m_IsDirty = true;
 }
 
-void CRIUS_OLED::DrawCharInternal(uint8_t x, uint8_t y, const char character, const uint8_t * font)
+void SSD1306_OLED::DrawCharInternal(uint8_t x, uint8_t y, const char character, const uint8_t * font)
 {
 	uint8_t startChar = pgm_read_byte_near(font + 2);
 	uint8_t charWidth = pgm_read_byte_near(font + 5);
@@ -239,7 +240,7 @@ void CRIUS_OLED::DrawCharInternal(uint8_t x, uint8_t y, const char character, co
 	}
 }
 
-const uint8_t * CRIUS_OLED::GetFont(FontType font)
+const uint8_t * SSD1306_OLED::GetFont(FontType font)
 {
 	switch (font)
 	{
@@ -255,7 +256,7 @@ const uint8_t * CRIUS_OLED::GetFont(FontType font)
 	}
 }
 
-void CRIUS_OLED::DrawGraphic(uint8_t graphicIndex)
+void SSD1306_OLED::DrawGraphic(uint8_t graphicIndex)
 {
 	int index = graphicIndex * LCD_BUFFER_SIZE + 6;
 
@@ -267,33 +268,88 @@ void CRIUS_OLED::DrawGraphic(uint8_t graphicIndex)
 ///
 /// System
 
-void CRIUS_OLED::Init()
+void SSD1306_OLED::Init(InterfaceType interface)
 {
+	m_interface = interface;
+	
+	if (interface == I2C) {
+		i2c_init();
 
-	set_output(OLED_PORT_REG, OLED_PWR_PIN);
-	_delay_ms(20);
-	output_high(OLED_PORT, OLED_PWR_PIN);
+		set_output(OLED_PORT_REG, OLED_PWR_PIN);
+		_delay_ms(20);
+		output_high(OLED_PORT, OLED_PWR_PIN);
+	}
+	else if (interface == SPI_4WIRE) {  
+		
+		set_output(OLED_PORT_REG, OLED_DC_PIN);
+		set_output(OLED_PORT_REG, OLED_RST_PIN);
+		
+		spi_init_master();
+	
+		output_high(OLED_PORT, OLED_RST_PIN);
+		_delay_ms(1);
+		output_low(OLED_PORT, OLED_RST_PIN);
+		_delay_ms(10);
+		output_high(OLED_PORT, OLED_RST_PIN);
+	}
 
-	_delay_ms(50);
+	if (false) { // Old Init - CRIUS
+		_delay_ms(50);
 
-	SendCommand(SSD1306_DISPLAYOFF);
-	SendCommand(SSD1306_DEACTIVATE_SCROLL);
-	SendCommand(SSD1306_DISPLAYALLON_RESUME);
+		SendCommand(SSD1306_DISPLAYOFF);
+		SendCommand(SSD1306_DEACTIVATE_SCROLL);
+		SendCommand(SSD1306_DISPLAYALLON_RESUME);
 
-	_delay_ms(50);
+		_delay_ms(50);
 
-	SendCommand(SSD1306_REMAPSEG0TO127);
-	SendCommand(SSD1306_REVERSECOMSCAN);
+		SendCommand(SSD1306_REMAPSEG0TO127);
+		SendCommand(SSD1306_REVERSECOMSCAN);
 
-	SendCommand(SSD1306_NORMALDISPLAY);
+		SendCommand(SSD1306_NORMALDISPLAY);
 
-	SendCommand(SSD1306_MEMORYMODE);
-	SendCommand(SSD1306_VERTICAL_ADDRESS_MODE);
+		SendCommand(SSD1306_MEMORYMODE);
+		SendCommand(SSD1306_VERTICAL_ADDRESS_MODE);
 
-	SendCommand(SSD1306_SETCONTRAST);
-	SendCommand(SSD1306_CONTRASTDULL);
+		SendCommand(SSD1306_SETCONTRAST);
+		SendCommand(SSD1306_CONTRASTDULL);
 
-	_delay_ms(20);
+		_delay_ms(20);
+	}
+	else {
+		SendCommand(SSD1306_DISPLAYOFF);                    // 0xAE
+		SendCommand(SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
+		SendCommand(0x80);                                  // the suggested ratio 0x80
+	  
+		SendCommand(SSD1306_SETMULTIPLEX);                  // 0xA8
+		SendCommand(LCD_HEIGHT - 1);
+	  
+		SendCommand(SSD1306_SETDISPLAYOFFSET);              // 0xD3
+		SendCommand(0x0);                                   // no offset
+		SendCommand(SSD1306_SETSTARTLINE | 0x0);            // line #0
+		SendCommand(SSD1306_CHARGEPUMP);                    // 0x8D
+		SendCommand(0x14);
+	  
+		SendCommand(SSD1306_MEMORYMODE);                    // 0x20
+		SendCommand(SSD1306_VERTICAL_ADDRESS_MODE);
+		SendCommand(SSD1306_SEGREMAP | 0x1);
+		SendCommand(SSD1306_COMSCANDEC);
+		
+		SendCommand(SSD1306_SETCOMPINS);                    // 0xDA
+		SendCommand(0x12);
+		SendCommand(SSD1306_SETCONTRAST);                   // 0x81
+		SendCommand(0xCF);
+	  
+		SendCommand(SSD1306_SETPRECHARGE);                  // 0xd9
+		SendCommand(0xF1);
+	  
+		SendCommand(SSD1306_SETVCOMDETECT);                 // 0xDB
+		SendCommand(0x40);
+		
+		SendCommand(SSD1306_DISPLAYALLON_RESUME);           // 0xA4
+		SendCommand(SSD1306_NORMALDISPLAY);                 // 0xA6
+	  
+		SendCommand(SSD1306_DEACTIVATE_SCROLL);
+	}
 
 	SetXY(0, 0);
 	m_IsDirty = false;
@@ -304,14 +360,14 @@ void CRIUS_OLED::Init()
 	_delay_ms(20);
 }
 
-void CRIUS_OLED::ClearDisplay()
+void SSD1306_OLED::ClearDisplay()
 {
 	memcpy_P(buffer, Borders, LCD_BUFFER_SIZE);
 
 	DisplayBuffer();
 }
 
-void CRIUS_OLED::DisplayBuffer()
+void SSD1306_OLED::DisplayBuffer()
 {
 	if (!m_IsDirty) return;
 
@@ -323,17 +379,35 @@ void CRIUS_OLED::DisplayBuffer()
 	m_IsDirty = false;
 }
 
-void CRIUS_OLED::SendCommand(uint8_t cmd)
+void SSD1306_OLED::SendCommand(uint8_t cmd)
 {
-	i2c_OLED_send_cmd(OLED_address, cmd);
+	switch(m_interface)
+	{
+		case I2C:
+			i2c_OLED_send_cmd(OLED_I2C_ADDRESS, cmd);
+			break;
+
+		case SPI_4WIRE:
+			// D/C Pin goes low
+			break;
+	}
 }
 
-void CRIUS_OLED::SendData(uint8_t data)
+void SSD1306_OLED::SendData(uint8_t data)
 {
-	i2c_OLED_send_byte(OLED_address, data);
+	switch(m_interface)
+	{
+		case I2C:
+			i2c_OLED_send_byte(OLED_I2C_ADDRESS, data);
+			break;
+
+		case SPI_4WIRE:
+			// D/C Pin goes high
+			break;
+	}
 }
 
-void CRIUS_OLED::SetXY(uint8_t row, uint8_t col)
+void SSD1306_OLED::SetXY(uint8_t row, uint8_t col)
 {
 	SendCommand(0xb0 + row);                //set page address
 	SendCommand(0x00 + (8 * col & 0x0f));       //set low col address

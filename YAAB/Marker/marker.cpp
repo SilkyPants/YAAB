@@ -348,7 +348,6 @@ void Marker::Init()
     // Init timers
     timer_init();
     adc_init();
-    i2c_init();
 
     memcpy_P(&g_CurrentMode, &g_Modes[g_Settings.currentMode], sizeof(MarkerProfile));
 
@@ -378,10 +377,10 @@ void Marker::Init()
     keepAliveTask.Reset();
 #endif
 
+    m_UI.Init();
+
     // start interrupts
     sei();
-
-    m_UI.Init();
 
     adc_start_read( 0 );
 }

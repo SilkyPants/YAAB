@@ -9021,13 +9021,14 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <part name="GND6" library="SparkFun" deviceset="GND" device=""/>
 <part name="GND7" library="SparkFun" deviceset="GND" device=""/>
 <part name="BATT1" library="SparkFun" deviceset="M02" device="PTH"/>
-<part name="R4" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="0309/V" package3d_urn="urn:adsk.eagle:package:26090/1" value="10k"/>
 <part name="R9" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-EU_" device="0309/V" package3d_urn="urn:adsk.eagle:package:26090/1" value="10k"/>
 <part name="GND1" library="SparkFun" deviceset="GND" device=""/>
 <part name="SLG_EYE" library="SparkFun-Connectors" library_urn="urn:adsk.eagle:library:513" deviceset="CONN_03" device="" package3d_urn="urn:adsk.eagle:package:38063/1"/>
 <part name="GND3" library="SparkFun" deviceset="GND" device=""/>
 <part name="SPI" library="SparkFun-Connectors" library_urn="urn:adsk.eagle:library:513" deviceset="CONN_07" device="" package3d_urn="urn:adsk.eagle:package:38129/1"/>
 <part name="GND8" library="SparkFun" deviceset="GND" device=""/>
+<part name="GND9" library="SparkFun" deviceset="GND" device=""/>
+<part name="R7" library="SparkFun" deviceset="RESISTOR" device="PTH-1/4W" value="10k"/>
 </parts>
 <sheets>
 <sheet>
@@ -9072,13 +9073,14 @@ used as sensor</text>
 <instance part="GND6" gate="1" x="147.32" y="88.9" rot="R90"/>
 <instance part="GND7" gate="1" x="76.2" y="91.44" rot="R180"/>
 <instance part="BATT1" gate="G$1" x="68.58" y="81.28"/>
-<instance part="R4" gate="G$1" x="22.86" y="114.3" rot="R180"/>
 <instance part="R9" gate="G$1" x="40.64" y="114.3" rot="R180"/>
 <instance part="GND1" gate="1" x="53.34" y="114.3" rot="R90"/>
 <instance part="SLG_EYE" gate="J$1" x="43.18" y="147.32" rot="R180"/>
 <instance part="GND3" gate="1" x="27.94" y="134.62"/>
 <instance part="SPI" gate="G$1" x="17.78" y="83.82"/>
 <instance part="GND8" gate="1" x="33.02" y="76.2"/>
+<instance part="GND9" gate="1" x="30.48" y="96.52" rot="R180"/>
+<instance part="R7" gate="G$1" x="22.86" y="114.3"/>
 </instances>
 <busses>
 </busses>
@@ -9107,9 +9109,9 @@ used as sensor</text>
 <junction x="99.06" y="81.28"/>
 </segment>
 <segment>
-<pinref part="R4" gate="G$1" pin="2"/>
 <wire x1="17.78" y1="114.3" x2="10.16" y2="114.3" width="0.1524" layer="91"/>
 <label x="10.16" y="114.3" size="1.778" layer="95" rot="R180"/>
+<pinref part="R7" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -9214,6 +9216,14 @@ used as sensor</text>
 <pinref part="SPI" gate="G$1" pin="1"/>
 <wire x1="22.86" y1="78.74" x2="33.02" y2="78.74" width="0.1524" layer="91"/>
 <pinref part="GND8" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="SPI" gate="G$1" pin="7"/>
+<wire x1="22.86" y1="93.98" x2="30.48" y2="93.98" width="0.1524" layer="91"/>
+<label x="33.02" y="93.98" size="1.778" layer="95"/>
+<pinref part="GND9" gate="1" pin="GND"/>
+<wire x1="30.48" y1="93.98" x2="33.02" y2="93.98" width="0.1524" layer="91"/>
+<junction x="30.48" y="93.98"/>
 </segment>
 </net>
 <net name="5V" class="0">
@@ -9429,30 +9439,18 @@ used as sensor</text>
 </net>
 <net name="BATT_STATUS" class="0">
 <segment>
-<pinref part="R4" gate="G$1" pin="1"/>
 <pinref part="R9" gate="G$1" pin="2"/>
 <wire x1="35.56" y1="114.3" x2="33.02" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="114.3" x2="27.94" y2="114.3" width="0.1524" layer="91"/>
 <wire x1="33.02" y1="114.3" x2="33.02" y2="121.92" width="0.1524" layer="91"/>
 <junction x="33.02" y="114.3"/>
 <label x="33.02" y="121.92" size="1.778" layer="95" rot="R180"/>
+<pinref part="R7" gate="G$1" pin="2"/>
 </segment>
 <segment>
 <pinref part="U$5" gate="G$1" pin="A1"/>
 <wire x1="104.14" y1="106.68" x2="93.98" y2="106.68" width="0.1524" layer="91"/>
 <label x="93.98" y="106.68" size="1.778" layer="95" rot="R180"/>
-</segment>
-</net>
-<net name="SPI_CS" class="0">
-<segment>
-<pinref part="U$5" gate="G$1" pin="D9"/>
-<wire x1="137.16" y1="109.22" x2="144.78" y2="109.22" width="0.1524" layer="91"/>
-<label x="144.78" y="109.22" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="SPI" gate="G$1" pin="7"/>
-<wire x1="22.86" y1="93.98" x2="33.02" y2="93.98" width="0.1524" layer="91"/>
-<label x="33.02" y="93.98" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$12" class="0">

@@ -389,6 +389,8 @@ void SSD1306_OLED::SendCommand(uint8_t cmd)
 
 		case SPI_4WIRE:
 			// D/C Pin goes low
+			output_low(OLED_PORT, OLED_DC_PIN);
+			spi_tranceiver(cmd);
 			break;
 	}
 }
@@ -403,6 +405,8 @@ void SSD1306_OLED::SendData(uint8_t data)
 
 		case SPI_4WIRE:
 			// D/C Pin goes high
+			output_high(OLED_PORT, OLED_DC_PIN);
+			spi_tranceiver(data);
 			break;
 	}
 }

@@ -57,7 +57,7 @@ void UserInterface::DrawString_P(uint8_t x, uint8_t y, const char* const* string
 
 void UserInterface::Init()
 {
-	m_Display.Init(SSD1306_OLED::I2C);
+	m_Display.Init(SSD1306_OLED::SPI_4WIRE);
 
     m_UpButton.Init(&INPUT_PIN_REG, UP_BUTTON_PIN);
     m_OkButton.Init(&INPUT_PIN_REG, OK_BUTTON_PIN);

@@ -56,9 +56,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EYE_PORT PORTC
 #define EYE_PORT_REG DDRC
 
-#define INPUT_PORT PORTB
-#define INPUT_PORT_REG DDRB
-#define INPUT_PIN_REG PINB
+#define INPUT_PORT PORTD
+#define INPUT_PORT_REG DDRD
+#define INPUT_PIN_REG PIND
 
 #define OLED_PORT PORTB
 #define OLED_PORT_REG DDRB
@@ -96,10 +96,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define EYE_PIN 0		// Arduino Pin A0
 #define IRED_PIN 1		// Arduino Pin A1
 
-// On Port B (0-2)
-#define UP_BUTTON_PIN 2	// Arduino Pin 10
-#define OK_BUTTON_PIN 3	// Arduino Pin 11
-#define DN_BUTTON_PIN 4	// Arduino Pin 12
+// On Port D (5-7)
+#define UP_BUTTON_PIN 5	// Arduino Pin 5
+#define OK_BUTTON_PIN 6	// Arduino Pin 6
+#define DN_BUTTON_PIN 7	// Arduino Pin 7
 
 #define OLED_PWR_PIN  5 // Arduino Pin 13 - I2C
 
